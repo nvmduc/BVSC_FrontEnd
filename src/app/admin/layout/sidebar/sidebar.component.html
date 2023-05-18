@@ -1,0 +1,210 @@
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="admin">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Meeting <sup></sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item active">
+        <button type="button" style="width: 100%; padding: 10px;" data-toggle="modal" data-target="#addMeetingModal"
+            class="btn btn-primary edit">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Tạo cuộc họp</span></button>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Cuộc họp ĐHĐCĐ
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item" *ngFor="let item of toList;let i = index">
+        <div *ngIf="toList">
+            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapse1"
+                [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized | date:'yyyy'}}</span>
+            </a>
+            <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Cổ đông</h6>
+                    <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
+                    <h6 class="collapse-header">Ứng cử viên</h6>
+                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a>
+                    <h6 class="collapse-header">Biểu quyết</h6>
+                    <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
+                    <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
+                    <h6 class="collapse-header">Bầu cử</h6>
+                    <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
+                    <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
+                </div>
+            </div>
+        </div>
+        <!-- <img src="data:image/png;base64,{{item.imageBanner}}" alt="" sizes="100" srcset=""> -->
+    </li>
+
+
+    <!-- Nav Item - Utilities Collapse Menu
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse2"
+            aria-expanded="true" aria-controls="collapse2">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>BVS ĐHĐCĐ 06/2023</span>
+        </a>
+        <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Cổ đông</h6>
+                <a class="collapse-item" href="admin/shareholder">Cổ đông</a>   
+                <h6 class="collapse-header">Biểu quyết</h6>
+                <a class="collapse-item" href="admin/voting">Danh sách biểu quyết</a>
+                <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
+                <h6 class="collapse-header">Bầu cử</h6>
+                <a class="collapse-item" href="admin/elention">Danh sách bầu cử</a>
+                <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
+            </div>
+        </div>
+    </li> -->
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Addons
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
+            aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Pages</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Login Screens:</h6>
+                <a class="collapse-item" href="login.html">Login</a>
+                <a class="collapse-item" href="register.html">Register</a>
+                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6>
+                <a class="collapse-item" href="404.html">404 Page</a>
+                <a class="collapse-item" href="blank.html">Blank Page</a>
+            </div>
+        </div>
+    </li>
+
+
+    <!-- Nav Item - Charts -->
+    <li class="nav-item">
+        <a class="nav-link" href="charts.html">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Charts</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+        <a class="nav-link" href="tables.html">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Tables</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+
+</ul>
+<!-- End of Sidebar -->
+
+
+<!-- Create Modal-->
+<div class="modal fade" id="addMeetingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới cuộc họp đại hội</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="dataFormMeeting" (ngSubmit)="onSubmit()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputEmail1">Tên cuộc họp</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp"
+                                placeholder="..." formControlName="nameMeeting">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Lần tổ chức</label>
+                            <input type="number" class="form-control" placeholder="..."
+                                formControlName="numberOrganized">
+                        </div>
+                        <div class="form-group">
+                            <label>Năm tổ chức</label>
+                            <input type="date" class="form-control" placeholder="..."
+                                formControlName="yearOrganized">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <fieldset class="form-group">
+                                <label>Ảnh banner cuộc họp</label>
+                                <p style="color: red;">{{imageError}}</p>
+                                <div class="custom-file fileInputProfileWrap">
+                                    <input type="file" class="fileInputProfile" (change)="onFileSelected($event)" (change)="fileChangeEvent($event)">
+                                    <div class="img-space">
+                
+                                        <ng-container *ngIf="isImageSaved; else elseTemplate">
+                                            <img [src]="cardImageBase64" />
+                                        </ng-container>
+                                        <ng-template #elseTemplate>
+                
+                                            <img src="../../../../assets/images/placeholder.png" class="img-responsive">
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <a class="btn btn-danger" (click)="removeImage()" *ngIf="isImageSaved">Remove</a>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Thời gian bắt đầu</label>
+                            <input type="datetime-local" class="form-control" placeholder="..."
+                                formControlName="startTime">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Thời gian kết thúc</label>
+                            <input type="datetime-local" class="form-control" placeholder="..."
+                                formControlName="endTime">
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" name="address" class="form-control" placeholder="..."
+                                formControlName="address">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" >Thêm mới</button>
+                    <!-- [disabled]="!dataForm.valid" -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+.button-add a{
+    width: 10%;
+    padding: 10px;
+    background-color: #4e73df;
+    height: 50%;
+    border-radius: 5px;
+    color: white;
+    margin-right: 10px;
+ }
+ .button-add {
+     display: flex;
+ }
+ .formAdd{
+     display: block;
+ }
+ .action{
+    display: flex;
+    justify-content: center;
+    height: 73px;
+}
+
+.edit{
+    margin-right: 10px;
+}
+h6{
+    color: red;
+}
+
+.line{
+    display: flex;
+    justify-content: center;
+}
+.colunm{
+    margin-right: 20px;
+}

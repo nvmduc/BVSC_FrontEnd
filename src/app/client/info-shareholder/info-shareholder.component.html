@@ -1,0 +1,60 @@
+
+  <div class="user-info text-center">
+    <h4>THÔNG TIN CỔ ĐÔNG/ĐẠI DIỆN</h4>
+    <div>
+      <h4 style="padding-bottom: 10px">Mã cổ đông: <span class="code">{{data.items?.shareHolderCode}}</span>
+      </h4>
+    </div>
+    <div>
+      <p>Cổ đông/Đại diện cổ đông:</p>
+      <strong>{{data.items?.fullname}}</strong>
+    </div>
+    <div class="shares">
+      <p>Số lượng cổ phần: </p>
+      <span style="font-size: 30px;">{{data.items?.numberShares}}</span>
+    </div>
+    <div class="shares">
+      <p>Số lượng cổ phần được ủy quyền: </p>
+      <span style="font-size: 30px;">{{data.items?.numberSharesAuth}}</span>
+    </div>
+    <a class="logout" href="#" data-toggle="modal" data-target="#logoutModal">Đăng xuất</a>
+  </div>
+  <div class="meeting-info">
+    <span style="font-style: italic; font-weight: bold;"><u>Lưu ý: </u></span>
+    <span>Lưu ý: Đề nghị Quý cổ đông
+      đọc kỹ Quy chế ĐHĐCĐ để 
+      tham gia bỏ Phiếu biểu quyết.
+      Ban Tổ chức đặc biệt lưu ý:
+      Cổ đông phải biểu quyết 
+      tất cả các nội dung.
+      Cổ đông chỉ được chọn 1 
+      phương án biểu quyết.
+      Phiếu biểu quyết này chỉ 
+      có giá trị trong cuộc họp 
+      ĐHĐCĐ thường niên này.
+      Khi bỏ phiếu nhầm phải 
+      liên hệ với Ban tổ chức để 
+      được hướng dẫn cụ thể.</span>
+  </div>
+
+
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đăng xuất?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn đăng xuất không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="#" (click)="Logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>

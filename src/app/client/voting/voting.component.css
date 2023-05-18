@@ -1,0 +1,100 @@
+
+  tbody td{
+    padding: 5px;
+  }
+  thead td{
+    padding: 10px;
+    width: 100px;
+  }
+  thead .th{
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  .meeting-info {
+    background-color: white;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  .container-home100 {
+    width: 100%;
+    min-height: 100vh;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover
+  }
+
+  .box{
+    width: 1000px;
+    background-color:white; 
+    border-radius:5px;
+    margin-right:10px;
+  }
+  
+  .box button{
+    padding: 10px 20px;
+    margin: 10px;
+    position: relative;
+    left: 91%;
+  }
+  .main-feedback{
+    width: 73%;
+  }
+  .main-feedback table{
+    background-color: white;
+    
+  }
+
+  .main-feedback .title{
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 5px;
+    font-size: 30px;
+  }
+  .main-area{
+    display: flex;
+  }
+
+  @media only screen and (max-width: 390px) {
+    .main-area{
+      display: block;
+    }
+    .main-feedback{
+      width: 100%;
+      padding-right: 0px;
+    }
+    .info{
+      width: 100%;
+      padding-top: 10px;
+    }
+
+    .menu{
+      width: 100%;
+      display: flex;
+    }
+    .box button{
+      left: 76%;
+    }
+    form {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      width: 102.5%;
+    }
+    .main-feedback .title{
+      font-size: 20px;
+    }
+    .answer td{
+      font-size: 13px;
+    }
+  }

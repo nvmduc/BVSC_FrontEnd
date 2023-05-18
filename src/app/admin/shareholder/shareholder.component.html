@@ -1,0 +1,379 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <app-sidebar></app-sidebar>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <app-header></app-header>
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">Shareholder</h1>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 button-add text-center">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addShareholderModal">Thêm
+                            mới</a>
+                        <a class="dropdown-item" style="background-color: green;" href="#" data-toggle="modal"
+                            data-target="#fileShareholderModal">Thêm file Excel</a>
+                        <div>
+                            <form [formGroup]="searchForm">
+                                <input class="search" style="margin-bottom: 0px;" type="search" placeholder="Tìm kiếm"
+                                    formControlName="search">
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive table-wrapper">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr class="text-center width-td">
+                                        <th scope="col">STT</th>
+                                        <th scope="col">Họ và tên</th>
+                                        <th scope="col">Mã cổ đông</th>
+                                        <th scope="col">CCCD/CMT</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Địa chỉ</th>
+                                        <th scope="col">Số điện thoại</th>
+                                        <th scope="col">Quốc tịch</th>
+                                        <th scope="col">Tài khoản</th>
+                                        <th scope="col">Trạng thái</th>
+                                        <th scope="col">Cổ phần SH</th>
+                                        <th scope="col">Cổ phần UQ</th>
+                                        <th scope="col">Chức vụ</th>
+                                        <th style="width: 50px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr class="width-td">
+                                        <th scope="col">STT</th>
+                                        <th scope="col">Họ và tên</th>
+                                        <th scope="col">Mã cổ đông</th>
+                                        <th scope="col">CCCD/CMT</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Địa chỉ</th>
+                                        <th scope="col">Số điện thoại</th>
+                                        <th scope="col">Quốc tịch</th>
+                                        <th scope="col">Tài khoản</th>
+                                        <th scope="col">Trạng thái</th>
+                                        <th scope="col">Cổ phần SH</th>
+                                        <th scope="col">Cổ phần UQ</th>
+                                        <th scope="col">Chức vụ</th>
+                                        <th scope="col" style="width: 50px;">Action</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '';let i = index ">
+                                    <tr class="width-td" *ngIf="item">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{item?.fullname}}</td>
+                                        <td>{{item?.shareHolderCode}}</td>
+                                        <td>{{item?.identityCard}}</td>
+                                        <td>{{item?.email}}</td>
+                                        <td>{{item?.address}}</td>
+                                        <td>{{item?.phoneNumber}}</td>
+                                        <td>{{item?.nationality}}</td>
+                                        <td>{{item?.username}}</td>
+                                        <td>{{item?.status == 0 ? 'Không đến' : 'Đã đến'}}</td>
+                                        <td>{{item?.numberShares}}</td>
+                                        <td>{{item?.numberSharesAuth}}</td>
+                                        <td>{{item?.role == 0 ? 'Cổ đông' : 'Đại diện'}}</td>
+                                        <td class="text-center" style="display: flex;">
+                                            <button type="button" data-toggle="modal"
+                                                data-target="#editShareholderModal" (click)="edit(item?.id)"
+                                                class="btn btn-primary edit">Sửa</button>
+                                            <button data-toggle="modal" type="button" class="btn btn-danger"
+                                                data-target="#deletetModal" (click)="delete(item?.id)">Xoá</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+
+
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Logout Modal-->
+<div class="modal fade" id="addShareholderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới cổ đông</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="post" [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Tên cổ đông</label>
+                            <input type="text" name="fullname" class="form-control" aria-describedby="emailHelp"
+                                placeholder="..." formControlName="fullname" required pattern="[^0-9]*">
+                            <div *ngIf="g.fullname.invalid && (g.fullname.dirty || g.fullname.touched)">
+                                <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="g.fullname.errors?.['pattern']">Không được có số</h6>
+                            </div>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã cổ đông</label>
+                            <input type="text" name="shareholderCode" class="form-control" aria-describedby="emailHelp"
+                                placeholder="..." formControlName="shareHolderCode" required maxlength="8" minlength="6">
+                                <div *ngIf="g.shareHolderCode.invalid && (g.shareHolderCode.dirty || g.shareHolderCode.touched)">
+                                    <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
+                                    <h6 *ngIf="g.fullname.errors?.['minlength']">Tối thiểu 6 ký tự </h6>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Số CCCD</label>
+                            <input type="text" min="00" name="identityCard" class="form-control" placeholder="..."
+                                formControlName="identityCard" maxlength="12" minlength="9" pattern="[0-9]*">
+                            <div *ngIf="g.identityCard.invalid && (g.identityCard.dirty || g.identityCard.touched)">
+                                <h6 *ngIf="g.identityCard.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="g.identityCard.errors?.['pattern']">Không được có chữ</h6>
+                                <h6 *ngIf="g.identityCard.errors?.['minlength']">Tối thiểu 9 số</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="..."
+                                formControlName="email" email>
+                                <div *ngIf="g.email.invalid && (g.email.dirty || g.email.touched)">
+                                    <h6 *ngIf="g.email.errors?.['email']">Không đúng định dạng</h6>
+                                </div>
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Địa chỉ</label>
+                            <input type="text" name="address" class="form-control" placeholder="..."
+                                formControlName="address">
+                        </div>
+                       
+                        <div class="form-group ">
+                            <label for="exampleInputPassword1">Số điện thoại</label>
+                            <input type="text" name="phoneNumber" class="form-control" placeholder="..."
+                                formControlName="phoneNumber" pattern="[[0-9]\d{9,10}$]*" minlength="9" maxlength="10">
+                                <div *ngIf="g.phoneNumber.invalid && (g.phoneNumber.dirty || g.phoneNumber.touched)">
+                                    <h6 *ngIf="g.phoneNumber.errors?.['pattern']">Không đúng định dạng</h6>
+                                    <h6 *ngIf="g.phoneNumber.errors?.['minlength']">Tối thiểu 9 số</h6>
+                                </div>
+                        </div>
+                        
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Quốc tịch</label>
+                            <input type="text" name="nationality" class="form-control" placeholder="..."
+                                formControlName="nationality" pattern="[^0-9]*">
+                                <div *ngIf="g.nationality.invalid && (g.nationality.dirty || g.nationality.touched)">
+                                    <h6 *ngIf="g.nationality.errors?.['pattern']">Không được có số</h6>
+                                </div>
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Tài khoản</label>
+                            <input type="text" name="username" class="form-control" placeholder="..."
+                                formControlName="username" minlength="5" maxlength="20" required>
+                                <div *ngIf="g.username.invalid && (g.username.dirty || g.username.touched)">
+                                    <h6 *ngIf="g.username.errors?.['minlength']">Tối thiểu 5 ký tự</h6>
+                                    <h6 *ngIf="g.username.errors?.['required']">Không được trống</h6>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Mật khẩu</label>
+                            <input type="password" name="password" class="form-control" placeholder="..."
+                                formControlName="password" required minlength="6">
+                                <div *ngIf="g.password.invalid && (g.password.dirty || g.password.touched)">
+                                    <h6 *ngIf="g.password.errors?.['required']">Không được trống</h6>
+                                    <h6 *ngIf="g.password.errors?.['minlength']">Tối thiểu 6 ký tự</h6>
+                                </div>
+                        </div>
+                       
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Cổ phần SH</label>
+                            <input type="number" name="numberShares" class="form-control" placeholder="..."
+                                formControlName="numberShares" min="0" value="0" required>
+                                <div *ngIf="g.numberShares.invalid && (g.numberShares.dirty || g.numberShares.touched)">
+                                    <h6 *ngIf="g.numberShares.errors?.['required']">Không được trống</h6>
+                                </div>
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Cổ phần UQ</label>
+                            <input type="text" name="numberSharesAuth" class="form-control" placeholder="..."
+                                formControlName="numberSharesAuth" min="0" value="0" required>
+                                <div *ngIf="g.numberSharesAuth.invalid && (g.numberSharesAuth.dirty || g.numberSharesAuth.touched)">
+                                    <h6 *ngIf="g.numberSharesAuth.errors?.['required']">Không được trống</h6>
+                                </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cars">Chức vụ</label>
+                            <select id="cars" class="form-control" style="width: 193px" formControlName="role" required>
+                                <option value="0" class="form-control" selected>Cổ đông</option>
+                                <option value="1" class="form-control">Người đại diện</option>
+                            </select>
+                            <div *ngIf="g.role.invalid && (g.role.dirty || g.role.touched)">
+                                <h6 *ngIf="g.role.errors?.['required']">Vui lòng chọn</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!dataForm.valid">Thêm mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editShareholderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa thông tin cổ đông</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="editShareholder" class="formAdd" method="put" [formGroup]="infoShaholder"
+                (ngSubmit)="onSubmitUpdate()">
+                <!-- <input type="hidden" formControlName="id"> -->
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Tên cổ đông</label>
+                            <input type="text" name="fullname" class="form-control" id="fullname"
+                                aria-describedby="emailHelp" placeholder="..." formControlName="fullname" required>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã cổ đông</label>
+                            <input type="text" name="shareHolderCode" class="form-control" aria-describedby="emailHelp"
+                                placeholder="..." formControlName="shareHolderCode" required maxlength="8">
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Số CCCD</label>
+                            <input type="text" name="identityCard" class="form-control" id="identityCard"
+                                placeholder="..." formControlName="identityCard" maxlength="12" minlength="9" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Email</label>
+                            <input type="text" name="email" class="form-control" id="email" placeholder="..."
+                                formControlName="email" email>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Địa chỉ</label>
+                            <input type="text" name="address" class="form-control" id="address" placeholder="..."
+                                formControlName="address">
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Số điện thoại</label>
+                            <input type="text" name="phoneNumber" class="form-control" id="phoneNumber"
+                                placeholder="..." formControlName="phoneNumber" maxlength="10" minlength="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Quốc tịch</label>
+                            <input type="text" name="nationality" class="form-control" id="nationality"
+                                placeholder="..." formControlName="nationality">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Tài khoản</label>
+                            <input type="text" name="username" class="form-control" id="username" placeholder="..."
+                                formControlName="username">
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Cuộc họp</label>
+                            <input type="text" name="idMeeting" class="form-control" id="idMeeting" placeholder="..."
+                                formControlName="idMeeting">
+                        </div>
+                        <div class="form-group">
+                            <label for="carsStatus">Trạng thái</label>
+                            <select id="carsStatus" class="form-control" style="width:193px" formControlName="status">
+                                <option value="1" class="form-control">Đã đến</option>
+                                <option value="0" class="form-control">Không đến</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="line">
+                        
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Cổ phần SH</label>
+                            <input type="number" name="numberShares" class="form-control" placeholder="..."
+                                formControlName="numberShares">
+                        </div>
+                        <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Cổ phần UQ</label>
+                            <input type="number" name="numberSharesAuth" class="form-control" placeholder="..."
+                                formControlName="numberSharesAuth">
+                        </div>
+                        <div class="form-group">
+                            <label for="carsRole">Chức vụ</label>
+                            <select id="carsRole" class="form-control" style="width:193px" formControlName="role">
+                                <option value="0" class="form-control">Cổ đông</option>
+                                <option value="1" class="form-control">Người đại diện</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button class="btn btn-secondary" (click)="clearInput()" type="button">Clear</button> -->
+                    <button class="btn btn-primary" type="submit" [disabled]="!infoShaholder.valid">Sửa thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fileShareholderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm file excel cổ đông</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="editShareholder" class="formAdd" method="put" >
+                <!-- <input type="hidden" formControlName="id"> -->
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>File Excel</label>
+                            <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button class="btn btn-secondary" (click)="clearInput()" type="button">Clear</button> -->
+                    <button class="btn btn-primary" type="submit" [disabled]="!infoShaholder.valid">Sửa thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

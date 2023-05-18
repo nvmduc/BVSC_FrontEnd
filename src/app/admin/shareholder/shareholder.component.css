@@ -1,0 +1,52 @@
+.button-add a{
+   width: 10%;
+   padding: 10px;
+   background-color: #4e73df;
+   height: 50%;
+   border-radius: 5px;
+   color: white;
+   margin-right: 10px;
+}
+.button-add {
+    display: flex;
+}
+.formAdd{
+    display: block;
+}
+.action{
+    display: flex;
+    justify-content: center;
+    height: 73px;
+}
+
+.edit{
+    margin-right: 10px;
+}
+.search input{
+    margin-bottom: 0px !;
+}
+
+h6{
+    color: red;
+}
+
+.table-wrapper {
+    height: 500px; /* set height of table wrapper */
+    overflow-y: auto; /* enable vertical scrolling */
+  }
+.line{
+    display: flex;
+    justify-content: center;
+}
+.colunm{
+    margin-right: 20px;
+}
+.modal-dialog{
+    max-width: 800px;
+}
+td{
+    white-space: nowrap
+}
+th{
+    white-space: nowrap
+}

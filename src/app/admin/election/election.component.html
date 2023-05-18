@@ -1,0 +1,215 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <app-sidebar></app-sidebar>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <app-header></app-header>
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 button-add text-center" >
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addElectionModal">Thêm mới</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th style="width: 20px;">STT</th>
+                                        <th style="width: 150px;">Tiêu đề</th>
+                                        <th>Mô tả</th>
+                                        <th>Ứng cử viên</th>
+                                        <th style="width: 70px;">Created Time</th>
+                                        <!-- <th style="width: 70px;">Modified Time</th> -->
+                                        <!-- <th style="width: 50px;">Action</th> -->
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr class="text-center">
+                                        <th>STT</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Mô tả</th>
+                                        <th>Ứng cử viên</th>
+                                        <!-- <th>Created Time</th> -->
+                                        <!-- <th>Modified Time</th> -->
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody *ngFor="let item of toList;let i = index">
+                                    <tr>
+                                        <td>{{i + 1}}</td>
+                                        <td>{{item?.title}}</td>
+                                        <td>{{item?.description}}</td>
+                                        <td class="text-center">
+                                            <thead>
+                                                <tr class="text-center">
+                                                    <th style="width: 150px;">Họ và tên</th>
+                                                    <th>Năm sinh</th>
+                                                    <th style="width: 100px;">Địa chỉ</th>
+                                                    <th style="width: 50px;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody *ngIf="selectedElectionId === item?.id">
+                                                <tr *ngFor="let item1 of toListCandidate">
+                                                    <td>{{item1?.fullname}}</td>
+                                                    <td>{{item1?.birthday}}</td>
+                                                    <td>{{item1?.address}}</td>
+                                                    <td class="action">
+                                                        <button type="button" data-toggle="modal" (click)="edit(item?.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
+                                                        <button type="button" class="btn btn-danger" (click)="delete(item?.id)">Xoá</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <a class="dropdown-item" style="color: blue; margin-top: 5px;" (click)="getIdElection(item.id)" href="#" data-toggle="modal" data-target="#addCandidateModal">+ Thêm ứng cử viên</a>
+                                        </td>
+                                        <!-- <td>{{item.createdTime | date: 'dd/MM/yyyy'}}</td> -->
+                                        <!-- <td>{{item.modifiedTime | date: 'dd/MM/yyyy'}}</td> -->
+                                        <td class="action">
+                                            <button type="button" data-toggle="modal" (click)="edit(item.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
+                                            <button type="button" class="btn btn-danger" (click)="delete(item.id)">Xoá</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+
+
+</div>
+<!-- End of Content Wrapper -->
+
+<!-- Add Modal-->
+<div class="modal fade" id="addElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="post" [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label >Tiêu đề</label>
+                            <input  type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="..." formControlName="title">
+                        </div>
+                        <div class="form-group">
+                            <label>Mô tả</label>
+                            <input type="text" name="identity_card" class="form-control"
+                            placeholder="..." formControlName="description">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!dataForm.valid">Thêm mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal-->
+<div class="modal fade" id="editElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="post" [formGroup]="infoElection" (ngSubmit)="onSubmitUpdate()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label >Tiêu đề</label>
+                            <input  type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="..." formControlName="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mô tả</label>
+                            <input type="text" name="identity_card" class="form-control"
+                            placeholder="..." formControlName="description" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!infoElection.valid">Sửa bầu cử</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="addCandidateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm ứng cử viên</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="post">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Họ và tên</label>
+                            <input type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="...">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Năm sinh</label>
+                            <input type="date" name="identity_card" class="form-control"
+                            placeholder="...">
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="...">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group">
+                            <label>Thông tin thêm</label>
+                            <textarea rows="4" cols="55"  name="identity_card" class="form-control"
+                            placeholder="..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"  type="button">Clear</button>
+                    <button class="btn btn-primary" type="submit" href="admin/shareholder">Thêm mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="limiter">
+    <div class="container-home100" style="background-image: url('assets/images/bg-02.jpeg');">
+      <app-menu></app-menu>
+      <div class="main-area">
+        <div class="voting" >
+            <div class="box text-center">
+                <div class="title ">BỎ PHIẾU BẦU CỬ</div>
+                <form action="">
+                  <h5>1. Bầu cử chức vụ </h5>
+                  <div class="card item" >
+                    <div class="row no-gutters">
+                      <div class="col-md-1">
+                        <img  src="https://toigingiuvedep.vn/wp-content/uploads/2021/07/mau-anh-the-dep-lam-the-can-cuoc.jpg" class="card-img">
+                      </div>
+                      <div class="col-md-9">
+                        <div class="card-body">
+                          <h5 class="card-title">Tiêu đề</h5>
+                          <p class="card-text">Nội dung</p>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <input placeholder="Nhập số phiếu" type="number" name="shares" [(ngModel)]="input1" (ngModelChange)="subtract()">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card item">
+                    <div class="row no-gutters">
+                      <div class="col-md-1">
+                        <img style="width: 100px" src="https://toigingiuvedep.vn/wp-content/uploads/2021/07/mau-anh-the-dep-lam-the-can-cuoc.jpg" class="card-img">
+                      </div>
+                      <div class="col-md-9">
+                        <div class="card-body">
+                          <h5 class="card-title">Tiêu đề</h5>
+                          <p class="card-text">Nội dung</p>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <input placeholder="Nhập số phiếu" type="number" name="shares" [(ngModel)]="input2" (ngModelChange)="subtract()">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card item">
+                    <div class="row no-gutters">
+                      <div class="col-md-1">
+                        <img src="https://toigingiuvedep.vn/wp-content/uploads/2021/07/mau-anh-the-dep-lam-the-can-cuoc.jpg" class="card-img">
+                      </div>
+                      <div class="col-md-9">
+                        <div class="card-body">
+                          <h5 class="card-title">Tiêu đề</h5>
+                          <p class="card-text">Nội dung</p>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <input placeholder="Nhập số phiếu" type="number" name="shares" [(ngModel)]="input3" (ngModelChange)="subtract()">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card item">
+                    <div class="row no-gutters">
+                      <div class="col-md-1">
+                        <img src="https://toigingiuvedep.vn/wp-content/uploads/2021/07/mau-anh-the-dep-lam-the-can-cuoc.jpg" class="card-img">
+                      </div>
+                      <div class="col-md-9">
+                        <div class="card-body">
+                          <h5 class="card-title">Tiêu đề</h5>
+                          <p class="card-text">Nội dung</p>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <input placeholder="Nhập số phiếu" type="number" name="shares" [(ngModel)]="input4" (ngModelChange)="subtract()">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="btn-sub">
+                    <p>Tổng số cổ phần: <span>1.000.000</span></p>
+                    <div *ngIf="result<0">
+                      <p>Còn lại có thể bầu:<span style="color: red;" > {{result}}</span></p>
+                    </div>
+                    <div *ngIf="result>=0">
+                      <p>Còn lại có thể bầu:<span > {{result}}</span></p>
+                    </div>
+                   <div>
+                      <button type="button" class="btn btn-primary" (click)="divide()">Chia đều</button>
+                      <button *ngIf="result<0" type="button" class="btn btn-secondary" disabled>Gửi</button>
+                      <button *ngIf="result>=0" type="button" class="btn btn-success">Gửi</button>
+                   </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+        <div class="info">
+            <app-info-shareholder></app-info-shareholder>
+        </div>
+      </div>
+    </div>
+  </div>

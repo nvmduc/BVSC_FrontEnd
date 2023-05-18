@@ -1,0 +1,19 @@
+<div class="menu">
+  <nav class="navbar navbar-expand-lg navbar-light ">
+    <div class="navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav item-menu">
+        <li class="nav-item active">
+          <a class="nav-link" href="home">Trang chủ</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status === 0}"
+            [routerLink]="['/home/voting/', data?.items?.idMeeting]">Biểu quyết</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status === 0}"
+            [routerLink]="['/home/election/', data?.items?.idMeeting]">Biểu quyết</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

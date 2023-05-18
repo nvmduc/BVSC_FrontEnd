@@ -1,0 +1,80 @@
+
+
+.info {
+  width: 30%;
+}
+a.disabled {
+  margin-right: 10px;
+  pointer-events: none;
+  cursor: default;
+}
+
+.container-home100 {
+  width: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: start;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  flex-direction: column;
+}
+  .main-area {
+    display: flex;
+  }
+  
+  .banner {
+    width: 80%;
+    padding-right: 10px;
+  }
+  
+  .img-banner {
+    width: 100%;
+    border-radius: 5px;
+  }
+  
+  .user-info h3 {
+    padding-bottom: 20px;
+    padding-top: 10px;
+  }
+  
+  .user-info .div {
+    padding: 5px;
+  }
+  
+  
+  .user-info a {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .meeting-info {
+    background-color: white;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  @media only screen and (max-width: 390px) {
+    .main-area{
+      display: block;
+    }
+    .banner{
+      width: 100%;
+      padding-right: 0px;
+    }
+    .info{
+      width: 100%;
+      padding-top: 10px;
+    }
+    
+  }
