@@ -58,22 +58,22 @@
                                                     <th style="width: 50px;">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody *ngIf="selectedElectionId === item?.id">
-                                                <tr *ngFor="let item1 of toListCandidate">
-                                                    <td>{{item1?.fullname}}</td>
+                                            <tbody *ngFor="let item1 of toListCandidate">
+                                                <tr *ngIf="item?.id === item1?.idElection">
+                                                    <td>{{item1?.fullName}}</td>
                                                     <td>{{item1?.birthday}}</td>
                                                     <td>{{item1?.address}}</td>
                                                     <td class="action">
-                                                        <button type="button" data-toggle="modal" (click)="edit(item?.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
-                                                        <button type="button" class="btn btn-danger" (click)="delete(item?.id)">Xoá</button>
+                                                        <button type="button" data-toggle="modal" (click)="edit(item1?.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
+                                                        <button type="button" class="btn btn-danger" (click)="delete(item1?.id)">Xoá</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
-                                            <a class="dropdown-item" style="color: blue; margin-top: 5px;" (click)="getIdElection(item.id)" href="#" data-toggle="modal" data-target="#addCandidateModal">+ Thêm ứng cử viên</a>
+                                            <a class="dropdown-item" style="color: blue; margin-top: 5px;" href="#" data-toggle="modal" data-target="#addCandidateModal">+ Thêm ứng cử viên</a>
                                         </td>
                                         <!-- <td>{{item.createdTime | date: 'dd/MM/yyyy'}}</td> -->
                                         <!-- <td>{{item.modifiedTime | date: 'dd/MM/yyyy'}}</td> -->
-                                        <td class="action">
+                                        <td class="action" style="width:auto">
                                             <button type="button" data-toggle="modal" (click)="edit(item.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
                                             <button type="button" class="btn btn-danger" (click)="delete(item.id)">Xoá</button>
                                         </td>

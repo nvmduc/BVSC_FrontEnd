@@ -15,7 +15,7 @@ export class ElectionComponent implements OnInit {
   constructor(private fb: FormBuilder,private electionService:ElectionService,private candidateService:CandidateService, private toastr: ToastrService, private route: ActivatedRoute) { }
   ngOnInit(): void {
     this.getAllByMeeting();
-    this.selectedElectionId = this.toList[0].id;
+    this.getAllCandidate();
     this.infoElection = this.fb.group({
       id: [''],
       idMeeting: [''],
@@ -25,10 +25,28 @@ export class ElectionComponent implements OnInit {
       modifiedTime: ['']
     })
   }
+  selectedElectionId!: string;
 
   list:any[] = []
   toList:any[] = []
   idMeeting!: number;
+  toListCandidate:any[] = []
+  // getAllByElection(): void {
+  //   // console.log(this.selectedElectionId)
+  //   this.candidateService.getByIdElection(this.toList).subscribe((res:any) => {
+  //     this.list = [res];
+  //     this.toListCandidate = Object.values(this.list[0].items);
+  //     console.log(this.toListCandidate)
+  //   })
+  // }
+  getAllCandidate(): void {
+    // console.log(this.selectedElectionId)
+    this.candidateService.getAll().subscribe((res:any) => {
+      this.list = [res];
+      this.toListCandidate = Object.values(this.list[0].items);
+      console.log(this.toListCandidate)
+    })
+  }
   getAllByMeeting(): void {
     this.idMeeting = this.route.snapshot.params['id'];
     this.electionService.getByIdMeeting(this.idMeeting).subscribe((res:any) => {
@@ -68,7 +86,7 @@ export class ElectionComponent implements OnInit {
   delete(id: any) {
     // this.idMeeting = this.route.snapshot.params['id'];
     this.electionService.getById(id).subscribe((res: any) => {
-      if (window.confirm("Bạn có muốn xoá cổ đông có mã: " + `"${res.items.content}"` + " không?")) {
+      if (window.confirm("Bạn có muốn xoá: " + `"${res.items.title}"` + " không?")) {
         this.electionService.delete(id).subscribe(() => {
           this.toastr.success("Xoá thành công", "Thành công")
           console.log("xoá thành công")
@@ -120,19 +138,7 @@ export class ElectionComponent implements OnInit {
     });
   }
 
-  selectedElectionId!: string;
 
-  getIdElection(id:string){
-    this.selectedElectionId = id;
-    console.log(this.selectedElectionId)
-  }
-  toListCandidate:any[] = []
-  getAllByElection(): void {
-    console.log(this.selectedElectionId)
-    this.candidateService.getByIdElection(this.selectedElectionId).subscribe((res:any) => {
-      this.list = [res];
-      this.toListCandidate = Object.values(this.list[0].items);
-      console.log(this.toListCandidate)
-    })
-  }
+
+  
 }

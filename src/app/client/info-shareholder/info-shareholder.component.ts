@@ -18,14 +18,15 @@ export class InfoShareholderComponent implements OnInit {
   getInfoShareholder() {
     const id = localStorage.getItem('id') || '';
     console.log(id)
-    if (id !== null) {
       this.shareholderInfo.getById(id).subscribe((res: any) => {
-        this.data = res;
-        console.log(this.data.items.fullname)
+        if(res){
+          this.data = res;
+          console.log(this.data.items.fullname)
+        }else{
+          window.location.reload();
+        }
+       
       });
-    } else {
-      console.log("Không tìm thấy id")
-    }
   }
 
   Logout() {

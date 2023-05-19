@@ -9,20 +9,25 @@ import { VotingService } from 'src/app/service/voting.service';
   templateUrl: './voting.component.html',
   styleUrls: ['./voting.component.css']
 })
-export class VotingComponent implements OnInit{
+export class VotingComponent implements OnInit {
   constructor(private votingService: VotingService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) { }
   ngOnInit(): void {
     this.getAllByMeeting();
   }
 
-  list:any[] = [];
-  toList:any[] = [];
+  list: any[] = [];
+  toList: any[] = [];
   getAllByMeeting() {
     const idMeeting = this.route.snapshot.params['idMeeting'];
     this.votingService.getByIdMeeting(idMeeting).subscribe((res) => {
-      this.list = [res];
-      this.toList = Object.values(this.list[0].items);
-      console.log(this.toList)
+      if (res) {
+        this.list = [res];
+        this.toList = Object.values(this.list[0].items);
+        console.log(this.toList)
+      }else{
+
+        window.location.reload();
+      }
     })
   }
 }
