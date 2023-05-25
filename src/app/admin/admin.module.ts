@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -16,6 +16,7 @@ import { SearchShareholderPipe } from '../search-shareholder.pipe';
 import { MeetingComponent } from './meeting/meeting.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ElectionComponent } from './election/election.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -38,8 +39,10 @@ import { ElectionComponent } from './election/election.component';
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
+    NgxPaginationModule,
+    // DatePipe
   ],
-  providers: [],
+  providers: [DatePipe,DecimalPipe],
   bootstrap: []
 })
 export class AdminModule { }

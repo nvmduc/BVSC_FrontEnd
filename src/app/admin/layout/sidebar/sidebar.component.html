@@ -3,10 +3,10 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="admin">
-        <div class="sidebar-brand-icon rotate-n-15">
+        <!-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">Meeting <sup></sup></div>
+        </div> -->
+        <div class="sidebar-brand-text mx-3">{{data.items?.stockCode}} Meeting Shareholder<sup></sup></div>
     </a>
 
     <!-- Divider -->
@@ -27,21 +27,21 @@
     <div class="sidebar-heading">
         Cuộc họp ĐHĐCĐ
     </div>
-
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item" *ngFor="let item of toList;let i = index">
-        <div *ngIf="toList">
-            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse" data-target="#collapse1"
-                [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
+        <div *ngIf="item?.status == 0">
+            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
+                [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i"
+                 (click)="selectItem(item?.id)">
                 <i class="fas fa-fw fa-cog"></i>
-                <span>{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized | date:'yyyy'}}</span>
+                <span [ngClass]="{'colorMenu': item?.id == selectedItemMeeting}">{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
             </a>
-            <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
+            <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Cổ đông</h6>
                     <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
-                    <h6 class="collapse-header">Ứng cử viên</h6>
-                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a>
+                    <!-- <h6 class="collapse-header">Ứng cử viên</h6>
+                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a> -->
                     <h6 class="collapse-header">Biểu quyết</h6>
                     <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
                     <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
@@ -49,7 +49,44 @@
                     <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
                     <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
                     <hr>
-                    <a class="collapse-item" data-toggle="modal" data-target="#addMeetingModal" href="#">Thông tin cuộc họp</a>
+                    <div>
+                        <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
+                            data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <img src="data:image/png;base64,{{item.imageBanner}}" alt="" sizes="100" srcset=""> -->
+    </li>
+    <div class="sidebar-heading">
+        Cuộc họp ĐHĐCĐ đã kết thúc
+    </div>
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item" *ngFor="let item of toList;let i = index">
+        <div *ngIf="item?.status == 1">
+            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
+                [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i"
+                (click)="selectItem(item?.id)">
+                <i class="fas fa-fw fa-cog"></i>
+                <span [ngClass]="{'colorMenu': item?.id === selectedItemMeeting}" >{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
+            </a>
+            <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Cổ đông</h6>
+                    <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
+                    <!-- <h6 class="collapse-header">Ứng cử viên</h6>
+                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a> -->
+                    <h6 class="collapse-header">Biểu quyết</h6>
+                    <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
+                    <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
+                    <h6 class="collapse-header">Bầu cử</h6>
+                    <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
+                    <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
+                    <hr>
+                    <div>
+                        <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
+                            data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,49 +115,6 @@
         </div>
     </li> -->
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Addons
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-            aria-controls="collapsePages">
-            <i class="fas fa-fw fa-folder"></i>
-            <span>Pages</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Login Screens:</h6>
-                <a class="collapse-item" href="login.html">Login</a>
-                <a class="collapse-item" href="register.html">Register</a>
-                <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Other Pages:</h6>
-                <a class="collapse-item" href="404.html">404 Page</a>
-                <a class="collapse-item" href="blank.html">Blank Page</a>
-            </div>
-        </div>
-    </li>
-
-
-    <!-- Nav Item - Charts -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span></a>
-    </li>
-
-    <!-- Nav Item - Tables -->
-    <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span></a>
-    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
@@ -142,23 +136,35 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form action="addMeeting" class="formAdd" method="post" [formGroup]="dataFormMeeting" (ngSubmit)="onSubmit()">
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="dataFormMeeting"
+                (ngSubmit)="onSubmit()">
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
                             <label for="exampleInputEmail1">Tên cuộc họp</label>
-                            <input type="text" class="form-control" aria-describedby="emailHelp"
-                                placeholder="..." formControlName="nameMeeting">
+                            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="..."
+                                formControlName="nameMeeting" required>
                         </div>
                         <div class="form-group colunm">
                             <label>Lần tổ chức</label>
                             <input type="number" class="form-control" placeholder="..."
-                                formControlName="numberOrganized">
+                                formControlName="numberOrganized" required>
                         </div>
                         <div class="form-group">
                             <label>Năm tổ chức</label>
-                            <input type="date" class="form-control" placeholder="..."
-                                formControlName="yearOrganized">
+                            <!-- <input type="number" min="2023" class="form-control" placeholder="..." formControlName="yearOrganized" required> -->
+                            <select class="form-control select" name="yearOrganized" formControlName="yearOrganized">
+                                <option [value]="2023">2023</option>
+                                <option [value]="2024">2024</option>
+                                <option [value]="2025">2025</option>
+                                <option [value]="2026">2026</option>
+                                <option [value]="2027">2027</option>
+                                <option [value]="2028">2028</option>
+                                <option [value]="2029">2029</option>
+                                <option [value]="2030">2030</option>
+                                <option [value]="2031">2031</option>
+                                <option [value]="2032">2032</option>
+                            </select>
                         </div>
                     </div>
                     <div class="line">
@@ -167,14 +173,15 @@
                                 <label>Ảnh banner cuộc họp</label>
                                 <p style="color: red;">{{imageError}}</p>
                                 <div class="custom-file fileInputProfileWrap">
-                                    <input type="file" class="fileInputProfile" (change)="onFileSelected($event)" (change)="fileChangeEvent($event)">
+                                    <input type="file" class="fileInputProfile" (change)="onFileSelected($event)"
+                                        (change)="fileChangeEvent($event)">
                                     <div class="img-space">
-                
+
                                         <ng-container *ngIf="isImageSaved; else elseTemplate">
                                             <img [src]="cardImageBase64" />
                                         </ng-container>
                                         <ng-template #elseTemplate>
-                
+
                                             <img src="../../../../assets/images/placeholder.png" class="img-responsive">
                                         </ng-template>
                                     </div>
@@ -203,8 +210,98 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="reset">Clear</button>
-                    <button class="btn btn-primary" type="submit" >Thêm mới</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!dataFormMeeting.valid">Thêm mới</button>
                     <!-- [disabled]="!dataForm.valid" -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Create Modal-->
+<div class="modal fade" id="infoMeeting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin cuộc họp đại hội</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="infoMeeting" (ngSubmit)="onSubmitUpdate()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputEmail1">Tên cuộc họp</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="..."
+                                formControlName="nameMeeting">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Lần tổ chức</label>
+                            <input type="number" class="form-control" placeholder="..."
+                                formControlName="numberOrganized">
+                        </div>
+                        <div class="form-group">
+                            <label>Năm tổ chức</label>
+                            <!-- <input type="number" class="form-control" placeholder="..." formControlName="yearOrganized"> -->
+                            <select class="form-control select" name="yearOrganized" formControlName="yearOrganized">
+                                <option [value]="2023">2023</option>
+                                <option [value]="2024">2024</option>
+                                <option [value]="2025">2025</option>
+                                <option [value]="2026">2026</option>
+                                <option [value]="2027">2027</option>
+                                <option [value]="2028">2028</option>
+                                <option [value]="2029">2029</option>
+                                <option [value]="2030">2030</option>
+                                <option [value]="2031">2031</option>
+                                <option [value]="2032">2032</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <fieldset class="form-group">
+                                <label>Ảnh banner cuộc họp</label>
+                                <p style="color: red;">{{imageError}}</p>
+                                <div class="custom-file fileInputProfileWrap">
+                                    <input type="file" class="fileInputProfile" (change)="onFileSelected($event)"
+                                        (change)="fileChangeEvent($event)">
+                                    <div class="img-space">
+                                        <ng-container *ngIf="isImageSaved; else elseTemplateUpdate">
+                                            <img [src]="cardImageBase64" />
+                                        </ng-container>
+                                        <ng-template #elseTemplateUpdate>
+                                            <img [src]="data.items?.imageBanner" class="img-responsive">
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <a class="btn btn-danger" (click)="removeImage()" *ngIf="isImageSaved">Remove</a>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Thời gian bắt đầu</label>
+                            <input type="datetime-local" class="form-control" placeholder="..."
+                                formControlName="startTime">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Thời gian kết thúc</label>
+                            <input type="datetime-local" class="form-control" placeholder="..."
+                                formControlName="endTime">
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" name="address" class="form-control" placeholder="..."
+                                formControlName="address">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit">Sửa thông tin</button>
                 </div>
             </form>
         </div>

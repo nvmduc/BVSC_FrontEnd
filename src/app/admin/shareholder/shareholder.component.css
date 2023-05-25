@@ -1,52 +1,101 @@
-.button-add a{
-   width: 10%;
-   padding: 10px;
-   background-color: #4e73df;
-   height: 50%;
-   border-radius: 5px;
-   color: white;
-   margin-right: 10px;
+.button-add a {
+    width: 10%;
+    padding: 10px;
+    background-color: #4e73df;
+    height: 50%;
+    border-radius: 5px;
+    color: white;
+    margin-right: 10px;
 }
+
 .button-add {
     display: flex;
 }
-.formAdd{
+
+.formAdd {
     display: block;
 }
-.action{
+
+.action {
     display: flex;
     justify-content: center;
     height: 73px;
 }
 
-.edit{
+.edit {
     margin-right: 10px;
 }
-.search input{
+
+.search input {
     margin-bottom: 0px !;
 }
 
-h6{
+h6 {
     color: red;
+    font-size: 15px;
 }
 
-.table-wrapper {
-    height: 500px; /* set height of table wrapper */
-    overflow-y: auto; /* enable vertical scrolling */
-  }
-.line{
+/* .table-wrapper {
+    height: 500px; 
+    overflow-y: auto;
+  } */
+.line {
     display: flex;
     justify-content: center;
 }
-.colunm{
+
+.colunm {
     margin-right: 20px;
 }
-.modal-dialog{
+
+.modal-dialog {
     max-width: 800px;
 }
-td{
+
+td {
     white-space: nowrap
 }
-th{
+
+th {
     white-space: nowrap
+}
+
+h5 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+small {
+    font-style: italic;
+}
+
+.name {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    font-family: Roboto, sans-serif;
+    letter-spacing: .0178571429em;
+    color: #858796;
+}
+
+.borderInfo{
+    border-right: 1px solid black;
+    padding: 5px;
+}
+.boxInfo{
+    width: 500px;
+}
+.title{
+    font-weight: bold;
+}
+.searchCCCD input:focus{
+    outline: none;
+    border: 1px solid black;
+}
+
+.searchCCCD input{
+    margin-bottom: 5px;
+}
+.error-message{
+    color: red;
 }

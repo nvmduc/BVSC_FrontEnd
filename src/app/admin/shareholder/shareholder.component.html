@@ -12,7 +12,7 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Shareholder</h1>
+                <h1 class="h3 mb-2 text-gray-800">Cổ đông</h1>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
@@ -38,15 +38,10 @@
                                         <th scope="col">Họ và tên</th>
                                         <th scope="col">Mã cổ đông</th>
                                         <th scope="col">CCCD/CMT</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Địa chỉ</th>
                                         <th scope="col">Số điện thoại</th>
-                                        <th scope="col">Quốc tịch</th>
                                         <th scope="col">Tài khoản</th>
-                                        <th scope="col">Trạng thái</th>
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
-                                        <th scope="col">Chức vụ</th>
                                         <th style="width: 50px;">Action</th>
                                     </tr>
                                 </thead>
@@ -56,33 +51,26 @@
                                         <th scope="col">Họ và tên</th>
                                         <th scope="col">Mã cổ đông</th>
                                         <th scope="col">CCCD/CMT</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Địa chỉ</th>
                                         <th scope="col">Số điện thoại</th>
-                                        <th scope="col">Quốc tịch</th>
                                         <th scope="col">Tài khoản</th>
-                                        <th scope="col">Trạng thái</th>
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
-                                        <th scope="col">Chức vụ</th>
                                         <th scope="col" style="width: 50px;">Action</th>
                                     </tr>
                                 </tfoot>
-                                <tbody *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '';let i = index ">
-                                    <tr class="width-td" *ngIf="item">
+                                <tbody
+                                    *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '' | paginate: { itemsPerPage: pageSize, currentPage: p };let i = index ">
+                                    <tr class="width-td">
                                         <td>{{i + 1}}</td>
-                                        <td>{{item?.fullname}}</td>
+                                        <td><a class="dropdown-item name" href="#" data-toggle="modal"
+                                                data-target="#infoShareholderModal"
+                                                (click)="getShareholder(item?.id)">{{item?.fullname}}</a></td>
                                         <td>{{item?.shareHolderCode}}</td>
                                         <td>{{item?.identityCard}}</td>
-                                        <td>{{item?.email}}</td>
-                                        <td>{{item?.address}}</td>
                                         <td>{{item?.phoneNumber}}</td>
-                                        <td>{{item?.nationality}}</td>
                                         <td>{{item?.username}}</td>
-                                        <td>{{item?.status == 0 ? 'Không đến' : 'Đã đến'}}</td>
-                                        <td>{{item?.numberShares}}</td>
-                                        <td>{{item?.numberSharesAuth}}</td>
-                                        <td>{{item?.role == 0 ? 'Cổ đông' : 'Đại diện'}}</td>
+                                        <td>{{item?.numberShares | number:'1.0-0'}}</td>
+                                        <td>{{item?.numberSharesAuth | number:'1.0-0'}}</td>
                                         <td class="text-center" style="display: flex;">
                                             <button type="button" data-toggle="modal"
                                                 data-target="#editShareholderModal" (click)="edit(item?.id)"
@@ -94,6 +82,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
                     </div>
                 </div>
 
@@ -125,7 +114,7 @@
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
-                            <label>Tên cổ đông</label>
+                            <label>Tên cổ đông</label><small>(Bắt buộc)</small>
                             <input type="text" name="fullname" class="form-control" aria-describedby="emailHelp"
                                 placeholder="..." formControlName="fullname" required pattern="[^0-9]*">
                             <div *ngIf="g.fullname.invalid && (g.fullname.dirty || g.fullname.touched)">
@@ -134,18 +123,20 @@
                             </div>
                         </div>
                         <div class="form-group colunm">
-                            <label>Mã cổ đông</label>
+                            <label>Mã cổ đông</label><small>(Bắt buộc)</small>
                             <input type="text" name="shareholderCode" class="form-control" aria-describedby="emailHelp"
-                                placeholder="..." formControlName="shareHolderCode" required maxlength="8" minlength="6">
-                                <div *ngIf="g.shareHolderCode.invalid && (g.shareHolderCode.dirty || g.shareHolderCode.touched)">
-                                    <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
-                                    <h6 *ngIf="g.fullname.errors?.['minlength']">Tối thiểu 6 ký tự </h6>
-                                </div>
+                                placeholder="..." formControlName="shareHolderCode" required maxlength="8"
+                                minlength="6">
+                            <div
+                                *ngIf="g.shareHolderCode.invalid && (g.shareHolderCode.dirty || g.shareHolderCode.touched)">
+                                <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="g.fullname.errors?.['minlength']">Tối thiểu 6 ký tự </h6>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Số CCCD</label>
+                            <label for="exampleInputPassword1">Số CCCD</label><small>(Bắt buộc)</small>
                             <input type="text" min="00" name="identityCard" class="form-control" placeholder="..."
-                                formControlName="identityCard" maxlength="12" minlength="9" pattern="[0-9]*">
+                                formControlName="identityCard" maxlength="12" minlength="9" pattern="[0-9]*" required>
                             <div *ngIf="g.identityCard.invalid && (g.identityCard.dirty || g.identityCard.touched)">
                                 <h6 *ngIf="g.identityCard.errors?.['required']">Không được trống</h6>
                                 <h6 *ngIf="g.identityCard.errors?.['pattern']">Không được có chữ</h6>
@@ -158,72 +149,73 @@
                             <label for="exampleInputPassword1">Email</label>
                             <input type="email" name="email" class="form-control" placeholder="..."
                                 formControlName="email" email>
-                                <div *ngIf="g.email.invalid && (g.email.dirty || g.email.touched)">
-                                    <h6 *ngIf="g.email.errors?.['email']">Không đúng định dạng</h6>
-                                </div>
+                            <div *ngIf="g.email.invalid && (g.email.dirty || g.email.touched)">
+                                <h6 *ngIf="g.email.errors?.['email']">Không đúng định dạng</h6>
+                            </div>
                         </div>
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Địa chỉ</label>
                             <input type="text" name="address" class="form-control" placeholder="..."
                                 formControlName="address">
                         </div>
-                       
+
                         <div class="form-group ">
                             <label for="exampleInputPassword1">Số điện thoại</label>
                             <input type="text" name="phoneNumber" class="form-control" placeholder="..."
                                 formControlName="phoneNumber" pattern="[[0-9]\d{9,10}$]*" minlength="9" maxlength="10">
-                                <div *ngIf="g.phoneNumber.invalid && (g.phoneNumber.dirty || g.phoneNumber.touched)">
-                                    <h6 *ngIf="g.phoneNumber.errors?.['pattern']">Không đúng định dạng</h6>
-                                    <h6 *ngIf="g.phoneNumber.errors?.['minlength']">Tối thiểu 9 số</h6>
-                                </div>
+                            <div *ngIf="g.phoneNumber.invalid && (g.phoneNumber.dirty || g.phoneNumber.touched)">
+                                <h6 *ngIf="g.phoneNumber.errors?.['pattern']">Không đúng định dạng</h6>
+                                <h6 *ngIf="g.phoneNumber.errors?.['minlength']">Tối thiểu 9 số</h6>
+                            </div>
                         </div>
-                        
+
                     </div>
                     <div class="line">
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Quốc tịch</label>
                             <input type="text" name="nationality" class="form-control" placeholder="..."
                                 formControlName="nationality" pattern="[^0-9]*">
-                                <div *ngIf="g.nationality.invalid && (g.nationality.dirty || g.nationality.touched)">
-                                    <h6 *ngIf="g.nationality.errors?.['pattern']">Không được có số</h6>
-                                </div>
+                            <div *ngIf="g.nationality.invalid && (g.nationality.dirty || g.nationality.touched)">
+                                <h6 *ngIf="g.nationality.errors?.['pattern']">Không được có số</h6>
+                            </div>
                         </div>
                         <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Tài khoản</label>
+                            <label for="exampleInputPassword1">Tài khoản</label><small>(Bắt buộc)</small>
                             <input type="text" name="username" class="form-control" placeholder="..."
                                 formControlName="username" minlength="5" maxlength="20" required>
-                                <div *ngIf="g.username.invalid && (g.username.dirty || g.username.touched)">
-                                    <h6 *ngIf="g.username.errors?.['minlength']">Tối thiểu 5 ký tự</h6>
-                                    <h6 *ngIf="g.username.errors?.['required']">Không được trống</h6>
-                                </div>
+                            <div *ngIf="g.username.invalid && (g.username.dirty || g.username.touched)">
+                                <h6 *ngIf="g.username.errors?.['minlength']">Tối thiểu 5 ký tự</h6>
+                                <h6 *ngIf="g.username.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Mật khẩu</label>
+                            <label for="exampleInputPassword1">Mật khẩu</label><small>(Bắt buộc)</small>
                             <input type="password" name="password" class="form-control" placeholder="..."
                                 formControlName="password" required minlength="6">
-                                <div *ngIf="g.password.invalid && (g.password.dirty || g.password.touched)">
-                                    <h6 *ngIf="g.password.errors?.['required']">Không được trống</h6>
-                                    <h6 *ngIf="g.password.errors?.['minlength']">Tối thiểu 6 ký tự</h6>
-                                </div>
+                            <div *ngIf="g.password.invalid && (g.password.dirty || g.password.touched)">
+                                <h6 *ngIf="g.password.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="g.password.errors?.['minlength']">Tối thiểu 6 ký tự</h6>
+                            </div>
                         </div>
-                       
+
                     </div>
                     <div class="line">
                         <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Cổ phần SH</label>
+                            <label for="exampleInputPassword1">Cổ phần SH</label><small>(Bắt buộc)</small>
                             <input type="number" name="numberShares" class="form-control" placeholder="..."
                                 formControlName="numberShares" min="0" value="0" required>
-                                <div *ngIf="g.numberShares.invalid && (g.numberShares.dirty || g.numberShares.touched)">
-                                    <h6 *ngIf="g.numberShares.errors?.['required']">Không được trống</h6>
-                                </div>
+                            <div *ngIf="g.numberShares.invalid && (g.numberShares.dirty || g.numberShares.touched)">
+                                <h6 *ngIf="g.numberShares.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Cổ phần UQ</label>
                             <input type="text" name="numberSharesAuth" class="form-control" placeholder="..."
-                                formControlName="numberSharesAuth" min="0" value="0" required>
-                                <div *ngIf="g.numberSharesAuth.invalid && (g.numberSharesAuth.dirty || g.numberSharesAuth.touched)">
-                                    <h6 *ngIf="g.numberSharesAuth.errors?.['required']">Không được trống</h6>
-                                </div>
+                                formControlName="numberSharesAuth" min="0" [value]="0" required>
+                            <div
+                                *ngIf="g.numberSharesAuth.invalid && (g.numberSharesAuth.dirty || g.numberSharesAuth.touched)">
+                                <h6 *ngIf="g.numberSharesAuth.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="cars">Chức vụ</label>
@@ -262,7 +254,7 @@
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
-                            <label>Tên cổ đông</label>
+                            <label>Tên cổ đông</label><small>(Bắt buộc)</small>
                             <input type="text" name="fullname" class="form-control" id="fullname"
                                 aria-describedby="emailHelp" placeholder="..." formControlName="fullname" required>
                         </div>
@@ -272,7 +264,7 @@
                                 placeholder="..." formControlName="shareHolderCode" required maxlength="8">
                         </div>
                         <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Số CCCD</label>
+                            <label for="exampleInputPassword1">Số CCCD</label><small>(Bắt buộc)</small>
                             <input type="text" name="identityCard" class="form-control" id="identityCard"
                                 placeholder="..." formControlName="identityCard" maxlength="12" minlength="9" required>
                         </div>
@@ -301,7 +293,7 @@
                     </div>
                     <div class="line">
                         <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Tài khoản</label>
+                            <label for="exampleInputPassword1">Tài khoản</label><small>(Bắt buộc)</small>
                             <input type="text" name="username" class="form-control" id="username" placeholder="..."
                                 formControlName="username">
                         </div>
@@ -319,9 +311,9 @@
                         </div>
                     </div>
                     <div class="line">
-                        
+
                         <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Cổ phần SH</label>
+                            <label for="exampleInputPassword1">Cổ phần SH</label><small>(Bắt buộc)</small>
                             <input type="number" name="numberShares" class="form-control" placeholder="..."
                                 formControlName="numberShares">
                         </div>
@@ -341,7 +333,8 @@
                 </div>
                 <div class="modal-footer">
                     <!-- <button class="btn btn-secondary" (click)="clearInput()" type="button">Clear</button> -->
-                    <button class="btn btn-primary" type="submit" [disabled]="!infoShaholder.valid">Sửa thông tin</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!infoShaholder.valid">Sửa thông
+                        tin</button>
                 </div>
             </form>
         </div>
@@ -358,22 +351,325 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form action="editShareholder" class="formAdd" method="put" >
-                <!-- <input type="hidden" formControlName="id"> -->
+            <form action="editShareholder" class="formAdd" method="post" enctype="multipart/form-data"
+                (ngSubmit)="onSubmitFile(form)" #form="ngForm" >
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
                             <label>File Excel</label>
-                            <input type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" name="file" class="form-control"
-                                aria-describedby="emailHelp" placeholder="...">
+                            <input type="file"
+                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                name="file" class="form-control" aria-describedby="emailHelp" placeholder="..." (change)="onFileSelected($event)">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <!-- <button class="btn btn-secondary" (click)="clearInput()" type="button">Clear</button> -->
-                    <button class="btn btn-primary" type="submit" [disabled]="!infoShaholder.valid">Sửa thông tin</button>
+                    <button class="btn btn-primary" type="submit">Thêm danh sách cổ đông</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Form checkin -->
+<div class="modal fade" id="infoShareholderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog boxInfo" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin cổ đông</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="editShareholder" class="formAdd" method="put">
+                <!-- <input type="hidden" formControlName="id"> -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Họ và tên</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.fullname}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Mã cổ đông</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.shareHolderCode}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Số CCCD</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.identityCard}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Email</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.email}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Địa chỉ</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.address}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">SĐT</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.phoneNumber}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Quốc tịch</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.nationality}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Tài khoản</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.username}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Mật khẩu</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.password}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Số CP SH</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.numberShares}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Số CP UQ</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.numberSharesAuth}}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h4 class="mb-0">Vai trò</h4>
+                        </div>
+                        <div class="col-sm-9 text-secondary"> {{dataInfo.items?.role == 1 ? 'Đoàn chủ tịch':'Cổ đông'}}
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+                <p style="padding: 10px; font-style: italic; text-decoration:underline;">Khi checkin mật khẩu mới được
+                    khởi tạo và có tác dụng</p>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit"
+                        *ngIf="dataInfo.items?.numberShares == 0 && dataInfo.items?.numberSharesAuth == 0"
+                        disabled>Checkin</button>
+                    <button class="btn btn-primary" type="submit"
+                        *ngIf="dataInfo.items?.numberShares != 0 || dataInfo.items?.numberSharesAuth != 0">Checkin</button>
+                    <button class="btn btn-success" type="button" data-toggle="modal" data-target="#authorizationModal"
+                        (click)="getIdShareholder(dataInfo.items?.id)">Nhận CP uỷ quyền</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Form uỷ quyền -->
+<div class="modal fade" id="authorizationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Uỷ quyền cổ phần</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form class="formAdd" method="post" (ngSubmit)="onSubmitAuthority()">
+                <div class="modal-body line">
+                    <div class="borderInfo">
+                        <div class="text-center" style="padding-right: 40px;">
+                            <label class="title">Thông tin người được uỷ quyền</label>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Họ và tên</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataInfo.items?.fullname">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã cổ dông</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataInfo.items?.shareHolderCode">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Số CCCD</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataInfo.items?.identityCard">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Số CP sở hữu</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataInfo.items?.numberShares">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Số CP được uỷ quyền</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataInfo.items?.numberSharesAuth">
+                        </div>
+                    </div>
+                    <div style="padding-left: 20px;">
+                        <div class="text-center">
+                            <label class="title text-center">Thông tin người uỷ quyền</label>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Nhập CCCD người uỷ quyền</label>
+                            <form method="post" (ngSubmit)="onSearch()" class="searchCCCD">
+                                <div style="display: flex;">
+                                    <div style="margin-right: 10px;">
+                                        <input [(ngModel)]="searchIdentityCard"
+                                            style="width: 200px; border: 1px solid black;" name="identityCard"
+                                            type="text" placeholder="Tìm kiếm" required maxlength="12" minlength="9"
+                                            pattern="[0-9]*">
+                                        <div *ngIf="h.search.invalid && (h.search.dirty || h.search.touched)">
+                                            <h6 *ngIf="h.search.errors?.['required']">Không được trống</h6>
+                                            <h6 *ngIf="h.search.errors?.['pattern']">Không được có chữ</h6>
+                                            <h6 *ngIf="h.search.errors?.['minlength']">Tối thiểu 9 số</h6>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-success" type="submit">Tìm kiếm</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Họ và tên</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataIdentity.items?.fullname">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã cổ dông</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataIdentity.items?.shareHolderCode">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Số CCCD</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataIdentity.items?.identityCard">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Số CP sở hữu</label>
+                            <input type="text" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." readonly
+                                [value]="dataIdentity.items?.numberShares">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Nhập số cổ phần uỷ quyền</label>
+                            <input type="number" style="width:300px" name="file" class="form-control"
+                                aria-describedby="emailHelp" placeholder="..." min="1" name="share" [value]=""
+                                [max]="dataIdentity.items?.numberShares" [(ngModel)]="inputValues"
+                                [ngClass]="{'invalid-input': isExceedNumberShares()}">
+                            <p *ngIf="isExceedNumberShares()" class="error-message">Số cổ phần vượt quá giới hạn!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" *ngIf="isExceedNumberShares()">
+                    <button class="btn btn-primary" type="submit" disabled>Xác nhận uỷ quyền</button>
+                </div>
+                <div class="modal-footer" *ngIf="!isExceedNumberShares()">
+                    <!-- <button class="btn btn-success" (click)="get2Id(dataInfo.items?.id,dataIdentity.items?.id)"
+                        type="button">Kiểm tra thông tin</button> -->
+                    <button class="btn btn-primary" type="submit">Xác nhận uỷ quyền</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Form uỷ quyền -->
+<!-- <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Lịch sử uỷ quyền</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr class="text-center width-td">
+                        <th scope="col">STT</th>
+                        <th scope="col">Họ và tên</th>
+                        <th scope="col">Mã cổ đông</th>
+                        <th scope="col">CCCD/CMT</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Tài khoản</th>
+                        <th scope="col">Cổ phần SH</th>
+                        <th scope="col">Cổ phần UQ</th>
+                        <th style="width: 50px;">Action</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr class="width-td">
+                        <th scope="col">STT</th>
+                        <th scope="col">Họ và tên</th>
+                        <th scope="col">Mã cổ đông</th>
+                        <th scope="col">CCCD/CMT</th>
+                        <th scope="col">Số điện thoại</th>
+                        <th scope="col">Tài khoản</th>
+                        <th scope="col">Cổ phần SH</th>
+                        <th scope="col">Cổ phần UQ</th>
+                        <th scope="col" style="width: 50px;">Action</th>
+                    </tr>
+                </tfoot>
+                <tbody
+                    *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '' | paginate: { itemsPerPage: pageSize, currentPage: p };let i = index ">
+                    <tr class="width-td">
+                        <td>{{i + 1}}</td>
+                        <td><a class="dropdown-item name" href="#" data-toggle="modal"
+                                data-target="#infoShareholderModal"
+                                (click)="getShareholder(item?.id)">{{item?.fullname}}</a></td>
+                        <td>{{item?.shareHolderCode}}</td>
+                        <td>{{item?.identityCard}}</td>
+                        <td>{{item?.phoneNumber}}</td>
+                        <td>{{item?.username}}</td>
+                        <td>{{item?.numberShares | number:'1.0-0'}}</td>
+                        <td>{{item?.numberSharesAuth | number:'1.0-0'}}</td>
+                        <td class="text-center" style="display: flex;">
+                            <button type="button" data-toggle="modal"
+                                data-target="#editShareholderModal" (click)="edit(item?.id)"
+                                class="btn btn-primary edit">Sửa</button>
+                            <button data-toggle="modal" type="button" class="btn btn-danger"
+                                data-target="#deletetModal" (click)="delete(item?.id)">Xoá</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> -->

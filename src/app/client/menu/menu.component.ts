@@ -28,7 +28,6 @@ export class MenuComponent implements OnInit{
   idMeeting :any
 
   getAllByMeeting(idMeeting:number) {
-    console.log(idMeeting)
     this.votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.list = [res];
       this.toList = Object.values(this.list[0].items);

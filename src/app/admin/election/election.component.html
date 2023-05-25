@@ -12,7 +12,7 @@
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+                <h1 class="h3 mb-2 text-gray-800">Bầu cử</h1>
 
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
@@ -45,7 +45,7 @@
                                     </tr>
                                 </tfoot>
                                 <tbody *ngFor="let item of toList;let i = index">
-                                    <tr>
+                                    <tr (click)="selectIdElection(item?.id)">
                                         <td>{{i + 1}}</td>
                                         <td>{{item?.title}}</td>
                                         <td>{{item?.description}}</td>
@@ -60,12 +60,12 @@
                                             </thead>
                                             <tbody *ngFor="let item1 of toListCandidate">
                                                 <tr *ngIf="item?.id === item1?.idElection">
-                                                    <td>{{item1?.fullName}}</td>
-                                                    <td>{{item1?.birthday}}</td>
+                                                    <td>{{item1?.fullname}}</td>
+                                                    <td>{{item1?.birthday | date:'dd/MM/yyyy'}}</td>
                                                     <td>{{item1?.address}}</td>
                                                     <td class="action">
-                                                        <button type="button" data-toggle="modal" (click)="edit(item1?.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
-                                                        <button type="button" class="btn btn-danger" (click)="delete(item1?.id)">Xoá</button>
+                                                        <button type="button" data-toggle="modal" (click)="editCandidate(item1?.id)" data-target="#editCandidateModal" class="btn btn-primary edit">Sửa</button>
+                                                        <button type="button" class="btn btn-danger" (click)="deleteCandidate(item1?.id)">Xoá</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -178,36 +178,109 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form action="addShareholder" class="formAdd" method="post">
+            <form action="addShareholder" class="formAdd" method="post" (ngSubmit)="onSubmitCandidate()" [formGroup]="dataFormCandidate">
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
                             <label>Họ và tên</label>
                             <input type="text" name="name" class="form-control"
-                            aria-describedby="emailHelp" placeholder="...">
+                            aria-describedby="emailHelp" placeholder="..." formControlName="fullname" required pattern="[^0-9]*">
+                            <div *ngIf="f.fullname.invalid && (f.fullname.dirty || f.fullname.touched)">
+                                <h6 *ngIf="f.fullname.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="f.fullname.errors?.['pattern']">Không được có số</h6>
+                            </div>
                         </div>
                         <div class="form-group colunm">
                             <label>Năm sinh</label>
                             <input type="date" name="identity_card" class="form-control"
-                            placeholder="...">
+                            placeholder="..." [value]="formattedBirthday" formControlName="birthday" required>
+                            <div *ngIf="f.birthday.invalid && (f.birthday.dirty || f.birthday.touched)">
+                                <h6 *ngIf="f.birthday.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Địa chỉ</label>
                             <input type="text" name="name" class="form-control"
-                            aria-describedby="emailHelp" placeholder="...">
+                            aria-describedby="emailHelp" placeholder="..." formControlName="address" required>
+                            <div *ngIf="f.address.invalid && (f.address.dirty || f.address.touched)">
+                                <h6 *ngIf="f.address.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                     </div>
                     <div class="line">
                         <div class="form-group">
                             <label>Thông tin thêm</label>
                             <textarea rows="4" cols="55"  name="identity_card" class="form-control"
-                            placeholder="..."></textarea>
+                            placeholder="..." formControlName="summaryInfo" required></textarea>
+                            <div *ngIf="f.summaryInfo.invalid && (f.summaryInfo.dirty || f.summaryInfo.touched)">
+                                <h6 *ngIf="f.summaryInfo.errors?.['required']">Không được trống</h6>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary"  type="button">Clear</button>
-                    <button class="btn btn-primary" type="submit" href="admin/shareholder">Thêm mới</button>
+                    <button class="btn btn-primary" type="submit" href="#" [disabled]="!dataFormCandidate.valid">Thêm mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="editCandidateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa thông tin ứng cử viên</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="out" [formGroup]="infoCandidate" (ngSubmit)="onSubmitUpdateCadidate()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Họ và tên</label>
+                            <input type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="..." formControlName="fullname" required pattern="[^0-9]*">
+                            <div *ngIf="f.fullname.invalid && (f.fullname.dirty || f.fullname.touched)">
+                                <h6 *ngIf="f.fullname.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="f.fullname.errors?.['pattern']">Không được có số</h6>
+                            </div>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Năm sinh</label>
+                            <input type="date" name="identity_card" class="form-control"
+                            placeholder="..." formControlName="birthday" [ngModel]="dateFormControl.value | date:'dd/MM/yyyy'" required>
+                            <div *ngIf="f.birthday.invalid && (f.birthday.dirty || f.birthday.touched)">
+                                <h6 *ngIf="f.birthday.errors?.['required']">Không được trống</h6>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" name="name" class="form-control"
+                            aria-describedby="emailHelp" placeholder="..." formControlName="address" required>
+                            <div *ngIf="f.address.invalid && (f.address.dirty || f.address.touched)">
+                                <h6 *ngIf="f.address.errors?.['required']">Không được trống</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group">
+                            <label>Thông tin thêm</label>
+                            <textarea rows="4" cols="55"  name="identity_card" class="form-control"
+                            placeholder="..." formControlName="summaryInfo" required></textarea>
+                            <div *ngIf="f.summaryInfo.invalid && (f.summaryInfo.dirty || f.summaryInfo.touched)">
+                                <h6 *ngIf="f.summaryInfo.errors?.['required']">Không được trống</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary"  type="button">Clear</button>
+                    <button class="btn btn-primary" type="submit" href="#" [disabled]="!infoCandidate.valid">Sửa mới</button>
                 </div>
             </form>
         </div>

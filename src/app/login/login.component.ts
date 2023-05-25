@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
 import { LocationService } from '../service/location.service';
 import * as CryptoJS from 'crypto-js';
+import { SessionService } from '../service/session.service';
 
 @Component({
   selector: 'app-login',
@@ -21,25 +22,25 @@ export class LoginComponent implements OnInit {
   public location: any;
   public errorMessage: string = '';
 
-  constructor(private authService: AuthService, private locationService: LocationService, private router: Router, private fb: FormBuilder, private toastr: ToastrService, private http: HttpClient) {
+  constructor(private sessionService: SessionService, private authService: AuthService, private locationService: LocationService, private router: Router, private fb: FormBuilder, private toastr: ToastrService, private http: HttpClient) {
 
-    // if (this.accountService.isMobile()) {
-    //   this.deviceType = 'Mobile';
-    //   console.log(this.deviceType);
-    // } else if (this.accountService.isTablet()) {
-    //   this.deviceType = 'Tablet';
-    //   console.log(this.deviceType);
-    // } else if (this.accountService.isDesktop()) {
-    //   this.deviceType = 'Desktop';
-    //   console.log(this.deviceType);
-    // } else {
-    //   this.deviceType = 'Unknown';
-    //   console.log(this.deviceType);
-    // };
-    // this.locationService.getLocation().subscribe(
-    //   (position) => {
+    if (this.authService.isMobile()) {
+      this.deviceType = 'Mobile';
+      console.log(this.deviceType);
+    } else if (this.authService.isTablet()) {
+      this.deviceType = 'Tablet';
+      console.log(this.deviceType);
+    } else if (this.authService.isDesktop()) {
+      this.deviceType = 'Desktop';
+      console.log(this.deviceType);
+    } else {
+      this.deviceType = 'Unknown';
+      console.log(this.deviceType);
+    };
+    // this.locationService.getLocation().subscribe((position) => {
+    //   if(position){
     //     this.location = position;
-    //     console.log(this.location)
+    //   }
     //   },
     //   (error) => {
     //     this.errorMessage = error.message;
@@ -53,44 +54,65 @@ export class LoginComponent implements OnInit {
     password: ["", Validators.required],
   })
 
+  formSession = this.fb.group({
+    sessionId: [""],
+    idShareholder: [""],
+    ipAddress: [""],
+    deviceType: [""]
+  })
+
   ngOnInit(): void {
-    // this.getIPAddress();
+    this.getIPAddress();
 
   }
-  // ipAddress = '';
-  // getIPAddress() {
-  //   this.http.get("http://api.ipify.org/?format=json").subscribe((res: any) => {
-  //     this.ipAddress = res.ip;
-  //   });
-  // }
+  ipAddress = '';
+  getIPAddress() {
+    this.http.get("http://api.ipify.org/?format=json").subscribe((res: any) => {
+      this.ipAddress = res.ip;
+    });
+  }
 
-  
+  sessionId:any
+  submitSession() {
+    this.formSession.value.idShareholder = localStorage.getItem("id");
+    this.formSession.value.ipAddress = this.ipAddress;
+    this.formSession.value.deviceType = this.deviceType;
+    console.log(this.formSession.value);
+    this.sessionId = this.formSession.value.sessionId
+    this.sessionService.create(this.formSession.value).subscribe((res) => {
+      if(res){
+        console.log("Insert session success");
+        localStorage.setItem("session",this.sessionId);
+      }else{
+        console.log("Insert session failse");
+      }
+    })
+  }
+
   submitForm() {
     const password = this.UserInfo.value.password
     if (password) {
       const valueMd5 = CryptoJS.MD5(password).toString();
       this.UserInfo.value.password = valueMd5;
-      console.log(valueMd5)
       this.authService.Login(this.UserInfo.value).subscribe((res) => {
-        const token = localStorage.getItem('token');
-        const roles = localStorage.getItem('roles');
-        if (token != null && roles == '0') {
-          this.toastr.success("Đăng nhập thành công cổ đông")
-          this.router.navigate(['home'])
-        } else if (token != null && roles == '1') {
-          this.toastr.success("Đăng nhập thành công người đại diện")
-          this.router.navigate(['home'])
-        } else {
-          (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
-          this.toastr.error("Đăng nhập không thành công")
-          this.router.navigate([''])
+        if (res) {
+          const token = localStorage.getItem('token');
+          const roles = localStorage.getItem('roles');
+          if (token != null && roles == '0') {
+            this.submitSession();
+            this.toastr.success("Đăng nhập thành công cổ đông")
+            this.router.navigate(['home'])
+          } else if (token != null && roles == '1') {
+            this.submitSession();
+            this.toastr.success("Đăng nhập thành công người đại diện")
+            this.router.navigate(['home'])
+          } else {
+            (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
+            this.toastr.error("Đăng nhập không thành công")
+            this.router.navigate([''])
+          }
         }
-      },
-        (err) => {
-          this.router.navigate([''])
-          console.log(err)
-        }
-      )
+      })
     }
 
 

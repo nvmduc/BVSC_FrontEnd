@@ -6,10 +6,10 @@ export class Meeting {
     yearOrganized!: number
     status!: any
     imageBanner!: any
-    startTime!: any
-    endTime!: any
+    startTime!: Date
+    endTime!: Date
     address!: string
-    constructor(id: number, idCompany: string, nameMeeting: string, numberOrganized: number, yearOrganized: number, status: any, imageBanner: any, startTime: any, endTime: any, address: string) {
+    constructor(id: number, idCompany: string, nameMeeting: string, numberOrganized: number, yearOrganized: number, status: any, imageBanner: any, startTime: Date, endTime: Date, address: string) {
         this.id = id,
         this.idCompany = idCompany
         this.nameMeeting = nameMeeting

@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MeetingService } from 'src/app/service/meeting.service';
 import * as _ from 'lodash';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
+import { CompanyService } from 'src/app/service/company.service';
+import * as moment from 'moment-timezone';
 
 
 @Component({
@@ -13,21 +16,51 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
+
+  selectedItemMeeting!: number;
+
+
   constructor(private meetingService: MeetingService, private fb: FormBuilder,
-    private toastr: ToastrService, private imageCompess: NgxImageCompressService,private http: HttpClient) {
+    private toastr: ToastrService, private imageCompess: NgxImageCompressService,
+    private http: HttpClient, private datePipe: DatePipe, private companyService: CompanyService) {
     this.getAllMeetingByCompany();
 
 
 
   }
+  selectItem(index: number) {
+    localStorage.setItem('idMeeting', String(index))
+    // this.selectedItemMeeting = index;
+    this.selectedItemMeeting = Number(localStorage.getItem('idMeeting'))
+    console.log(this.selectedItemMeeting)
+    if (localStorage.getItem('idMeeting') == null) {
+      localStorage.setItem('idMeeting', String(this.selectedItemMeeting))
+    } else {
+      index = Number(localStorage.getItem('idMeeting'))
+    }
+  }
 
   ngOnInit(): void {
-
+    this.imageControl = new FormControl(); // Tạo form control cho ảnh
+    this.infoMeeting = new FormGroup({
+      image: this.imageControl // Gán form control vào form group
+    });
+    this.selectedItemMeeting = Number(localStorage.getItem('idMeeting'));
+    this.getCompanyById()
+    this.infoMeeting = this.fb.group({
+      id: [],
+      idCompany: [localStorage.getItem("idCompany")],
+      nameMeeting: [""],
+      numberOrganized: [""],
+      yearOrganized: [""],
+      status: ["0"],
+      imageBanner: [""],
+      startTime: [""],
+      endTime: [""],
+      address: [""],
+    })
   }
   imgURL: any;
-
-
-
 
   dataFormMeeting = this.fb.group({
     idCompany: [localStorage.getItem("idCompany")],
@@ -54,18 +87,18 @@ export class SidebarComponent implements OnInit {
 
   onFileChanged(event: any) {
     console.log('Onfile change: ', event.target);
-    
-      const file = event.target.files[0]; // Lấy file từ sự kiện
-    
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const fileContent = e.target.result;
-          console.log(fileContent); // In ra nội dung của file ảnh dưới dạng base64
-        };
-        reader.readAsDataURL(file);
-      }
-    
+
+    const file = event.target.files[0]; // Lấy file từ sự kiện
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const fileContent = e.target.result;
+        console.log(fileContent); // In ra nội dung của file ảnh dưới dạng base64
+      };
+      reader.readAsDataURL(file);
+    }
+
   }
   selectedFile: File | null = null;
   // base64String: string | null = null;
@@ -86,19 +119,20 @@ export class SidebarComponent implements OnInit {
   }
 
   uploadBase64ToServer(base64String: string): void {
-    // const jsonData = {
-    //   base64Data: base64String
-    // };
     const idCompany = this.dataFormMeeting.value.idCompany;
     this.dataFormMeeting.value.imageBanner = base64String;
-    
+    console.log(this.dataFormMeeting.value);
+    // Đặt múi giờ thành UTC+7
+    moment.tz.setDefault('Asia/Bangkok');
     this.meetingService.create(this.dataFormMeeting.value).subscribe((res) => {
       console.log('resssss: ', res);
-      
       if (res) {
         console.log("Update Success");
         this.toastr.success("Thêm mới thành công", "Thành công");
         this.getAllMeetingByCompany();
+        setInterval(() => {
+          window.location.reload();
+        }, 1500);
       } else {
         console.log("Update False");
         this.toastr.error("Không thành công", "Thất bại");
@@ -106,7 +140,38 @@ export class SidebarComponent implements OnInit {
       }
     })
   }
-  
+
+  onSubmitUpdate() {
+    const id = this.infoMeeting.value.id
+    console.log(this.infoMeeting.value);
+
+    this.infoMeeting.value.startTime = moment(this.infoMeeting.value.startTime).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    this.infoMeeting.value.endTime = moment(this.infoMeeting.value.endTime).format('YYYY-MM-DDTHH:mm:ss.SSS');
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        this.infoMeeting.value.imageBanner = base64String;
+
+        this.meetingService.update(id, this.infoMeeting.value).subscribe((res) => {
+          if (res) {
+            console.log("Update Success")
+            this.toastr.success("Sửa thành công", "Thành công")
+            this.getAllMeetingByCompany()
+            // setInterval(() => {
+            //   window.location.reload();
+            // }, 1500);
+          } else {
+            console.log("Update False")
+            this.toastr.error("Không thành công", "Thất bại")
+            this.getAllMeetingByCompany()
+          }
+        })
+      }
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   list: any[] = []
   toList: any[] = []
 
@@ -130,18 +195,18 @@ export class SidebarComponent implements OnInit {
   cardImageBase64!: any;
 
 
-  fileChangeEvent(fileInput: any) {    
+  fileChangeEvent(fileInput: any) {
     this.imageError = null;
     if (fileInput.target.files && fileInput.target.files[0]) {
       this.fileUpload = fileInput.target.files[0];
-      const max_size = 20971520;
+      const max_size = 10485760;
       const allowed_types = ['image/png', 'image/jpeg'];
       const max_height = 15200;
       const max_width = 25600;
 
       if (fileInput.target.files[0].size > max_size) {
         this.imageError =
-          'Maximum size allowed is ' + max_size / 1000 + 'Mb';
+          'Ảnh không được vượt quá 5MB';
 
         return false;
       }
@@ -188,6 +253,51 @@ export class SidebarComponent implements OnInit {
     this.cardImageBase64 = null;
     this.isImageSaved = false;
   }
+  selectIdMeeting!: number
+  getIdMeeting(idMeeting: number) {
+    this.selectIdMeeting = idMeeting
+  }
+  data: any = [];
+  infoMeeting: FormGroup = new FormGroup({});
+  idCompany!: number
+
+  infoCompany: FormGroup = new FormGroup({});
+
+  getCompanyById(): void {
+    this.idCompany = Number(localStorage.getItem("idCompany"))
+    this.companyService.getById(this.idCompany).subscribe((res: any) => {
+      this.data = res;
+    })
+  }
+  imageForm!: FormGroup;
+  imageControl!: FormControl;
+
+  editMeeting(id: number) {
+    this.imageControl = new FormControl(); // Tạo form control cho ảnh
+    this.imageForm = new FormGroup({
+      image: this.imageControl // Gán form control vào form group
+    });
+
+    this.meetingService.getById(id).subscribe((res: any) => {
+      this.data = res;
+      this.data.items.startTime = moment(this.data.items.startTime).utc().subtract(7, 'hours');
+      this.data.items.endTime = moment(this.data.items.endTime).utc().subtract(7, 'hours');
+      this.infoMeeting = this.fb.group({
+        id: this.data.items.id,
+        idCompany: this.data.items.idCompany,
+        nameMeeting: this.data.items.nameMeeting,
+        numberOrganized: this.data.items.numberOrganized,
+        yearOrganized: this.data.items.yearOrganized,
+        status: this.data.items.status,
+        imageBanner: this.data.items.imageBanner,
+        startTime: this.datePipe.transform(this.data.items.startTime, 'yyyy-MM-dd HH:mm:ss.SSS'),
+        endTime: this.datePipe.transform(this.data.items.endTime, 'yyyy-MM-dd HH:mm:ss.SSS'),
+        address: this.data.items.address,
+      });
+    });
+
+  }
+
 
 
 }

@@ -53,3 +53,13 @@
     pointer-events: none;
     cursor: not-allowed!important;
 }
+h5{
+    font-weight: bold;
+    font-size: 20px;
+  }
+  .colorMenu{
+    color: yellow;
+  }
+  .select{
+    width: 193px;
+  }

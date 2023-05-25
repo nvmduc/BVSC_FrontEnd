@@ -12,7 +12,7 @@ const ApiUrl = "http://localhost:8080/bvsc-mapp/api/v1/meeting";
 export class MeetingService {
 
   getByIdCompany(id: number): Observable<Meeting> {
-    return this.http.get<Meeting>(`${ApiUrl}/allByCompany/${id}`).pipe(tap(s => console.log(id)))
+    return this.http.get<Meeting>(`${ApiUrl}/allByCompany/${id}`)
   }
 
   constructor(private http: HttpClient) { }
@@ -20,29 +20,25 @@ export class MeetingService {
     return this.http.get<Meeting>(`${ApiUrl}/all`);
   }
 
-  getById(id: string): Observable<Meeting> {
-    return this.http.get<Meeting>(`${ApiUrl}/${id}`).pipe(tap(s => console.log(id)))
+  getById(id: number): Observable<Meeting> {
+    return this.http.get<Meeting>(`${ApiUrl}/${id}`)
   }
+
   delete(id: any): Observable<Meeting> {
-    return this.http.delete<Meeting>(`${ApiUrl}/${id}`).pipe(
-      tap(() => console.log(id))
-    )
+    return this.http.delete<Meeting>(`${ApiUrl}/${id}`)
   }
+
   create(data: any): Observable<Meeting> {
     const httpOptions = {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     }
-    
-    const options = { headers: httpOptions };
-
-
-    return this.http.post<Meeting>(`${ApiUrl}`, data,httpOptions).pipe(
-      tap(_s => console.log("post")),
-    );
+    return this.http.post<Meeting>(`${ApiUrl}`, data,httpOptions)
   }
+
   update(id: string, data: any): Observable<Meeting> {
-    return this.http.put<Meeting>(`${ApiUrl}/edit/${id}`, data).pipe(
-      tap(_s => console.log(id))
-    )
+    const httpOptions = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    }
+    return this.http.put<Meeting>(`${ApiUrl}/${id}`, data,httpOptions)
   }
 }

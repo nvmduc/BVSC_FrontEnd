@@ -1,45 +1,55 @@
 <div class="limiter">
-    <div class="container-home100" style="background-image: url('assets/images/bg-02.jpeg'); display: block;">
-      <div class="app-menu">
-        <app-menu></app-menu>
+  <div class="container-home100" style="background-image: url('assets/images/bg-02.jpeg'); display: block;">
+    <div class="app-menu">
+      <app-menu></app-menu>
+    </div>
+    <div class="main-area">
+      <div class="main-feedback">
+        <form action="" method="post" (ngSubmit)="onSubmit()">
+          <div class="box">
+            <div class="title text-center">LẤY Ý KIẾN BIỂU QUYẾT</div>
+            <table border=1px>
+              <thead class="text-center">
+                <tr class="th">
+                  <td rowspan="2" style="width: 70%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN BIỂU
+                    QUYẾT</td>
+                  <td colspan="3" style="width: 350px; padding: 10px; border: 1px solid black;" class="text-center">Biểu
+                    quyết</td>
+                </tr>
+                <tr class="answer">
+                  <td>Tán thành</td>
+                  <td>Không tán thành</td>
+                  <td>Không có ý kiến</td>
+                </tr>
+              </thead>
+              <tbody *ngFor="let item of toList; let i = index">
+                <tr>
+                  <td>{{i}}. {{item.content}}</td>
+                  <td class="text-center">
+                    <input style="width: 20px; height: 2em;" type="radio" id="contactChoice{{i}}"
+                      name="status{{i}}" (click)="getIdVoting(item?.id,1)">
+                  </td>
+                  <td class="text-center">
+                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}"
+                      name="status{{i}}" (click)="getIdVoting(item?.id,0)">
+                  </td>
+                  <td class="text-center">
+                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}"
+                      name="status{{i}}" (click)="getIdVoting(item?.id,2)">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="right">
+              <button type="submit" class="btn btn-success text-center" [disabled]="!hasSelectedOption()">Gửi</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="main-area">
-        
-        <div class="main-feedback">
-            <form action="" method="post">
-              <div class="box">
-                <div class="title text-center">LẤY Ý KIẾN BIỂU QUYẾT</div>
-                <table border=1px>
-                    <thead class="text-center"> 
-                        <tr class="th">
-                            <td rowspan="2" style="width: 70%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN BIỂU QUYẾT</td>
-                            <td colspan="3" style="width: 350px; padding: 10px; border: 1px solid black;" class="text-center">Biểu quyết</td>
-                        </tr>
-                        <tr class="answer">
-                            <td>Tán thành</td>
-                            <td>Không tán thành</td>
-                            <td>Không có ý kiến</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of toList; let i = index">
-                        <td>{{i}}. {{item.content}}</td>
-                        <td class="text-center"><input style="width: 20px; height: 2em;" [value]="1" type="radio" id="contactChoice{{i}}" name="contact{{i}}"></td>
-                        <td class="text-center"><input style="width: 20px; height: 5em;" [value]="2" type="radio" id="contactChoice{{i}}" name="contact{{i}}"></td>
-                        <td class="text-center"><input style="width: 20px; height: 5em;" [value]="3" type="radio" id="contactChoice{{i}}" name="contact{{i}}"></td>
-                      </tr>
-                    </tbody>
-                </table>
-                <div class="right">
-                  <button type="button" class="btn btn-success text-center">Gửi</button>
-                </div>
-              </div>
-            </form>
-        </div>
-        <div class="info">
-          <div ng-include src="info.html"></div>
-            <app-info-shareholder></app-info-shareholder>
-        </div>
+      <div class="info">
+        <div ng-include src="info.html"></div>
+        <app-info-shareholder></app-info-shareholder>
       </div>
     </div>
   </div>
+</div>

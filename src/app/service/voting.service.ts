@@ -15,24 +15,18 @@ export class VotingService {
   }
 
   getById(id:string):Observable<Voting>{
-    return this.http.get<Voting>(`${ApiUrl}/${id}`).pipe(tap(s=> console.log(id)))
+    return this.http.get<Voting>(`${ApiUrl}/${id}`)
   }
   getByIdMeeting(idMeeting:number):Observable<Voting>{
     return this.http.get<Voting>(`${ApiUrl}/allByMeeting/${idMeeting}`)
   }
   delete(id:any):Observable<Voting>{
-    return this.http.delete<Voting>(`${ApiUrl}/${id}`).pipe(
-      tap(() => console.log(id))
-    )
+    return this.http.delete<Voting>(`${ApiUrl}/${id}`)
   }
   create(data:any):Observable<Voting>{
-    return this.http.post<Voting>(`${ApiUrl}`,data).pipe(
-      tap(_s=>console.log("post"))
-    )
+    return this.http.post<Voting>(`${ApiUrl}`,data)
   }
   update(id:string,data:any):Observable<Voting>{
-    return this.http.put<Voting>(`${ApiUrl}/${id}`,data).pipe(
-      tap(_s=>console.log(id))
-    )
+    return this.http.put<Voting>(`${ApiUrl}/${id}`,data)
   }
 }

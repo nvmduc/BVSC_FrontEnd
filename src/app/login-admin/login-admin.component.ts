@@ -25,7 +25,6 @@ export class LoginAdminComponent {
       if (password) {
         const valueMd5 = CryptoJS.MD5(password).toString();
         this.UserInfo.value.password = valueMd5;
-        console.log(valueMd5)
         this.adminAuthService.Login(this.UserInfo.value).subscribe((res) => {
           const token = localStorage.getItem('token');
           // const roles = localStorage.getItem('roles');
@@ -36,12 +35,11 @@ export class LoginAdminComponent {
             (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
             this.toastr.error("Đăng nhập không thành công")
             localStorage.clear();
-            this.router.navigate([''])
+            // this.router.navigate(['admin/login'])
           }
         },
           (err) => {
-            this.router.navigate([''])
-            console.log(err)
+            this.router.navigate(['admin/login'])
           }
         )
       }

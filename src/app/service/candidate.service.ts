@@ -14,25 +14,22 @@ export class CandidateService {
     return this.http.get<Candidate>(`${ApiUrl}/all`);
   }
 
-  getById(id:string):Observable<Candidate>{
-    return this.http.get<Candidate>(`${ApiUrl}/${id}`).pipe(tap(s=> console.log(id)))
+  getById(id:number):Observable<Candidate>{
+    return this.http.get<Candidate>(`${ApiUrl}/${id}`)
   }
   getByIdElection(idElection:string):Observable<Candidate>{
     return this.http.get<Candidate>(`${ApiUrl}/allByElection/${idElection}`)
   }
   delete(id:any):Observable<Candidate>{
-    return this.http.delete<Candidate>(`${ApiUrl}/${id}`).pipe(
-      tap(() => console.log(id))
-    )
+    return this.http.delete<Candidate>(`${ApiUrl}/${id}`)
+  }
+  deleteByIdElection(id:any):Observable<Candidate>{
+    return this.http.delete<Candidate>(`${ApiUrl}/delete-by-id-election/${id}`)
   }
   create(data:any):Observable<Candidate>{
-    return this.http.post<Candidate>(`${ApiUrl}`,data).pipe(
-      tap(_s=>console.log("post"))
-    )
+    return this.http.post<Candidate>(`${ApiUrl}`,data)
   }
   update(id:string,data:any):Observable<Candidate>{
-    return this.http.put<Candidate>(`${ApiUrl}/${id}`,data).pipe(
-      tap(_s=>console.log(id))
-    )
+    return this.http.put<Candidate>(`${ApiUrl}/${id}`,data)
   }
 }

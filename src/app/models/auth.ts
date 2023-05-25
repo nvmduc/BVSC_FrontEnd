@@ -7,6 +7,5 @@ export class User {
         this.password = password;
         this.roles = roles;
     }
-    
 }
 

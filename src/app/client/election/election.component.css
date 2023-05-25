@@ -18,8 +18,15 @@
   .voting .title{
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
-    padding: 5px;
+    padding: 25px;
     font-size: 30px;
+  }
+  .body{
+    padding-left: 30px;
+  }
+  h5{
+    font-size: 20px;
+    padding: 5px;
   }
   .item input{
     padding: 5px;
