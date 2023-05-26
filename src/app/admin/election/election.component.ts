@@ -70,7 +70,6 @@ export class ElectionComponent implements OnInit {
     this.candidateService.getAll().subscribe((res: any) => {
       this.list = [res];
       this.toListCandidate = Object.values(this.list[0].items);
-      console.log(this.toListCandidate)
     })
   }
   getAllByMeeting(): void {
@@ -78,7 +77,6 @@ export class ElectionComponent implements OnInit {
     this.electionService.getByIdMeeting(this.idMeeting).subscribe((res: any) => {
       this.list = [res];
       this.toList = Object.values(this.list[0].items);
-      console.log(this.toList)
     })
   }
 
@@ -117,7 +115,6 @@ export class ElectionComponent implements OnInit {
       if (window.confirm("Bạn có muốn xoá: " + `"${res.items.fullname}"` + " không?")) {
         this.candidateService.delete(id).subscribe(() => {
           this.toastr.success("Xoá thành công", "Thành công")
-          console.log("xoá thành công")
           this.getAllCandidate()
         })
       }
@@ -129,15 +126,12 @@ export class ElectionComponent implements OnInit {
   }
   onSubmitUpdateCadidate() {
     const id = this.infoCandidate.value.id
-    console.log(this.infoCandidate.value);
     this.candidateService.update(id, this.infoCandidate.value).subscribe((res) => {
       if (res) {
-        console.log("Update Success")
         this.toastr.success("Sửa thành công", "Thành công")
         this.edit(id);
         this.getAllCandidate()
       } else {
-        console.log("Update False")
         this.toastr.error("Không thành công", "Thất bại")
         this.getAllCandidate()
       }
@@ -147,9 +141,7 @@ export class ElectionComponent implements OnInit {
     this.dataFormCandidate.value.idElection = this.idElection
     this.candidateService.create(this.dataFormCandidate.value).subscribe((res) => {
       if (res) {
-        console.log("Insert Success")
         this.toastr.success("Thêm thành công", "Thành công")
-        console.log(this.dataFormCandidate.value)
         this.getAllCandidate();
         this.dataFormCandidate = this.fb.group({
           idElection: [this.idElection],
@@ -159,7 +151,6 @@ export class ElectionComponent implements OnInit {
           summaryInfo: [""]
         })
       } else {
-        console.log("Insert False")
         this.toastr.error("Không thành công", "Thất bại")
         this.getAllCandidate()
       }
@@ -173,7 +164,6 @@ export class ElectionComponent implements OnInit {
         this.electionService.delete(id).subscribe(() => {
           this.candidateService.deleteByIdElection(id).subscribe(() => {
             this.toastr.success("Xoá thành công", "Thành công");
-            console.log("xoá thành công");
             this.getAllByMeeting();
           });
         })
@@ -183,15 +173,12 @@ export class ElectionComponent implements OnInit {
   onSubmitUpdate() {
     const id = this.infoElection.value.id
     this.infoElection.value.modifiedTime = Date.now();
-    console.log(this.infoElection.value);
     this.electionService.update(id, this.infoElection.value).subscribe((res) => {
       if (res) {
-        console.log("Update Success")
         this.toastr.success("Sửa thành công", "Thành công")
         this.edit(id);
         this.getAllByMeeting()
       } else {
-        console.log("Update False")
         this.toastr.error("Không thành công", "Thất bại")
         this.getAllByMeeting()
       }
@@ -200,12 +187,9 @@ export class ElectionComponent implements OnInit {
   onSubmit() {
     this.idMeeting = this.route.snapshot.params['id'];
     this.dataForm.value.idMeeting = this.idMeeting;
-    console.log(this.dataForm.value)
     this.electionService.create(this.dataForm.value).subscribe((res) => {
       if (res) {
-        console.log("Insert Success")
         this.toastr.success("Thêm thành công", "Thành công")
-        console.log(this.dataForm.value)
         this.getAllByMeeting();
         this.dataForm = this.fb.group({
           idMeeting: [this.idMeeting],
@@ -214,7 +198,6 @@ export class ElectionComponent implements OnInit {
           createdTime: [Date.now()]
         })
       } else {
-        console.log("Insert False")
         this.toastr.error("Không thành công", "Thất bại")
         this.getAllByMeeting()
       }

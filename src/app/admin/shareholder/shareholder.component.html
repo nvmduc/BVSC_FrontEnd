@@ -42,6 +42,7 @@
                                         <th scope="col">Tài khoản</th>
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
+                                        <th scope="col">Trạng thái</th>
                                         <th style="width: 50px;">Action</th>
                                     </tr>
                                 </thead>
@@ -55,6 +56,7 @@
                                         <th scope="col">Tài khoản</th>
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
+                                        <th scope="col">Trạng thái</th>
                                         <th scope="col" style="width: 50px;">Action</th>
                                     </tr>
                                 </tfoot>
@@ -62,7 +64,7 @@
                                     *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '' | paginate: { itemsPerPage: pageSize, currentPage: p };let i = index ">
                                     <tr class="width-td">
                                         <td>{{i + 1}}</td>
-                                        <td><a class="dropdown-item name" href="#" data-toggle="modal"
+                                        <td><a style="padding-left: 0px;" class="dropdown-item name" href="#" data-toggle="modal"
                                                 data-target="#infoShareholderModal"
                                                 (click)="getShareholder(item?.id)">{{item?.fullname}}</a></td>
                                         <td>{{item?.shareHolderCode}}</td>
@@ -71,6 +73,7 @@
                                         <td>{{item?.username}}</td>
                                         <td>{{item?.numberShares | number:'1.0-0'}}</td>
                                         <td>{{item?.numberSharesAuth | number:'1.0-0'}}</td>
+                                        <td>{{item?.status == 0 ? 'Chưa đến':'Đã đến'}}</td>
                                         <td class="text-center" style="display: flex;">
                                             <button type="button" data-toggle="modal"
                                                 data-target="#editShareholderModal" (click)="edit(item?.id)"
@@ -479,7 +482,7 @@
                         *ngIf="dataInfo.items?.numberShares == 0 && dataInfo.items?.numberSharesAuth == 0"
                         disabled>Checkin</button>
                     <button class="btn btn-primary" type="submit"
-                        *ngIf="dataInfo.items?.numberShares != 0 || dataInfo.items?.numberSharesAuth != 0">Checkin</button>
+                        *ngIf="dataInfo.items?.numberShares != 0 || dataInfo.items?.numberSharesAuth != 0" (click)="checkin(dataInfo.items?.id)">Checkin</button>
                     <button class="btn btn-success" type="button" data-toggle="modal" data-target="#authorizationModal"
                         (click)="getIdShareholder(dataInfo.items?.id)">Nhận CP uỷ quyền</button>
                 </div>
@@ -607,7 +610,9 @@
         </div>
     </div>
 </div>
-
+<div *ngIf="isLoading" class="loading-spinner">
+    <div class="loading">Loading&#8230;</div>
+</div>
 
 <!-- Form uỷ quyền -->
 <!-- <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { LocationService } from '../service/location.service';
 import * as CryptoJS from 'crypto-js';
 import { SessionService } from '../service/session.service';
+import { ShareholderInfoService } from '../service/shareholder-info.service';
+import { MeetingService } from '../service/meeting.service';
 
 @Component({
   selector: 'app-login',
@@ -15,14 +17,12 @@ import { SessionService } from '../service/session.service';
 })
 
 export class LoginComponent implements OnInit {
-  // public username: string = '';
-  // public password: string = '';
   public valueMd5: string = '';
   public deviceType: string = '';
   public location: any;
   public errorMessage: string = '';
 
-  constructor(private sessionService: SessionService, private authService: AuthService, private locationService: LocationService, private router: Router, private fb: FormBuilder, private toastr: ToastrService, private http: HttpClient) {
+  constructor(private meetingService: MeetingService, private shareholderService: ShareholderInfoService, private sessionService: SessionService, private authService: AuthService, private locationService: LocationService, private router: Router, private fb: FormBuilder, private toastr: ToastrService, private http: HttpClient) {
 
     if (this.authService.isMobile()) {
       this.deviceType = 'Mobile';
@@ -37,16 +37,7 @@ export class LoginComponent implements OnInit {
       this.deviceType = 'Unknown';
       console.log(this.deviceType);
     };
-    // this.locationService.getLocation().subscribe((position) => {
-    //   if(position){
-    //     this.location = position;
-    //   }
-    //   },
-    //   (error) => {
-    //     this.errorMessage = error.message;
-    //     console.log(this.errorMessage)
-    //   }
-    // );
+
   }
 
   UserInfo = this.fb.group({
@@ -72,23 +63,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  sessionId:any
+  sessionId: any
   submitSession() {
     this.formSession.value.idShareholder = localStorage.getItem("id");
     this.formSession.value.ipAddress = this.ipAddress;
     this.formSession.value.deviceType = this.deviceType;
-    console.log(this.formSession.value);
-    this.sessionId = this.formSession.value.sessionId
     this.sessionService.create(this.formSession.value).subscribe((res) => {
-      if(res){
+      if (res) {
         console.log("Insert session success");
-        localStorage.setItem("session",this.sessionId);
-      }else{
+      } else {
         console.log("Insert session failse");
       }
     })
   }
-
+  status!: number
+  dataShareholder: any = [];
+  dataMeeting: any = [];
   submitForm() {
     const password = this.UserInfo.value.password
     if (password) {
@@ -96,26 +86,49 @@ export class LoginComponent implements OnInit {
       this.UserInfo.value.password = valueMd5;
       this.authService.Login(this.UserInfo.value).subscribe((res) => {
         if (res) {
-          const token = localStorage.getItem('token');
-          const roles = localStorage.getItem('roles');
-          if (token != null && roles == '0') {
-            this.submitSession();
-            this.toastr.success("Đăng nhập thành công cổ đông")
-            this.router.navigate(['home'])
-          } else if (token != null && roles == '1') {
-            this.submitSession();
-            this.toastr.success("Đăng nhập thành công người đại diện")
-            this.router.navigate(['home'])
-          } else {
-            (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
-            this.toastr.error("Đăng nhập không thành công")
-            this.router.navigate([''])
+          const idShareholder = localStorage.getItem("id")
+          if (idShareholder) {
+            this.shareholderService.getById(idShareholder).subscribe((resS) => {
+              this.dataShareholder = resS;
+              if(!this.dataShareholder.items?.idMeeting){
+                this.toastr.error("Thông tin tài khoản không chính xác2")
+              }else{
+                this.meetingService.getById(this.dataShareholder.items?.idMeeting).subscribe((resM) => {
+                  this.dataMeeting = resM;
+                  if(this.dataMeeting){
+                    if (this.dataMeeting.items?.status == 2) {
+                      const token = localStorage.getItem('token');
+                      const roles = localStorage.getItem('roles');
+                      if (token != null && roles == '0') {
+                        this.submitSession();
+                        this.toastr.success("Đăng nhập thành công cổ đông")
+                        this.router.navigate(['home'])
+                      } else if (token != null && roles == '1') {
+                        this.submitSession();
+                        this.toastr.success("Đăng nhập thành công người đại diện")
+                        this.router.navigate(['home'])
+                      } else {
+                        (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
+                        this.toastr.error("Đăng nhập không thành công")
+                        this.router.navigate([''])
+                      }
+                    } else if (this.dataMeeting.items?.status == 0) {
+                      this.toastr.warning("Cuộc họp chưa bắt đầu");
+                    } else {
+                      this.toastr.error("Cuộc họp đã kết thúc");
+                    }
+                  }else{
+                    this.toastr.error("Thông tin tài khoản không chính xác1")
+                  }
+                })
+              }
+            })
           }
+        }else{
+          this.toastr.error("Thông tin tài khoản không chính xác3")
         }
       })
     }
-
-
   }
 
   get f() {

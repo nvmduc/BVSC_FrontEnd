@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-shareholder',
-  templateUrl:'./shareholder.component.html',
+  templateUrl: './shareholder.component.html',
   styleUrls: ['./shareholder.component.css']
 })
 
@@ -22,6 +22,7 @@ export class ShareholderComponent implements OnInit {
   idGive!: string;
   fbGiveShares: FormGroup = new FormGroup({});
   fbReceiveShares: FormGroup = new FormGroup({});
+  fbCheckin: FormGroup = new FormGroup({});
   dataGiveShares: any = [];
   dataReceiveShares: any = [];
   giveShares!: number;
@@ -35,7 +36,9 @@ export class ShareholderComponent implements OnInit {
   idShareholder!: string;
   randomNumber!: number;
   dataInfo: any = [];
-  constructor(private http: HttpClient,private transaction_historyService: TransactionHistoryService, private shareholderService: ShareholderInfoService, private toastr: ToastrService, private router: Router, private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor(private http: HttpClient, private transaction_historyService: TransactionHistoryService,
+    private shareholderService: ShareholderInfoService, private toastr: ToastrService, private router: Router,
+    private fb: FormBuilder, private route: ActivatedRoute) {
     this.searchForm = this.fb.group({
       search: '',
     });
@@ -65,7 +68,6 @@ export class ShareholderComponent implements OnInit {
       numberSharesAuth: [''],
       role: [''],
     })
-
   };
 
 
@@ -75,7 +77,6 @@ export class ShareholderComponent implements OnInit {
       if (res != null) {
         this.list = [res];
         this.toList = Object.values(this.list[0].items);
-        console.log(this.list)
       }
     })
   }
@@ -112,13 +113,11 @@ export class ShareholderComponent implements OnInit {
     this.shareholderService.getAll().subscribe((res) => {
       this.list = [res];
       this.toList = Object.values(this.list[0].items);
-      console.log(this.list)
     })
   }
   edit(id: string) {
     this.shareholderService.getById(id).subscribe((res: any) => {
       this.data = res;
-      console.log(this.data.items.fullname)
       this.infoShaholder = this.fb.group({
         id: this.data.items.id,
         fullname: this.data.items.fullname,
@@ -150,10 +149,8 @@ export class ShareholderComponent implements OnInit {
       if (window.confirm("Bạn có muốn xoá cổ đông có mã: " + `"${res.items.shareHolderCode}"` + " không?")) {
         this.shareholderService.delete(id).subscribe(() => {
           this.toastr.success("Xoá thành công", "Thành công")
-          console.log("xoá thành công")
           this.getShareholderByMeeting()
 
-          // setTimeout(() => window.location.reload(), 1000);
         })
       }
     })
@@ -165,11 +162,8 @@ export class ShareholderComponent implements OnInit {
     if (password) {
       const valueMd5 = CryptoJS.MD5(password).toString();
       this.dataForm.value.idMeeting = this.idMeeting!;
-      console.log(this.idMeeting)
       this.dataForm.value.password = valueMd5;
-      console.log(this.dataForm)
       this.shareholderService.getByIdMeeting(this.idMeeting).subscribe((res: any) => {
-        console.log(res.items)
         const emailExists = res.items.some((item: { email: string, idMeeting: number }) => item.email === this.dataForm.value.email && item.idMeeting == this.idMeeting);
         const shareHolderCodeExists = res.items.some((item: { shareHolderCode: string, idMeeting: number }) => item.shareHolderCode === this.dataForm.value.shareHolderCode && item.idMeeting == this.idMeeting);
         const identityCardExists = res.items.some((item: { identityCard: string, idMeeting: number }) => item.identityCard === this.dataForm.value.identityCard && item.idMeeting == this.idMeeting);
@@ -195,7 +189,6 @@ export class ShareholderComponent implements OnInit {
         else {
           this.shareholderService.create(this.dataForm.value).subscribe((res) => {
             if (res) {
-              console.log("Insert Success")
               this.toastr.success("Thêm thành công", "Thành công")
               this.getShareholderByMeeting();
               this.dataForm = this.fb.group({
@@ -215,7 +208,6 @@ export class ShareholderComponent implements OnInit {
                 role: [""],
               })
             } else {
-              console.log("Insert False")
               this.toastr.error("Không thành công", "Thất bại")
               this.getShareholderByMeeting()
             }
@@ -228,16 +220,13 @@ export class ShareholderComponent implements OnInit {
 
   onSubmitUpdate() {
     const id = this.infoShaholder.value.id
-    console.log(this.infoShaholder.value);
 
     this.shareholderService.update(id, this.infoShaholder.value).subscribe((res) => {
       if (res) {
-        console.log("Update Success")
         this.toastr.success("Sửa thành công", "Thành công")
         this.getShareholderByMeeting()
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 1500);
       } else {
-        console.log("Update False")
         this.toastr.error("Không thành công", "Thất bại")
         this.getShareholderByMeeting()
       }
@@ -246,22 +235,56 @@ export class ShareholderComponent implements OnInit {
   get g() {
     return this.dataForm.controls
   }
-
   getShareholder(id: string) {
     const min = 10000000;
     const max = 99999999;
     this.randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     this.shareholderService.getById(id).subscribe((res) => {
-      this.dataInfo = res
+      this.dataInfo = res;
       this.dataInfo.items.password = this.randomNumber
+      localStorage.removeItem('password');
+      localStorage.setItem("password", String(this.randomNumber));
+
+      const valueMd5 = CryptoJS.MD5(String(this.randomNumber)).toString();
+      this.fbCheckin.value.password = valueMd5;
+      this.fbCheckin = this.fb.group({
+        id: this.dataInfo.items?.id,
+        fullname: this.dataInfo.items?.fullname,
+        shareHolderCode: this.dataInfo.items?.shareHolderCode,
+        identityCard: this.dataInfo.items?.identityCard,
+        email: this.dataInfo.items?.email,
+        address: this.dataInfo.items?.address,
+        phoneNumber: this.dataInfo.items?.phoneNumber,
+        nationality: this.dataInfo.items?.nationality,
+        username: this.dataInfo.items?.username,
+        password: valueMd5,
+        idMeeting: this.dataInfo.items?.idMeeting,
+        status: this.dataInfo.items?.status,
+        numberShares: this.dataInfo.items?.numberShares,
+        numberSharesAuth: this.dataInfo.items?.numberSharesAuth,
+        role: this.dataInfo.items?.role,
+      })
+      
+      console.log(this.fbCheckin.value);
+            
     })
   }
-
+  statusCheckin: number = 1
+  checkin(id: string) {
+    this.fbCheckin.value.status = this.statusCheckin
+    console.log(this.statusCheckin);
+    this.shareholderService.update(id, this.fbCheckin.value).subscribe((res) => {
+      if (res) {
+        setTimeout(() => {
+          this.router.navigate([`admin/checkin/${id}`]);
+        }, 500);
+      } else {
+      }
+    })
+  }
   getIdReceive(idReceive: string) {
     this.shareholderService.getById(idReceive).subscribe((res: any) => {
       this.dataReceiveShares = res;
-      //Form shareholder receive
-
       this.fbReceiveShares = this.fb.group({
         id: this.dataReceiveShares.items?.id,
         fullname: this.dataReceiveShares.items?.fullname,
@@ -279,23 +302,21 @@ export class ShareholderComponent implements OnInit {
         numberSharesAuth: this.dataReceiveShares.items?.numberSharesAuth,
         role: this.dataReceiveShares.items?.role,
       });
-    });
 
+    });
   }
+
 
   searchIdentityCard: string = ''
   dataIdentity: any = [];
   getIdShareholder(idS: string) {
     this.getIdReceive(idS);
-
     this.getShareholder(idS)
   }
   onSearch() {
-    console.log('Tìm kiếm:', this.searchIdentityCard);
     this.shareholderService.getByIdentityCard(this.searchIdentityCard).subscribe((res) => {
       if (res.status == 2) {
         this.toastr.error("Không tìm thấy cổ đông", "Thất bại")
-        console.log(res);
       }
       else {
         this.dataIdentity = res
@@ -342,20 +363,14 @@ export class ShareholderComponent implements OnInit {
     // Person receive
     const idReceive = this.dataReceiveShares.items?.id;
     this.fbReceiveShares.value.numberSharesAuth = this.dataReceiveShares.items?.numberSharesAuth + this.inputValues
-    console.log(this.fbReceiveShares.value.numberSharesAuth);
-    console.log(this.fbReceiveShares.value);
     // Person give
     const idGive = this.dataGiveShares.items?.id
     this.fbGiveShares.value.numberShares = this.dataGiveShares.items?.numberShares - this.inputValues;
-    console.log(this.fbGiveShares.value.numberShares);
-    console.log(this.fbGiveShares.value);
 
     // Setdata transaction history
     this.dataFormHistory.value.idShareholder = idReceive;
     this.dataFormHistory.value.idShareholderAuth = idGive;
     this.dataFormHistory.value.amount = String(this.inputValues);
-    console.log(this.dataFormHistory.value);
-    
     this.shareholderService.update(idReceive, this.fbReceiveShares.value).subscribe((res) => {
       this.shareholderService.update(idGive, this.fbGiveShares.value).subscribe((resGive) => {
         this.transaction_historyService.create(this.dataFormHistory.value).subscribe((resHistory) => {
@@ -389,7 +404,7 @@ export class ShareholderComponent implements OnInit {
     if (this.selectedFile) {
       if (this.isValidExcelFile(this.selectedFile)) {
         // Xử lý tệp Excel hợp lệ ở đây
-        // this.readExcelFile(this.selectedFile);
+        this.readExcelFile(this.selectedFile);
         this.toastr.success("File hợp lệ");
       } else {
         // Xử lý khi tệp Excel không hợp lệ
@@ -400,14 +415,12 @@ export class ShareholderComponent implements OnInit {
   private isValidExcelFile(file: File): boolean {
     // Kiểm tra định dạng tệp tin
     if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      console.log('Tệp không phải là tệp .xlsx');
       return false;
     }
 
     // Kiểm tra kích thước tệp tin
     const maxSizeInBytes = 10485760; // 10MB
     if (file.size > maxSizeInBytes) {
-      console.log('Tệp quá lớn');
       return false;
     }
 
@@ -415,36 +428,39 @@ export class ShareholderComponent implements OnInit {
 
     return true;
   }
-  // private readExcelFile(file: File) {
-  //   const fileReader = new FileReader();
-  //   fileReader.onload = (e: any) => {
-  //     const data = new Uint8Array(e.target.result);
-  //     const workbook = XLSX.read(data, { type: 'array' });
-  //     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-  //     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-  //     console.log(jsonData);
-  //     // Xử lý dữ liệu từ tệp Excel ở đây
-  //   };
-  //   fileReader.readAsArrayBuffer(file);
-  // }
+  private readExcelFile(file: File) {
+    const fileReader = new FileReader();
+    fileReader.onload = (e: any) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      console.log(jsonData);
+      // Xử lý dữ liệu từ tệp Excel ở đây
+    };
+    fileReader.readAsArrayBuffer(file);
+  }
+  isLoading: boolean = false;
 
-  onSubmitFile(form: NgForm){
+  onSubmitFile(form: NgForm) {
+    this.isLoading = true;
     if (form.valid) {
-      if(this.selectedFile){
+      if (this.selectedFile) {
         const file: File = this.selectedFile;
         const data: any = this.route.snapshot.params['id'];
-        console.log(data);
-        
+
         const formData: FormData = new FormData();
         formData.append('file', file);
         formData.append('idMeeting', data);
         const headers = new HttpHeaders();
+
         headers.append('Content-Type', 'multipart/form-data');
         this.http.post('http://localhost:8080/bvsc-mapp/api/v1/upload-excel', formData, { headers }).subscribe(
           (response) => {
             console.log('Tải lên thành công', response);
             this.toastr.success("Upload file thành công", "Thành công")
             this.getShareholderByMeeting()
+            this.isLoading = false;
           },
           (error) => {
             console.error('Lỗi khi tải lên', error);
@@ -453,10 +469,10 @@ export class ShareholderComponent implements OnInit {
           }
         );
       }
-      
+
     }
   }
-  
+
 }
 
 

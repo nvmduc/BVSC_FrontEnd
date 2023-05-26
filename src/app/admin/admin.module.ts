@@ -17,6 +17,7 @@ import { MeetingComponent } from './meeting/meeting.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ElectionComponent } from './election/election.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { CheckinComponent } from './checkin/checkin.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     SearchShareholderPipe,
     MeetingComponent,
     ElectionComponent,
+    CheckinComponent,
   ],
   imports: [
     AdminRoutingModule,

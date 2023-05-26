@@ -32,7 +32,6 @@ export class SidebarComponent implements OnInit {
     localStorage.setItem('idMeeting', String(index))
     // this.selectedItemMeeting = index;
     this.selectedItemMeeting = Number(localStorage.getItem('idMeeting'))
-    console.log(this.selectedItemMeeting)
     if (localStorage.getItem('idMeeting') == null) {
       localStorage.setItem('idMeeting', String(this.selectedItemMeeting))
     } else {
@@ -94,7 +93,6 @@ export class SidebarComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const fileContent = e.target.result;
-        console.log(fileContent); // In ra nội dung của file ảnh dưới dạng base64
       };
       reader.readAsDataURL(file);
     }
@@ -111,7 +109,6 @@ export class SidebarComponent implements OnInit {
       reader.onloadend = () => {
         const base64String = reader.result as string;
         this.base64String = base64String;
-        console.log('Base64:', base64String);
         this.uploadBase64ToServer(base64String);
       };
       reader.readAsDataURL(this.selectedFile);
@@ -121,20 +118,16 @@ export class SidebarComponent implements OnInit {
   uploadBase64ToServer(base64String: string): void {
     const idCompany = this.dataFormMeeting.value.idCompany;
     this.dataFormMeeting.value.imageBanner = base64String;
-    console.log(this.dataFormMeeting.value);
     // Đặt múi giờ thành UTC+7
     moment.tz.setDefault('Asia/Bangkok');
     this.meetingService.create(this.dataFormMeeting.value).subscribe((res) => {
-      console.log('resssss: ', res);
       if (res) {
-        console.log("Update Success");
         this.toastr.success("Thêm mới thành công", "Thành công");
         this.getAllMeetingByCompany();
         setInterval(() => {
           window.location.reload();
         }, 1500);
       } else {
-        console.log("Update False");
         this.toastr.error("Không thành công", "Thất bại");
         this.getAllMeetingByCompany();
       }
@@ -143,7 +136,6 @@ export class SidebarComponent implements OnInit {
 
   onSubmitUpdate() {
     const id = this.infoMeeting.value.id
-    console.log(this.infoMeeting.value);
 
     this.infoMeeting.value.startTime = moment(this.infoMeeting.value.startTime).format('YYYY-MM-DDTHH:mm:ss.SSS');
     this.infoMeeting.value.endTime = moment(this.infoMeeting.value.endTime).format('YYYY-MM-DDTHH:mm:ss.SSS');
@@ -155,14 +147,12 @@ export class SidebarComponent implements OnInit {
 
         this.meetingService.update(id, this.infoMeeting.value).subscribe((res) => {
           if (res) {
-            console.log("Update Success")
             this.toastr.success("Sửa thành công", "Thành công")
             this.getAllMeetingByCompany()
-            // setInterval(() => {
-            //   window.location.reload();
-            // }, 1500);
+            setInterval(() => {
+              window.location.reload();
+            }, 1500);
           } else {
-            console.log("Update False")
             this.toastr.error("Không thành công", "Thất bại")
             this.getAllMeetingByCompany()
           }
@@ -180,12 +170,10 @@ export class SidebarComponent implements OnInit {
     const idCompany = localStorage.getItem('idCompany');
     if (idCompany) {
       this.id = parseInt(idCompany, 10);
-      console.log(this.id);
 
       this.meetingService.getByIdCompany(this.id).subscribe((res) => {
         this.list = [res];
         this.toList = Object.values(this.list[0].items);
-        console.log(this.list);
       });
     }
   }
@@ -220,7 +208,6 @@ export class SidebarComponent implements OnInit {
         const image = new Image();
         image.src = e.target.result;
 
-        console.log(e)
         image.onload = (rs: any) => {
           const img_height = rs.currentTarget['height'];
           const img_width = rs.currentTarget['width'];

@@ -27,7 +27,6 @@ export class VotingComponent implements OnInit {
       if (res) {
         this.list = [res];
         this.toList = Object.values(this.list[0].items);
-        console.log(this.toList)
       } else {
 
         window.location.reload();
@@ -43,7 +42,6 @@ export class VotingComponent implements OnInit {
         if (res) {
           this.dataList = [res];
           this.toDataList = Object.values(this.dataList[0].items);
-          console.log(this.toDataList)
         } else {
 
           window.location.reload();
@@ -70,7 +68,6 @@ export class VotingComponent implements OnInit {
       this.arr.push(formValue);
     }
 
-    console.log(this.arr);
 
     this.valueIdVoting = idVoting;
     this.valueStatus = status;
@@ -94,11 +91,9 @@ export class VotingComponent implements OnInit {
         }
         this.result_VotingService.create(formValues).subscribe((res) => {
           if (res) {
-            console.log("Update Success")
             this.toastr.success("Biểu quyết thành công", "Thành công")
             // this.getAllByMeeting()
           } else {
-            console.log("Update False")
             this.toastr.error("Biểu quyết không thành công", "Thất bại")
           }
         })

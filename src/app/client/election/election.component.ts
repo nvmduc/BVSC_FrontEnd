@@ -98,7 +98,6 @@ export class ElectionComponent implements OnInit {
             }
             this.arr.push(formValue);
             inputIndex++;
-            console.log(formValue);
           }
         }
       }
@@ -120,13 +119,10 @@ export class ElectionComponent implements OnInit {
           };
           formValues.push(formValue);
         }
-        console.log(formValues);
         this.result_ElectionService.create(formValues).subscribe((res) => {
           if (res) {
-            console.log("Update Success")
             this.toastr.success("Biểu quyết thành công", "Thành công")
           } else {
-            console.log("Update False")
             this.toastr.error("Biểu quyết không thành công", "Thất bại")
           }
         })
@@ -151,7 +147,6 @@ export class ElectionComponent implements OnInit {
     this.electionService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.list = [res];
       this.toListElection = Object.values(this.list[0].items);
-      console.log(this.list[0].items);
       
       for (let item of this.toListElection) {
         this.getAllByElection(item.id);

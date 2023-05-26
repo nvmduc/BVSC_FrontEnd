@@ -11,11 +11,11 @@
     </div>
     <div class="shares">
       <p>Số lượng cổ phần: </p>
-      <span style="font-size: 30px;">{{data.items?.numberShares}}</span>
+      <span style="font-size: 30px;">{{data.items?.numberShares | number:'1.0-0'}}</span>
     </div>
     <div class="shares">
       <p>Số lượng cổ phần được ủy quyền: </p>
-      <span style="font-size: 30px;">{{data.items?.numberSharesAuth}}</span>
+      <span style="font-size: 30px;">{{data.items?.numberSharesAuth | number:'1.0-0'}}</span>
     </div>
     <a class="logout" href="#" data-toggle="modal" data-target="#logoutModal">Đăng xuất</a>
   </div>

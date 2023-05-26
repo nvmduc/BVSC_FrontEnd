@@ -42,7 +42,7 @@ export class MenuComponent implements OnInit{
     if (id !== null) {
       this.shareholderService.getById(id).subscribe((res: any) => {
         this.data = res;
-        idMeetingTemp = this.data.items.idMeeting
+        idMeetingTemp = this.data.items?.idMeeting
 
         this.getMeetingById(idMeetingTemp);
         this.getAllByMeeting(idMeetingTemp);
