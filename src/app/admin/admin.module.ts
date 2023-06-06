@@ -1,8 +1,6 @@
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-
 import { AdminRoutingModule } from './admin-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { IndexComponent } from './index/index.component';
@@ -18,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ElectionComponent } from './election/election.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CheckinComponent } from './checkin/checkin.component';
+import { ResultVotingComponent } from './result-voting/result-voting.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ResultElectionComponent } from './result-election/result-election.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,8 @@ import { CheckinComponent } from './checkin/checkin.component';
     MeetingComponent,
     ElectionComponent,
     CheckinComponent,
+    ResultVotingComponent,
+    ResultElectionComponent,
   ],
   imports: [
     AdminRoutingModule,
@@ -42,7 +45,7 @@ import { CheckinComponent } from './checkin/checkin.component';
     ReactiveFormsModule,
     MatIconModule,
     NgxPaginationModule,
-    // DatePipe
+    NgApexchartsModule
   ],
   providers: [DatePipe,DecimalPipe],
   bootstrap: []

@@ -41,7 +41,7 @@
               </tbody>
             </table>
             <div class="right">
-              <button type="submit" class="btn btn-success text-center" [disabled]="!hasSelectedOption()">Gửi</button>
+              <button type="submit" class="btn btn-success text-center" [disabled]="!hasSelectedOption()" *ngIf="getRole === 1 ? '':'disabled'">Gửi</button>
             </div>
           </div>
         </form>

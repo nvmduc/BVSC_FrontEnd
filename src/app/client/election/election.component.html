@@ -5,13 +5,13 @@
       <div class="voting">
         <div class="box">
           <div class="title text-center">BỎ PHIẾU BẦU CỬ</div>
-          <form action="" method="post" (ngSubmit)="onSubmit()">
+          <form action="" method="post" (ngSubmit)="onSubmit()" #myForm="ngForm">
             <div class="container" *ngFor="let item of toListElection;let i = index">
               <h5 class="text-center">{{i+1}}. {{item?.title}}</h5>
               <div class="card item" *ngFor="let itemC of getCandidatesByElection(item.id); let j = index">
                 <div class="row no-gutters">
                   <div class="col-md-1">
-                    <img src="https://toigingiuvedep.vn/wp-content/uploads/2021/07/mau-anh-the-dep-lam-the-can-cuoc.jpg"
+                    <img src="https://cdn.icon-icons.com/icons2/2468/PNG/512/user_kids_avatar_user_profile_icon_149314.png"
                       class="card-img">
                   </div>
                   <div class="col-md-9">
@@ -26,7 +26,9 @@
                   </div>
                   <div class="col-md-2">
                     <input placeholder="Nhập số phiếu" type="number" name="shares" [(ngModel)]="inputValues[j]"
-                      (ngModelChange)="subtract()" (change)="getResultElection()">
+                      (ngModelChange)="subtract()" (change)="getResultElection()" required #sharesInput="ngModel">
+                    <div *ngIf="sharesInput.invalid && (sharesInput.dirty || sharesInput.touched)"
+                      class="error-message">Vui lòng nhập số phiếu</div>
                   </div>
                 </div>
               </div>
@@ -41,11 +43,12 @@
               </div>
               <div>
                 <button type="button" class="btn btn-primary" (click)="divide()">Chia đều</button>
-                <button *ngIf="result<0" type="submit" class="btn btn-secondary" disabled>Gửi</button>
-                <button *ngIf="result>=0" type="submit" class="btn btn-success">Gửi</button>
+                <button *ngIf="result<0" type="submit" class="btn btn-secondary" [disabled]="myForm.invalid">Gửi</button>
+                <button *ngIf="result>=0" type="submit" class="btn btn-success" [disabled]="!inputValues || myForm.invalid">Gửi</button>
               </div>
             </div>
           </form>
+          
         </div>
       </div>
       <div class="info">

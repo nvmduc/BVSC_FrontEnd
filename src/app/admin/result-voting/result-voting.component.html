@@ -1,0 +1,71 @@
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+  <app-sidebar></app-sidebar>
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      <app-header></app-header>
+      <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Kết quả biểu quyết</h1>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table border=1px>
+                <thead class="text-center">
+                  <tr class="th">
+                    <td rowspan="2" style="width: 70%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN
+                      BIỂU
+                      QUYẾT</td>
+                    <td colspan="3" style="width: 350px; padding: 10px; border: 1px solid black;" class="text-center">
+                      Biểu
+                      quyết</td>
+                  </tr>
+                  <tr class="answer">
+                    <td>Tán thành</td>
+                    <td>Không tán thành</td>
+                    <td>Không có ý kiến</td>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of toListVotingByMeeting; let i = index">
+                  <tr>
+                    <td>{{i+1}}. {{item.content}}</td>
+                    <td class="text-center">
+                      <p>{{agreeResults[i]?.percentage}}%</p>
+                    </td>
+                    <td class="text-center">
+                      <p>{{disagreeResults[i]?.percentage}}%</p>
+                    </td>
+                    <td class="text-center">
+                      <p>{{noOpinionResults[i]?.percentage}}%</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.container-fluid -->
+
+  </div>
+  <!-- End of Main Content -->
+
+
+
+</div>
+<!-- End of Content Wrapper -->
+<div *ngIf="isLoading" class="loading-spinner">
+  <div class="loading">Loading&#8230;</div>
+</div>

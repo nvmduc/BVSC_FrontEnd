@@ -253,7 +253,7 @@
                         <div class="form-group colunm">
                             <label>Năm sinh</label>
                             <input type="date" name="identity_card" class="form-control"
-                            placeholder="..." formControlName="birthday" [ngModel]="dateFormControl.value | date:'dd/MM/yyyy'" required>
+                            placeholder="..." formControlName="birthday" required>
                             <div *ngIf="f.birthday.invalid && (f.birthday.dirty || f.birthday.touched)">
                                 <h6 *ngIf="f.birthday.errors?.['required']">Không được trống</h6>
                             </div>

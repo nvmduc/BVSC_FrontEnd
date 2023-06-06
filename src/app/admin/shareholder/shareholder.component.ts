@@ -79,6 +79,8 @@ export class ShareholderComponent implements OnInit {
         this.toList = Object.values(this.list[0].items);
       }
     })
+    this.isLoading = false;
+
   }
   dataFormHistory = this.fb.group({
     idShareholder: [""],
@@ -440,10 +442,10 @@ export class ShareholderComponent implements OnInit {
     };
     fileReader.readAsArrayBuffer(file);
   }
-  isLoading: boolean = false;
+  isLoading: boolean = true;
 
   onSubmitFile(form: NgForm) {
-    this.isLoading = true;
+    // this.isLoading = true;
     if (form.valid) {
       if (this.selectedFile) {
         const file: File = this.selectedFile;
@@ -471,6 +473,7 @@ export class ShareholderComponent implements OnInit {
       }
 
     }
+    this.isLoading = false;
   }
 
 }

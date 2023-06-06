@@ -20,6 +20,9 @@ export class CandidateService {
   getByIdElection(idElection:string):Observable<Candidate>{
     return this.http.get<Candidate>(`${ApiUrl}/allByElection/${idElection}`)
   }
+  getByIdMeeting(idMeeting:number):Observable<Candidate>{
+    return this.http.get<Candidate>(`${ApiUrl}/get-candidate-by-meeting/${idMeeting}`)
+  }
   delete(id:any):Observable<Candidate>{
     return this.http.delete<Candidate>(`${ApiUrl}/${id}`)
   }

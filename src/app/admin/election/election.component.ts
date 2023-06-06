@@ -1,7 +1,8 @@
-import { formatDate } from '@angular/common';
+import { DatePipe, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { CandidateService } from 'src/app/service/candidate.service';
 import { ElectionService } from 'src/app/service/election.service';
@@ -42,7 +43,7 @@ export class ElectionComponent implements OnInit {
     createdTime: [Date.now()]
   })
 
-  constructor(private fb: FormBuilder, private electionService: ElectionService, private candidateService: CandidateService, private toastr: ToastrService, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private datePipe: DatePipe, private electionService: ElectionService, private candidateService: CandidateService, private toastr: ToastrService, private route: ActivatedRoute) {
   }
   ngOnInit(): void {
 
@@ -100,11 +101,12 @@ export class ElectionComponent implements OnInit {
     this.candidateService.getById(id).subscribe((res: any) => {
       this.data = res;
       this.dateFormControl.setValue(new Date());
+      this.data.items.birthday = moment(this.data.items.startTime).utc().subtract(7, 'hours');
       this.infoCandidate = this.fb.group({
         id: this.data.items.id,
         idElection: this.data.items.idElection,
         fullname: this.data.items.fullname,
-        birthday: this.data.items.birthday,
+        birthday: this.datePipe.transform(this.data.items.birthday, 'yyyy-MM-dd'),
         address: this.data.items.address,
         summaryInfo: this.data.items.summaryInfo,
       });

@@ -64,16 +64,13 @@ export class LoginComponent implements OnInit {
   }
 
   sessionId: any
+  dataSession:any = []
   submitSession() {
     this.formSession.value.idShareholder = localStorage.getItem("id");
     this.formSession.value.ipAddress = this.ipAddress;
     this.formSession.value.deviceType = this.deviceType;
     this.sessionService.create(this.formSession.value).subscribe((res) => {
-      if (res) {
-        console.log("Insert session success");
-      } else {
-        console.log("Insert session failse");
-      }
+      this.dataSession = res;
     })
   }
   status!: number
@@ -91,7 +88,7 @@ export class LoginComponent implements OnInit {
             this.shareholderService.getById(idShareholder).subscribe((resS) => {
               this.dataShareholder = resS;
               if(!this.dataShareholder.items?.idMeeting){
-                this.toastr.error("Thông tin tài khoản không chính xác2")
+                this.toastr.error("Thông tin tài khoản không chính xác")
               }else{
                 this.meetingService.getById(this.dataShareholder.items?.idMeeting).subscribe((resM) => {
                   this.dataMeeting = resM;
@@ -105,7 +102,7 @@ export class LoginComponent implements OnInit {
                         this.router.navigate(['home'])
                       } else if (token != null && roles == '1') {
                         this.submitSession();
-                        this.toastr.success("Đăng nhập thành công người đại diện")
+                        this.toastr.success("Đăng nhập thành công đoàn chủ tịch")
                         this.router.navigate(['home'])
                       } else {
                         (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
@@ -118,14 +115,14 @@ export class LoginComponent implements OnInit {
                       this.toastr.error("Cuộc họp đã kết thúc");
                     }
                   }else{
-                    this.toastr.error("Thông tin tài khoản không chính xác1")
+                    this.toastr.error("Thông tin tài khoản không chính xác")
                   }
                 })
               }
             })
           }
         }else{
-          this.toastr.error("Thông tin tài khoản không chính xác3")
+          this.toastr.error("Thông tin tài khoản không chính xác")
         }
       })
     }

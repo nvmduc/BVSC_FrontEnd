@@ -7,11 +7,11 @@
         </li>
         <li class="nav-item active">
           <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status == 0}"
-            [routerLink]="['/home/voting/', data?.items?.idMeeting]">Biểu quyết</a>
+            href="home/voting/{{data?.items?.idMeeting}}">Biểu quyết</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status == 0}"
-            [routerLink]="['/home/election/', data?.items?.idMeeting]">Biểu quyết</a>
+          href="home/election/{{data?.items?.idMeeting}}">Bầu cử</a>
         </li>
       </ul>
     </div>

@@ -14,16 +14,12 @@ export class ResultElectionService {
   getAll():Observable<ResultElection>{
     return this.http.get<ResultElection>(`${ApiUrl}/all-result-election`);
   }
-
-  // getById(id:string):Observable<ResultVoting>{
-  //   return this.http.get<ResultVoting>(`${ApiUrl}/${id}`)
-  // }
   getByIdShareholer(idShareholder:string):Observable<ResultElection>{
     return this.http.get<ResultElection>(`${ApiUrl}/get-result-election-by-shareholder/${idShareholder}`)
   }
-  // delete(id:any):Observable<ResultVoting>{
-  //   return this.http.delete<ResultVoting>(`${ApiUrl}/${id}`)
-  // }
+  getByIdMeeting(idMeeting:number):Observable<ResultElection>{
+    return this.http.get<ResultElection>(`${ApiUrl}/get-result-election-by-meeting/${idMeeting}`)
+  }
   create(data:any):Observable<ResultElection>{
     return this.http.post<ResultElection>(`${ApiUrl}/save-election`,data)
   }

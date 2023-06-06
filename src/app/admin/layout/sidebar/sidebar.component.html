@@ -31,23 +31,20 @@
     <li class="nav-item" *ngFor="let item of toList;let i = index">
         <div *ngIf="item?.status == 0 || item?.status == 2">
             <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
-                [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i"
-                 (click)="selectItem(item?.id)">
+                [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
                 <i class="fas fa-fw fa-cog"></i>
-                <span [ngClass]="{'colorMenu': item?.id == selectedItemMeeting}">{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
+                <span [ngClass]="{'colorMenu': idMeeting == item?.id}">{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
             </a>
             <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Cổ đông</h6>
                     <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
-                    <!-- <h6 class="collapse-header">Ứng cử viên</h6>
-                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a> -->
                     <h6 class="collapse-header">Biểu quyết</h6>
                     <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
-                    <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
+                    <a class="collapse-item" href="admin/result-voting/{{item.id}}">Kết quả biểu quyết</a>
                     <h6 class="collapse-header">Bầu cử</h6>
                     <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
-                    <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
+                    <a class="collapse-item" href="admin/result-election/{{item.id}}">Kết quả bầu cử</a>
                     <hr>
                     <div>
                         <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
@@ -64,10 +61,9 @@
     <li class="nav-item" *ngFor="let item of toList;let i = index">
         <div *ngIf="item?.status == 1">
             <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
-                [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i"
-                (click)="selectItem(item?.id)">
+                [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
                 <i class="fas fa-fw fa-cog"></i>
-                <span [ngClass]="{'colorMenu': item?.id === selectedItemMeeting}" >{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
+                <span [ngClass]="{'colorMenu': item?.id === idMeeting}" >{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
             </a>
             <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
@@ -306,3 +302,7 @@
         </div>
     </div>
 </div>
+
+<div *ngIf="isLoading" class="loading-spinner">
+    <div class="loading">Loading&#8230;</div>
+  </div>

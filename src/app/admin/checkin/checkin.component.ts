@@ -27,7 +27,7 @@ export class CheckinComponent implements OnInit{
       this.dataShareholder = res;
       setTimeout(()=>{
         window.print();
-      },1000)
+      },500)
     })
   }
   handleAfterPrint(): void {

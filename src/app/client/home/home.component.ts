@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { MeetingService } from 'src/app/service/meeting.service';
 import { ShareholderInfoService } from 'src/app/service/shareholder-info.service';
 
@@ -7,64 +9,59 @@ import { ShareholderInfoService } from 'src/app/service/shareholder-info.service
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit {
 
-  constructor(private shareholderService:ShareholderInfoService,private meetingService:MeetingService){}
+  constructor(private shareholderService: ShareholderInfoService, private router: Router, private meetingService: MeetingService, private toastr: ToastrService) {
+    
+   }
   // _token: any;
   // constructor(){
   //   this._token = localStorage.getItem('exp');
 
   // }
+  private tokenExpired() {
+    const exp = localStorage.getItem('exp');
+    if (!exp) {
+      return true; // Nếu không có token, coi như đã hết hạn
+    }
+    const expiry = parseInt(exp);
+    return Math.floor(Date.now()) >= expiry;
+  }
   ngOnInit(): void {
     this.getInfoShareholder();
-    // this.checkToken();
+    setInterval(() => {
+      if (this.tokenExpired()) {
+          localStorage.clear()
+          this.router.navigate([''])
+          this.toastr.error("Tài khoản của bạn đã đăng nhập quá 120 phút vui lòng đăng nhập lại")
+        } else {
+          console.log("ok");
+        }
+      }, 60000);
   }
-  // get token(): string {
-  //   return this._token;
-  // }
 
-  // set token(value: string) {
-  //   this._token = value;
-  //   localStorage.setItem('authToken', value);
-  // }
-
-  // public checkToken(): void {
-  //   if (!this.token) {
-  //     location.reload();
-  //   }
-  // }
-
-  // public clearToken(): void {
-  //   this._token = null;
-  //   localStorage.removeItem('authToken');
-  //   location.reload();
-  // }
-  // idMeeting!:number
   data: any = [];
-  
+
   dataShareholder: any = [];
   getInfoShareholder() {
-    const id = localStorage.getItem('id') || '';
+    const id = localStorage.getItem('id');
+    if (id) {
       this.shareholderService.getById(id).subscribe((res: any) => {
-        if(res){
+        if (res) {
           this.dataShareholder = res;
           const idMeeting = this.dataShareholder.items.idMeeting
           this.getInfoMeeting(idMeeting)
-        }else{
+        } else {
           window.location.reload();
         }
-       
+
       });
+    }
   }
-  getInfoMeeting(idMeeting:number) {
+  getInfoMeeting(idMeeting: number) {
     this.meetingService.getById(idMeeting).subscribe((res: any) => {
-      if(res){
         this.data = res;
-      }else{
-        window.location.reload();
-      }
-     
     });
-}
+  }
 
 }

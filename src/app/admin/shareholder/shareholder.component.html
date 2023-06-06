@@ -47,7 +47,7 @@
                                     </tr>
                                 </thead>
                                 <tfoot>
-                                    <tr class="width-td">
+                                    <tr class="width-td text-center">
                                         <th scope="col">STT</th>
                                         <th scope="col">Họ và tên</th>
                                         <th scope="col">Mã cổ đông</th>
@@ -614,67 +614,3 @@
     <div class="loading">Loading&#8230;</div>
 </div>
 
-<!-- Form uỷ quyền -->
-<!-- <div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Lịch sử uỷ quyền</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr class="text-center width-td">
-                        <th scope="col">STT</th>
-                        <th scope="col">Họ và tên</th>
-                        <th scope="col">Mã cổ đông</th>
-                        <th scope="col">CCCD/CMT</th>
-                        <th scope="col">Số điện thoại</th>
-                        <th scope="col">Tài khoản</th>
-                        <th scope="col">Cổ phần SH</th>
-                        <th scope="col">Cổ phần UQ</th>
-                        <th style="width: 50px;">Action</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr class="width-td">
-                        <th scope="col">STT</th>
-                        <th scope="col">Họ và tên</th>
-                        <th scope="col">Mã cổ đông</th>
-                        <th scope="col">CCCD/CMT</th>
-                        <th scope="col">Số điện thoại</th>
-                        <th scope="col">Tài khoản</th>
-                        <th scope="col">Cổ phần SH</th>
-                        <th scope="col">Cổ phần UQ</th>
-                        <th scope="col" style="width: 50px;">Action</th>
-                    </tr>
-                </tfoot>
-                <tbody
-                    *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '' | paginate: { itemsPerPage: pageSize, currentPage: p };let i = index ">
-                    <tr class="width-td">
-                        <td>{{i + 1}}</td>
-                        <td><a class="dropdown-item name" href="#" data-toggle="modal"
-                                data-target="#infoShareholderModal"
-                                (click)="getShareholder(item?.id)">{{item?.fullname}}</a></td>
-                        <td>{{item?.shareHolderCode}}</td>
-                        <td>{{item?.identityCard}}</td>
-                        <td>{{item?.phoneNumber}}</td>
-                        <td>{{item?.username}}</td>
-                        <td>{{item?.numberShares | number:'1.0-0'}}</td>
-                        <td>{{item?.numberSharesAuth | number:'1.0-0'}}</td>
-                        <td class="text-center" style="display: flex;">
-                            <button type="button" data-toggle="modal"
-                                data-target="#editShareholderModal" (click)="edit(item?.id)"
-                                class="btn btn-primary edit">Sửa</button>
-                            <button data-toggle="modal" type="button" class="btn btn-danger"
-                                data-target="#deletetModal" (click)="delete(item?.id)">Xoá</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div> -->

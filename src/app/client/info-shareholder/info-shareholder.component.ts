@@ -16,23 +16,24 @@ export class InfoShareholderComponent implements OnInit {
   }
   data: any = [];
   getInfoShareholder() {
-    const id = localStorage.getItem('id') || '';
+    const id = localStorage.getItem('id');
+    if(id){
       this.shareholderInfo.getById(id).subscribe((res: any) => {
-        if(res){
+        if(res.status == 2){
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }{
           this.data = res;
-        }else{
-          window.location.reload();
         }
-       
+        
       });
+    }
   }
 
   Logout() {
-      // this.sessionService.update()
       localStorage.clear();
       this.router.navigate(['login'])
       this.toastr.success("Đăng xuất thành công","Đăng xuất")
-      // setTimeout(() => window.location.reload(), 1000);
   }
-
 }

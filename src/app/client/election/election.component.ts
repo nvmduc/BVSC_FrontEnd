@@ -16,7 +16,6 @@ import { ShareholderInfoService } from 'src/app/service/shareholder-info.service
 export class ElectionComponent implements OnInit {
   sumShares!: number;
   ngOnInit(): void {
-    this.getAllByMeeting();
     this.getAllCandidate();
     this.getInfoShareholder();
     this.inputValues = new Array(this.toListCandidateByE.length);
@@ -86,7 +85,7 @@ export class ElectionComponent implements OnInit {
       for (let itemC of this.toListCandidate) {
         if (itemElection.id == itemC.idElection) {
           const existingIndex = this.arr.findIndex(item => item.idCandidate === itemC.id);
-  
+
           if (existingIndex !== -1) {
             this.arr[existingIndex].numberSharesForCandidate = this.inputValues[inputIndex];
             inputIndex++;
@@ -103,7 +102,7 @@ export class ElectionComponent implements OnInit {
       }
     }
   }
-  
+
   onSubmit() {
     this.result_ElectionService.getAll().subscribe((res) => {
       this.dataResultElection = [res];
@@ -142,58 +141,14 @@ export class ElectionComponent implements OnInit {
   list: any[] = [];
   toListElection: any = [];
   toListCandidate: any[] = [];
-  getAllByMeeting() {
-    const idMeeting = this.route.snapshot.params['idMeeting'];
-    this.electionService.getByIdMeeting(idMeeting).subscribe((res) => {
-      this.list = [res];
-      this.toListElection = Object.values(this.list[0].items);
-      
-      for (let item of this.toListElection) {
-        this.getAllByElection(item.id);
-      }
-      
-      this.result = this.sumShares;
-      
-      this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
-      this.result = this.sumShares;
-    });
-  }
-  
-  getCandidatesByElection(id: string) {
-    return this.toListCandidateByE.filter((candidate: {idElection:string}) => (candidate as any).idElection === id);
-  }
-  
-  toListCandidateByE: any = [];
-  
-  getAllByElection(id: string) {
-    this.candidateService.getByIdElection(id).subscribe((res) => {
-      this.list = [res];
-      const candidates = Object.values(this.list[0].items);
-      for (let candidate of candidates) {
-        (candidate as any).idElection = id;
-      }
-      this.toListCandidateByE.push(...candidates);
-      
-      this.candidate = this.toListCandidateByE.length;
-      this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
-      this.result = this.sumShares;
-    });
-  }
-  candidate!: number
-  getAllCandidate(): void {
-    this.candidateService.getAll().subscribe((res: any) => {
-      this.list = [res];
-      this.toListCandidate = Object.values(this.list[0].items);
-      
-    })
-  }
-  data: any = [];
 
   getInfoShareholder() {
     const id = localStorage.getItem('id') || '';
     this.shareholderService.getById(id).subscribe((res: any) => {
       if (res) {
         this.data = res;
+        const idMeeting = this.data.items.idMeeting
+        this.getAllByMeeting(idMeeting);
         this.numberShares = this.data.items?.numberShares
         this.numberSharesAuth = this.data.items?.numberSharesAuth
       } else {
@@ -204,6 +159,66 @@ export class ElectionComponent implements OnInit {
 
     });
   }
+  getAllByMeeting(idMeeting:any) {
+    // const idMeeting = this.route.snapshot.params['idMeeting'];
+    if(idMeeting != null){
+      this.electionService.getByIdMeeting(idMeeting).subscribe((res) => {
+        this.list = [res];
+        this.toListElection = Object.values(this.list[0].items);
+        for (let item of this.toListElection) {
+          this.getAllByElection(item.id);
+        }
+        this.result = this.sumShares;
+        this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
+        this.result = this.sumShares;
+      });
+    }else{
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  }
+
+  getCandidatesByElection(id: string) {
+    return this.toListCandidateByE.filter((candidate: { idElection: string }) => (candidate as any).idElection === id);
+  }
+
+  toListCandidateByE: any = [];
+
+  getAllByElection(id: string) {
+    this.candidateService.getByIdElection(id).subscribe((res) => {
+      this.list = [res];
+      console.log(this.list[0].items.length);
+      
+      if(this.list[0].items.length == 0){
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }else{
+        const candidates = Object.values(this.list[0].items);
+        for (let candidate of candidates) {
+          (candidate as any).idElection = id;
+        }
+        this.toListCandidateByE.push(...candidates);
+  
+        this.candidate = this.toListCandidateByE.length;
+        this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
+        this.result = this.sumShares;
+      }
+      
+    });
+  }
+  candidate!: number
+  getAllCandidate(): void {
+    this.candidateService.getAll().subscribe((res: any) => {
+      this.list = [res];
+      this.toListCandidate = Object.values(this.list[0].items);
+
+    })
+  }
+  data: any = [];
+
+  
   isFormValid!: boolean
   hasSelectedOption(): boolean {
     return this.arr.length >= this.toListElection.length;

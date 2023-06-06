@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { CompanyService } from 'src/app/service/company.service';
 import * as moment from 'moment-timezone';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -16,35 +17,20 @@ import * as moment from 'moment-timezone';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-
-  selectedItemMeeting!: number;
-
-
   constructor(private meetingService: MeetingService, private fb: FormBuilder,
     private toastr: ToastrService, private imageCompess: NgxImageCompressService,
-    private http: HttpClient, private datePipe: DatePipe, private companyService: CompanyService) {
+    private http: HttpClient, private datePipe: DatePipe, private companyService: CompanyService, private route: ActivatedRoute) {
+      this.idMeeting = this.route.snapshot.params['id'];
+
     this.getAllMeetingByCompany();
-
-
-
   }
-  selectItem(index: number) {
-    localStorage.setItem('idMeeting', String(index))
-    // this.selectedItemMeeting = index;
-    this.selectedItemMeeting = Number(localStorage.getItem('idMeeting'))
-    if (localStorage.getItem('idMeeting') == null) {
-      localStorage.setItem('idMeeting', String(this.selectedItemMeeting))
-    } else {
-      index = Number(localStorage.getItem('idMeeting'))
-    }
-  }
-
+  idMeeting!: number
+  
   ngOnInit(): void {
     this.imageControl = new FormControl(); // Tạo form control cho ảnh
     this.infoMeeting = new FormGroup({
       image: this.imageControl // Gán form control vào form group
     });
-    this.selectedItemMeeting = Number(localStorage.getItem('idMeeting'));
     this.getCompanyById()
     this.infoMeeting = this.fb.group({
       id: [],
@@ -76,6 +62,7 @@ export class SidebarComponent implements OnInit {
   get g() {
     return this.dataFormMeeting.controls
   }
+  isLoading: boolean = true;
 
   image!: any;
   imageBanner!: any
@@ -176,6 +163,8 @@ export class SidebarComponent implements OnInit {
         this.toList = Object.values(this.list[0].items);
       });
     }
+    this.isLoading = false;
+
   }
 
   imageError!: any;

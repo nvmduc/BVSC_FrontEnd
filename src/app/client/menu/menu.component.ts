@@ -39,7 +39,7 @@ export class MenuComponent implements OnInit{
   getInfoShareholder() {
     const id = localStorage.getItem('id');
     let idMeetingTemp: any; // Biến tạm để lưu giá trị idMeeting
-    if (id !== null) {
+    if (id != null) {
       this.shareholderService.getById(id).subscribe((res: any) => {
         this.data = res;
         idMeetingTemp = this.data.items?.idMeeting
@@ -49,17 +49,20 @@ export class MenuComponent implements OnInit{
 
       });
     } else {
-      console.log("Không tìm thấy id")
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   }
   getMeetingById(idMeeting:any) {
-    if (idMeeting !== null) {
+    if (idMeeting != null) {
       this.meetingService.getById(idMeeting).subscribe((res: any) => {
         this.dataMeeting = res;
-
       });
     } else {
-      console.log("Không tìm thấy id")
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   }
 

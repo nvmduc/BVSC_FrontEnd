@@ -13,10 +13,12 @@ import { VotingService } from 'src/app/service/voting.service';
 })
 export class VotingComponent implements OnInit {
   infoVoting: FormGroup = new FormGroup({});
+  getRole!:any
   constructor(private result_VotingService: ResultVotingService, private votingService: VotingService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) { }
   ngOnInit(): void {
     this.getAllByMeeting();
     this.getResultByIdShareholder();
+    this.getRole = localStorage.getItem('roles');
   }
 
   list: any[] = [];
