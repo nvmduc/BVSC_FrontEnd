@@ -16,13 +16,12 @@
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
-
           <div class="card-body">
             <div class="table-responsive">
               <table border=1px>
                 <thead class="text-center">
                   <tr class="th">
-                    <td rowspan="2" style="width: 70%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN
+                    <td rowspan="2" style="width: 60%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN
                       BIỂU
                       QUYẾT</td>
                     <td colspan="3" style="width: 350px; padding: 10px; border: 1px solid black;" class="text-center">
@@ -40,12 +39,15 @@
                     <td>{{i+1}}. {{item.content}}</td>
                     <td class="text-center">
                       <p>{{agreeResults[i]?.percentage}}%</p>
+                      <p>Tỉ lệ: {{agreeResults[i]?.shares}}/{{realShares}}</p>
                     </td>
                     <td class="text-center">
                       <p>{{disagreeResults[i]?.percentage}}%</p>
+                      <p>Tỉ lệ: {{disagreeResults[i]?.shares}}/{{realShares}}</p>
                     </td>
                     <td class="text-center">
                       <p>{{noOpinionResults[i]?.percentage}}%</p>
+                      <p>Tỉ lệ: {{noOpinionResults[i]?.shares}}/{{realShares}}</p>
                     </td>
                   </tr>
                 </tbody>

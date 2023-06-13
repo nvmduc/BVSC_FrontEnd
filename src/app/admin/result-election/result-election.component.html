@@ -21,6 +21,7 @@
             <div class="table-responsive">
               <div *ngFor="let item of toListElectionByMeeting; let i = index">
                 <h2>{{i+1}}. {{item.title}}</h2>
+                <p>Số ứng cử viên được bầu: {{item.numberOfElected}}</p>
                 <p>Các ứng cử viên:</p>
                 <table border="1">
                   <thead>
@@ -30,16 +31,16 @@
                       <td>Tỉ lệ</td>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr *ngFor="let candidate of candidatePercentages">
-                        <td>{{candidate.fullname}}</td>
+                  <tbody *ngFor="let candidate of candidatePercentages">
+                    <tr *ngIf="candidate.idElection === item.id">
+                      <td>{{candidate.fullname}}</td>
                       <td>{{candidate.totalShares}}/{{totalSharesOfShareholders}} phiếu</td>
                       <td>{{candidate.percentage | number: '1.0-2'}}%</td>
                     </tr>
                   </tbody>
                 </table>
+
               </div>
-              
             </div>
           </div>
         </div>

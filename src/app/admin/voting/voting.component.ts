@@ -10,7 +10,10 @@ import { VotingService } from 'src/app/service/voting.service';
   styleUrls: ['./voting.component.css']
 })
 export class VotingComponent implements OnInit {
-  constructor(private votingService: VotingService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) { }
+  role!:number
+  constructor(private votingService: VotingService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) {
+    this.role = Number(localStorage.getItem('role'))
+   }
   ngOnInit(): void {
     this.getAllByMeeting();
     this.infoVoting = this.fb.group({

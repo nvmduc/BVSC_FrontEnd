@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CheckinComponent } from './checkin/checkin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ElectionComponent } from './election/election.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 import { ResultElectionComponent } from './result-election/result-election.component';
 import { ResultVotingComponent } from './result-voting/result-voting.component';
 import { ShareholderComponent } from './shareholder/shareholder.component';
@@ -25,6 +26,8 @@ const routes: Routes = [
   {path: 'checkin/:idS', component: CheckinComponent},
   {path: 'result-voting/:id', component: ResultVotingComponent},
   {path: 'result-election/:id', component: ResultElectionComponent},
+  {path: 'feedback/:id', component: FeedbackComponent},
+
 ];
 
 @NgModule({

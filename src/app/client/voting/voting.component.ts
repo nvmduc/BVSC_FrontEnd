@@ -77,10 +77,11 @@ export class VotingComponent implements OnInit {
   dataResultVoting: any = []
   getRV: any[] = [];
   onSubmit() {
-    this.result_VotingService.getAll().subscribe((res) => {
-      this.dataResultVoting = [res];
-      this.getRV = this.dataResultVoting[0].items;
-      const isExisting = this.getRV.some(item => item.idShareholder === localStorage.getItem('id'));
+    const idMeeting = this.route.snapshot.params['idMeeting'];
+    this.result_VotingService.getByIdMeeting(idMeeting).subscribe((res) => {
+      this.dataResultVoting = res;
+      this.getRV = this.dataResultVoting.items;
+      const isExisting = this.getRV.some(item => item.idShareholder === localStorage.getItem('id'));      
       if (!isExisting) {
         const formValues = [];
         for (let i = 0; i < this.arr.length; i++) {
@@ -94,13 +95,33 @@ export class VotingComponent implements OnInit {
         this.result_VotingService.create(formValues).subscribe((res) => {
           if (res) {
             this.toastr.success("Biểu quyết thành công", "Thành công")
-            // this.getAllByMeeting()
           } else {
             this.toastr.error("Biểu quyết không thành công", "Thất bại")
           }
         })
       } else {
-        this.toastr.warning("Kết quả của bạn đã được ghi nhận rồi", "Thất bại")
+        const isExisting = this.getRV.filter(item => item.idShareholder === localStorage.getItem('id'));
+        const idArray = isExisting.map(item => item.id);
+
+        const formValues = [];
+        for (let i = 0; i < this.arr.length; i++) {
+          console.log(this.arr.length);
+            const formValue = {
+              id: idArray[i],
+              status: this.arr[i].status
+            };
+            formValues.push(formValue);
+          }
+        
+        for(let item of formValues){
+          this.result_VotingService.update(item.id,formValues).subscribe((res) => {
+            if (res) {
+              this.toastr.success("Cập nhật kết quả thành công", "Thành công")
+            } else {
+              this.toastr.error("Cập nhật không thành công", "Thất bại")
+            }
+          })
+        } 
       }
     })
 

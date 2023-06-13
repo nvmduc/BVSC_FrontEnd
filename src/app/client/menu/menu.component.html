@@ -1,19 +1,56 @@
 <div class="menu">
-  <nav class="navbar navbar-expand-lg navbar-light ">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <div class="navbar-collapse" id="navbarNav">
       <ul class="navbar-nav item-menu">
         <li class="nav-item active">
-          <a class="nav-link" href="home">Trang chủ</a>
+          <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home">Trang chủ</a>
+        </li>
+        <li class="nav-item active" *ngIf="toDataMeeting.status != 3 && toDataMeeting.status != 4">
+          <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/voting/{{data?.items?.idMeeting}}">Biểu quyết</a>
+        </li>
+        <li class="nav-item active" *ngIf="toDataMeeting.status != 4">
+          <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/election/{{data?.items?.idMeeting}}">Bầu cử</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status == 0}"
-            href="home/voting/{{data?.items?.idMeeting}}">Biểu quyết</a>
+          <a class="nav-link" href="{{toDataMeeting?.description}}">Tài liệu</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" [ngClass]="{'disabled': dataMeeting?.status == 0}"
-          href="home/election/{{data?.items?.idMeeting}}">Bầu cử</a>
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#addFeedbackModal">Đặt câu hỏi</a>
+        </li>
+        <li class="nav-item active" *ngIf="toDataMeeting.status == 4">
+          <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/result-meeting/{{data?.items?.idMeeting}}">Kết quả</a>
         </li>
       </ul>
     </div>
   </nav>
+</div>
+
+<div class="modal fade" id="addFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Đặt câu hỏi</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <form action="addShareholder" class="formAdd" method="post" [formGroup]="dataFeedback" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Nội dung câu hỏi</label>
+            <textarea type="text" name="name" class="form-control" aria-describedby="emailHelp" placeholder="..."
+              formControlName="content" required rows="4" cols="50"></textarea>
+            <div *ngIf="g.content.invalid && (g.content.dirty || g.content.touched)">
+              <h6 *ngIf="g.content.errors?.['required']" style="color:red; font-size:15px">Không được trống</h6>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="reset">Xóa hết</button>
+          <button class="btn btn-primary" type="submit" [disabled]="!dataFeedback.valid">Đặt câu hỏi</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

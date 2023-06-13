@@ -40,22 +40,26 @@ export class ElectionComponent implements OnInit {
     idMeeting: [this.idMeeting],
     title: [""],
     description: [""],
-    createdTime: [Date.now()]
+    numberOfElected: [""],
+    createdTime: [Date.now()],
+    status: [0],
   })
-
+  role!:number
   constructor(private fb: FormBuilder, private datePipe: DatePipe, private electionService: ElectionService, private candidateService: CandidateService, private toastr: ToastrService, private route: ActivatedRoute) {
+    this.role = Number(localStorage.getItem('role'))
   }
   ngOnInit(): void {
 
     this.getAllByMeeting();
     this.getAllCandidate();
     this.infoElection = this.fb.group({
-      // id: [''],
       idMeeting: [''],
       title: [''],
       description: [''],
+      numberOfElected: [''],
       createdTime: [''],
-      modifiedTime: ['']
+      modifiedTime: [''],
+      status: ['']
     })
     this.infoCandidate = this.fb.group({
       // id: [''],
@@ -90,8 +94,10 @@ export class ElectionComponent implements OnInit {
         idMeeting: this.data.items.idMeeting,
         title: this.data.items.title,
         description: this.data.items.description,
+        numberOfElected: this.data.items.numberOfElected,
         createdTime: this.data.items.createdTime,
         modifiedTime: this.data.items.modifiedTime,
+        status: this.data.items.status,
       });
     });
   }
@@ -175,6 +181,8 @@ export class ElectionComponent implements OnInit {
   onSubmitUpdate() {
     const id = this.infoElection.value.id
     this.infoElection.value.modifiedTime = Date.now();
+    console.log(this.infoElection.value.status);
+    
     this.electionService.update(id, this.infoElection.value).subscribe((res) => {
       if (res) {
         this.toastr.success("Sửa thành công", "Thành công")
@@ -186,6 +194,7 @@ export class ElectionComponent implements OnInit {
       }
     })
   }
+  
   onSubmit() {
     this.idMeeting = this.route.snapshot.params['id'];
     this.dataForm.value.idMeeting = this.idMeeting;
@@ -197,7 +206,9 @@ export class ElectionComponent implements OnInit {
           idMeeting: [this.idMeeting],
           title: [""],
           description: [""],
-          createdTime: [Date.now()]
+          numberOfElected: [""],
+          createdTime: [Date.now()],
+          status: [0]
         })
       } else {
         this.toastr.error("Không thành công", "Thất bại")
@@ -205,7 +216,6 @@ export class ElectionComponent implements OnInit {
       }
     });
   }
-
 
   get g() {
     return this.dataForm.controls

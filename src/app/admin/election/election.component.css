@@ -10,6 +10,9 @@
  .button-add {
      display: flex;
  }
+ .disabled-item{
+    display: none !important;
+ }
  .formAdd{
      display: block;
  }

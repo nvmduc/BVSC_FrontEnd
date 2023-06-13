@@ -12,8 +12,8 @@ import { ShareholderInfoService } from 'src/app/service/shareholder-info.service
 export class HomeComponent implements OnInit {
 
   constructor(private shareholderService: ShareholderInfoService, private router: Router, private meetingService: MeetingService, private toastr: ToastrService) {
-    
-   }
+
+  }
   // _token: any;
   // constructor(){
   //   this._token = localStorage.getItem('exp');
@@ -28,16 +28,21 @@ export class HomeComponent implements OnInit {
     return Math.floor(Date.now()) >= expiry;
   }
   ngOnInit(): void {
-    this.getInfoShareholder();
+    setInterval(() => {
+      this.getInfoShareholder();
+    },30000)
     setInterval(() => {
       if (this.tokenExpired()) {
-          localStorage.clear()
-          this.router.navigate([''])
-          this.toastr.error("Tài khoản của bạn đã đăng nhập quá 120 phút vui lòng đăng nhập lại")
-        } else {
-          console.log("ok");
-        }
-      }, 60000);
+        localStorage.clear()
+        this.router.navigate([''])
+        this.toastr.error("Tài khoản của bạn đã đăng nhập quá 120 phút vui lòng đăng nhập lại")
+      } else {
+        console.log("ok");
+      }
+    }, 60000);
+
+
+
   }
 
   data: any = [];
@@ -59,9 +64,35 @@ export class HomeComponent implements OnInit {
     }
   }
   getInfoMeeting(idMeeting: number) {
-    this.meetingService.getById(idMeeting).subscribe((res: any) => {
+    if (idMeeting) {
+      this.meetingService.getById(idMeeting).subscribe((res: any) => {
         this.data = res;
-    });
+        setInterval(() => {
+          if (this.data.items?.status == 1) {
+            localStorage.clear()
+            this.toastr.error("Cuộc họp đã kết thúc")
+            setTimeout(() => {
+              window.location.reload()
+            }, 1500);
+          } else if (this.data.items?.status == 4) {
+            this.toastr.error("Đã kết thúc biểu quyết và bầu cử")
+            setTimeout(() => {
+              window.location.reload()
+            }, 1500);
+          }else if(this.data.items?.status == 3){
+            this.toastr.error("Bầu cử lại")
+            setTimeout(() => {
+              window.location.reload()
+            }, 1500);
+          }else{
+            console.log("ok");
+            
+          }
+        }, 30000);
+      });
+    } else {
+      window.location.reload();
+    }
   }
 
 }

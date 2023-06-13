@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Legend } from 'chart.js';
+import { values } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { ResultElection } from 'src/app/models/result-election';
 import { CandidateService } from 'src/app/service/candidate.service';
@@ -20,61 +22,27 @@ export class ElectionComponent implements OnInit {
     this.getInfoShareholder();
     this.inputValues = new Array(this.toListCandidateByE.length);
   }
-  result: number = this.sumShares;
+  // result: number = this.sumShares;
   constructor(private result_ElectionService: ResultElectionService, private shareholderService: ShareholderInfoService, private candidateService: CandidateService, private electionService: ElectionService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) {
   }
-  subtract() {
-    const sumInputValues = this.inputValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    this.result = this.sumShares - sumInputValues;
-  }
 
-  numberShares!: number;
   numberSharesAuth!: number;
-  inputValues: number[] = [];
+  numberShares!: number;
 
-  divide() {
-    // Sau khi nhận được danh sách bản ghi
-    const numCandidates = this.toListCandidateByE.length;
+  divide(id: any) {
+    const candidates = this.getCandidatesByElection(id);
+    const totalCandidates = candidates.length;
+    const equalShares = Math.floor(this.totalShares[id] / totalCandidates);
 
-    // Khởi tạo mảng this.inputValues với số lượng phần tử tương ứng với số lượng bản ghi
-    this.inputValues = Array(numCandidates).fill(0);
+    candidates.forEach((itemC: any) => {
+      this.inputValues[itemC.id] = equalShares;
+      this.subtract(id);
+    });
+    this.getResultElection();
 
-
-    const inputCount = this.inputValues.length;
-    const valuePerInput = this.sumShares / inputCount;
-
-    for (let i = 0; i < inputCount; i++) {
-      this.inputValues[i] = valuePerInput;
-    }
-
-    const sumInputValues = this.inputValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const remainingValue = this.sumShares - sumInputValues;
-    const remainingValuePerInput = remainingValue / inputCount;
-
-    for (let i = 0; i < inputCount; i++) {
-      this.inputValues[i] += remainingValuePerInput;
-    }
-
-    this.subtract();
-
-    for (let itemElection of this.toListElection) {
-      for (let itemC of this.toListCandidate) {
-        if (itemElection.id == itemC.idElection) {
-          const existingIndex = this.arr.findIndex(item => item.idCandidate === itemC.id);
-          if (existingIndex !== -1) {
-            this.arr[existingIndex].numberSharesForCandidate = valuePerInput;
-          } else {
-            const formValue = {
-              idCandidate: itemC.id,
-              idShareholder: localStorage.getItem('id'),
-              numberSharesForCandidate: valuePerInput,
-            }
-            this.arr.push(formValue);
-          }
-        }
-      }
-    }
   }
+
+
   arr: any[] = [];
   dataResultElection: any = []
   getRE: any[] = [];
@@ -85,15 +53,14 @@ export class ElectionComponent implements OnInit {
       for (let itemC of this.toListCandidate) {
         if (itemElection.id == itemC.idElection) {
           const existingIndex = this.arr.findIndex(item => item.idCandidate === itemC.id);
-
           if (existingIndex !== -1) {
-            this.arr[existingIndex].numberSharesForCandidate = this.inputValues[inputIndex];
+            this.arr[existingIndex].numberSharesForCandidate = this.inputValues[itemC.id];
             inputIndex++;
           } else {
             const formValue = {
               idCandidate: itemC.id,
               idShareholder: localStorage.getItem('id'),
-              numberSharesForCandidate: this.inputValues[inputIndex],
+              numberSharesForCandidate: this.inputValues[itemC.id],
             }
             this.arr.push(formValue);
             inputIndex++;
@@ -103,10 +70,23 @@ export class ElectionComponent implements OnInit {
     }
   }
 
+  subtract(idE: any) {
+    const isExisting = this.toListCandidateByE.filter((item: any) => item.idElection === idE);
+    const sumInputValues = this.inputValues.reduce((accumulator: number, currentValue: number, currentIndex: any) => {
+      if (isExisting.find((item: any) => item.id === currentIndex)) {
+        return accumulator + currentValue;
+      }
+      return accumulator;
+    }, 0);
+    this.resultShares[idE] = this.totalShares[idE] - sumInputValues;
+  }
+
   onSubmit() {
     this.result_ElectionService.getAll().subscribe((res) => {
-      this.dataResultElection = [res];
-      this.getRE = this.dataResultElection[0].items;
+      this.dataResultElection = res;
+      this.getRE = this.dataResultElection.items;
+      console.log(this.dataResultElection);
+      
       const isExisting = this.getRE.some(item => item.idShareholder === localStorage.getItem('id'));
       if (!isExisting) {
         const formValues = [];
@@ -118,6 +98,7 @@ export class ElectionComponent implements OnInit {
           };
           formValues.push(formValue);
         }
+
         this.result_ElectionService.create(formValues).subscribe((res) => {
           if (res) {
             this.toastr.success("Biểu quyết thành công", "Thành công")
@@ -126,7 +107,26 @@ export class ElectionComponent implements OnInit {
           }
         })
       } else {
-        this.toastr.warning("Kết quả của bạn đã được ghi nhận rồi", "Thất bại")
+        const isExisting = this.getRE.filter(item => item.idShareholder === localStorage.getItem('id'));
+        const idArray = isExisting.map(item => item.id);
+
+        const formValues = [];
+        for (let i = 0; i < this.arr.length; i++) {
+          const formValue = {
+            id: idArray[i],
+            numberSharesForCandidate: this.arr[i].numberSharesForCandidate
+          };
+          formValues.push(formValue);
+        }
+        for(let item of formValues){
+          this.result_ElectionService.update(item.id, formValues).subscribe((res) => {
+            if (res) {
+              this.toastr.success("Cập nhật kết quả thành công", "Thành công")
+            } else {
+              this.toastr.error("Cập nhật không thành công", "Thất bại")
+            }
+          })
+        }
       }
     })
   }
@@ -154,60 +154,59 @@ export class ElectionComponent implements OnInit {
       } else {
         window.location.reload();
       }
-      this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate
-      this.result = this.sumShares;
-
     });
   }
-  getAllByMeeting(idMeeting:any) {
+  resultShares: number[] = []
+  inputValues: number[] = [];
+  totalShares: number[] = [];
+  inputNames: string[] = [];
+
+  getAllByMeeting(idMeeting: any) {
     // const idMeeting = this.route.snapshot.params['idMeeting'];
-    if(idMeeting != null){
+    if (idMeeting != null) {
       this.electionService.getByIdMeeting(idMeeting).subscribe((res) => {
         this.list = [res];
         this.toListElection = Object.values(this.list[0].items);
         for (let item of this.toListElection) {
           this.getAllByElection(item.id);
+          this.totalShares[item.id] = (this.numberShares + this.numberSharesAuth) * item.numberOfElected;
+          this.subtract(item.id)
         }
-        this.result = this.sumShares;
-        this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
-        this.result = this.sumShares;
+
       });
-    }else{
+    } else {
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     }
   }
 
+  getAllByElection(id: string) {
+    this.candidateService.getByIdElection(id).subscribe((res) => {
+      this.list = [res];
+
+      if (this.list[0].items.length == 0) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        const candidates = Object.values(this.list[0].items);
+        for (let candidate of candidates) {
+          (candidate as any).idElection = id;
+          // this.inputNames.push(`shares${this.inputNames.length}`);
+        }
+        this.toListCandidateByE.push(...candidates);
+      }
+
+    });
+  }
   getCandidatesByElection(id: string) {
     return this.toListCandidateByE.filter((candidate: { idElection: string }) => (candidate as any).idElection === id);
   }
 
   toListCandidateByE: any = [];
 
-  getAllByElection(id: string) {
-    this.candidateService.getByIdElection(id).subscribe((res) => {
-      this.list = [res];
-      console.log(this.list[0].items.length);
-      
-      if(this.list[0].items.length == 0){
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }else{
-        const candidates = Object.values(this.list[0].items);
-        for (let candidate of candidates) {
-          (candidate as any).idElection = id;
-        }
-        this.toListCandidateByE.push(...candidates);
-  
-        this.candidate = this.toListCandidateByE.length;
-        this.sumShares = (this.numberShares + this.numberSharesAuth) * this.candidate;
-        this.result = this.sumShares;
-      }
-      
-    });
-  }
+
   candidate!: number
   getAllCandidate(): void {
     this.candidateService.getAll().subscribe((res: any) => {
@@ -218,7 +217,7 @@ export class ElectionComponent implements OnInit {
   }
   data: any = [];
 
-  
+
   isFormValid!: boolean
   hasSelectedOption(): boolean {
     return this.arr.length >= this.toListElection.length;

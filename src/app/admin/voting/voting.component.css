@@ -18,7 +18,9 @@
     justify-content: center;
     height: 73px;
 }
-
+.disabled-item{
+    display: none;
+}
 .edit{
     margin-right: 10px;
 }

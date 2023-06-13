@@ -1,41 +1,94 @@
 .menu {
-    width: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.navbar-nav .nav-item {
+  width: 150px;
+  padding-right: 20px;
+}
+
+.navbar {
+  padding-left: 0px;
+  padding-top: 0px;
+}
+
+.nav-item a {
+  border: 1px solid none;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(86, 133, 219);
+  color: white !important;
+  /* margin: 10px; */
+}
+
+h5 {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.menu {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.item-menu {
+  display: flex;
+  flex-wrap: nowrap;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item-menu .nav-item {
+  flex: 0 0 auto;
+}
+
+.item-menu .nav-link {
+  padding: 10px;
+}
+
+@media only screen and (max-width: 390px) {
+  .item-menu {
     display: flex;
-    justify-content: space-between;
-  
-  }
-  
-  .navbar-nav .nav-item {
-    width: 150px;
-    padding-right: 20px;
-  }
-  .navbar{
-    padding-left: 0px;
-  }
-  .nav-item a {
-    border: 1px solid none;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    background-color: rgb(86, 133, 219);
-    color: white !important;
-    /* margin: 10px; */
+    flex-direction: row;
   }
 
-  @media only screen and (max-width: 390px) {
-    .item-menu{
-      display: flex;
-      flex-direction: row;
-    }
-    .item-menu .nav-item{
-      width: 116px;
-      margin: 0px 10px 10px 0px;
-    }
-    .navbar{
-      padding: 0px;
-    }    
-    .navbar-nav .nav-item{
-      padding: 0px;
-    }
+  .item-menu .nav-item {
+    width: 116px;
+    margin: 0px 10px 10px 0px;
   }
-  
+
+  .navbar {
+    padding: 0px;
+  }
+
+  .navbar-nav .nav-item {
+    padding: 0px;
+  }
+
+  .menu {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .item-menu {
+    display: flex;
+    flex-wrap: nowrap;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .item-menu .nav-item {
+    flex: 0 0 auto;
+  }
+
+  .item-menu .nav-link {
+    padding: 10px;
+  }
+
+}

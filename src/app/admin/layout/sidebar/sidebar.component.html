@@ -6,87 +6,134 @@
         <!-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div> -->
-        <div class="sidebar-brand-text mx-3">{{data.items?.stockCode}} Meeting Shareholder<sup></sup></div>
+        <div class="sidebar-brand-text mx-3">Meeting Shareholder<sup></sup></div>
     </a>
 
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
+    <li class="nav-item active" [ngClass]="{'disabled-item': role == 1}">
+        <button type="button" style="width: 100%; padding: 10px;" data-toggle="modal" data-target="#addCompanyModal"
+            class="btn btn-primary edit">
+            <i class="fa fa-building" aria-hidden="true"></i>
+            <span style="padding-left: 5px;">Tạo công ty</span></button>
+    </li>
+    <hr class="sidebar-divider my-0" [ngClass]="{'disabled-item': role == 1}">
+    <li class="nav-item active" [ngClass]="{'disabled-item': role == 1}">
         <button type="button" style="width: 100%; padding: 10px;" data-toggle="modal" data-target="#addMeetingModal"
             class="btn btn-primary edit">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Tạo cuộc họp</span></button>
+            <span style="padding-left: 5px;">Tạo cuộc họp</span></button>
     </li>
+
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-
     <!-- Heading -->
     <div class="sidebar-heading">
-        Cuộc họp ĐHĐCĐ
+        Danh sách công ty
     </div>
+    <hr class="sidebar-divider my-0">
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item" *ngFor="let item of toList;let i = index">
-        <div *ngIf="item?.status == 0 || item?.status == 2">
-            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
-                [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
-                <i class="fas fa-fw fa-cog"></i>
-                <span [ngClass]="{'colorMenu': idMeeting == item?.id}">{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
-            </a>
-            <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Cổ đông</h6>
-                    <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
-                    <h6 class="collapse-header">Biểu quyết</h6>
-                    <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
-                    <a class="collapse-item" href="admin/result-voting/{{item.id}}">Kết quả biểu quyết</a>
-                    <h6 class="collapse-header">Bầu cử</h6>
-                    <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
-                    <a class="collapse-item" href="admin/result-election/{{item.id}}">Kết quả bầu cử</a>
-                    <hr>
-                    <div>
-                        <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
-                            data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+    <div *ngFor="let company of toListCompany;let j = index" class="text-center">
+        <button style="padding: 10px; color: white;" type="button" class="btn" data-toggle="collapse"
+            [attr.data-target]="'#company'+j" [attr.aria-controls]="'collapse' + j">{{company.companyName}}</button>
+        <hr class="sidebar-divider my-0">
+        <div id="company{{j}}" class="collapse">
+            <div class="sidebar-heading">
+                Cuộc họp ĐHĐCĐ
+            </div>
+            <li class="nav-item" *ngFor="let item of toList;let i = index">
+                <div *ngIf="company.id === item.idCompany">
+                    <div *ngIf="item?.status == 0 || item?.status == 2 || item?.status == 3 || item?.status == 4">
+                        <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
+                            [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true"
+                            [attr.aria-controls]="'collapse' + i">
+                            <i class="fas fa-fw fa-tachometer-alt"></i>
+                            <span [ngClass]="{'colorMenu': idMeeting == item?.id}">{{item.nameMeeting | uppercase }}
+                                {{item.numberOrganized}}/{{item.yearOrganized}}</span>
+                        </a>
+                        <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1"
+                            data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">Cổ đông</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/shareholder/{{item.id}}">Cổ
+                                    đông</a>
+                                <h6 class="collapse-header">Biểu quyết</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/voting/{{item.id}}">Danh sách biểu quyết</a>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/result-voting/{{item.id}}">Kết quả biểu quyết</a>
+                                <h6 class="collapse-header">Bầu cử</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/election/{{item.id}}">Danh sách bầu cử</a>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/result-election/{{item.id}}">Kết quả bầu cử</a>
+                                <h6 class="collapse-header">Câu hỏi của cổ đông</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/feedback/{{item.id}}">Câu hỏi</a>
+                                <hr>
+                                <div>
+                                    <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
+                                        data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </li>
+            <div class="sidebar-heading">
+                Cuộc họp ĐHĐCĐ đã kết thúc
             </div>
-        </div>
-    </li>
-    <div class="sidebar-heading">
-        Cuộc họp ĐHĐCĐ đã kết thúc
-    </div>
-    <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item" *ngFor="let item of toList;let i = index">
-        <div *ngIf="item?.status == 1">
-            <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
-                [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="true" [attr.aria-controls]="'collapse' + i">
-                <i class="fas fa-fw fa-cog"></i>
-                <span [ngClass]="{'colorMenu': item?.id === idMeeting}" >{{item.nameMeeting | uppercase }} {{item.numberOrganized}}/{{item.yearOrganized}}</span>
-            </a>
-            <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Cổ đông</h6>
-                    <a class="collapse-item" href="admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ đông</a>
-                    <!-- <h6 class="collapse-header">Ứng cử viên</h6>
-                    <a class="collapse-item" href="admin/voting/{{item.id}}">Ứng cử viên</a> -->
-                    <h6 class="collapse-header">Biểu quyết</h6>
-                    <a class="collapse-item" href="admin/voting/{{item.id}}">Danh sách biểu quyết</a>
-                    <a class="collapse-item" href="buttons.html">Kết quả biểu quyết</a>
-                    <h6 class="collapse-header">Bầu cử</h6>
-                    <a class="collapse-item" href="admin/election/{{item.id}}">Danh sách bầu cử</a>
-                    <a class="collapse-item" href="buttons.html">Kết quả bầu cử</a>
-                    <hr>
-                    <div>
-                        <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
-                            data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item" *ngFor="let item of toList;let i = index">
+                <div *ngIf="company.id === item.idCompany">
+                    <div *ngIf="item?.status == 1">
+                        <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
+                            [attr.data-target]="'#collapse' + i" [attr.aria-expanded]="true"
+                            [attr.aria-controls]="'collapse' + i">
+                            <i class="fas fa-fw fa-cog"></i>
+                            <span [ngClass]="{'colorMenu': item?.id === idMeeting}">{{item.nameMeeting | uppercase }}
+                                {{item.numberOrganized}}/{{item.yearOrganized}}</span>
+                        </a>
+                        <div id="collapse{{i}}" class="collapse" aria-labelledby="heading1"
+                            data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                <h6 class="collapse-header">Cổ đông</h6>
+                                <a class="collapse-item" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/shareholder/{{item.id}}" routerLinkActive="active">Cổ
+                                    đông</a>
+                                <h6 class="collapse-header">Biểu quyết</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/voting/{{item.id}}">Danh sách biểu quyết</a>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/result-voting/{{item.id}}">Kết quả biểu quyết</a>
+                                <h6 class="collapse-header">Bầu cử</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/election/{{item.id}}">Danh sách bầu cử</a>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/result-election/{{item.id}}">Kết quả bầu cử</a>
+                                <h6 class="collapse-header">Câu hỏi của cổ đông</h6>
+                                <a class="collapse-item" routerLinkActive="active" ariaCurrentWhenActive="page"
+                                    routerLink="/admin/feedback/{{item.id}}">Câu hỏi</a>
+                                <hr>
+                                <div>
+                                    <a class="collapse-item" data-toggle="modal" (click)="editMeeting(item?.id)"
+                                        data-target="#infoMeeting" href="#">Thông tin cuộc họp</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <!-- <img src="data:image/png;base64,{{item.imageBanner}}" alt="" sizes="100" srcset=""> -->
+            </li>
+            <a class="collapse-item" data-toggle="modal" (click)="editCompany(company.id)" data-target="#infoCompany"
+                href="#" style="color: rgb(245, 255, 150);">Thông tin công ty</a>
         </div>
-        <!-- <img src="data:image/png;base64,{{item.imageBanner}}" alt="" sizes="100" srcset=""> -->
-    </li>
+    </div>
+
 
 
     <!-- Nav Item - Utilities Collapse Menu
@@ -145,7 +192,7 @@
                             <input type="number" class="form-control" placeholder="..."
                                 formControlName="numberOrganized" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group colunm">
                             <label>Năm tổ chức</label>
                             <!-- <input type="number" min="2023" class="form-control" placeholder="..." formControlName="yearOrganized" required> -->
                             <select class="form-control select" name="yearOrganized" formControlName="yearOrganized">
@@ -159,6 +206,15 @@
                                 <option [value]="2030">2030</option>
                                 <option [value]="2031">2031</option>
                                 <option [value]="2032">2032</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Công ty</label>
+                            <!-- <input type="number" min="2023" class="form-control" placeholder="..." formControlName="yearOrganized" required> -->
+                            <select class="form-control select" name="idCompany" formControlName="idCompany">
+                                <option *ngFor="let item of toListCompany" [value]="item.id">{{item.companyName}}
+                                </option>
+
                             </select>
                         </div>
                     </div>
@@ -202,6 +258,13 @@
                                 formControlName="address">
                         </div>
                     </div>
+                    <div class="line">
+                        <div class="form-group">
+                            <label>Link tài liệu</label>
+                            <input type="text" style="width: 660px;" name="description" class="form-control"
+                                placeholder="..." formControlName="description">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="reset">Clear</button>
@@ -213,6 +276,57 @@
     </div>
 </div>
 
+<div class="modal fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới công ty</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="dataFormCompany"
+                (ngSubmit)="onSubmitCompany()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputEmail1">Tên công ty</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="..."
+                                formControlName="companyName" required>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã chứng khoán</label>
+                            <input type="text" class="form-control" placeholder="..." formControlName="stockCode"
+                                required minlength="3" maxlength="3">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã số thuế</label>
+                            <input type="number" class="form-control" placeholder="..." formControlName="taxCode"
+                                required minlength="10" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control" placeholder="..." formControlName="address"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Năm tổ thành lập</label>
+                            <input type="date" class="form-control" placeholder="..." formControlName="foundedYear">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!dataFormCompany.valid">Thêm mới</button>
+                    <!-- [disabled]="!dataForm.valid" -->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Create Modal-->
 <div class="modal fade" id="infoMeeting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -225,7 +339,8 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form action="addMeeting" class="formAdd" method="post" [formGroup]="infoMeeting" (ngSubmit)="onSubmitUpdate()">
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="infoMeeting"
+                (ngSubmit)="onSubmitUpdate()">
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
@@ -293,10 +408,68 @@
                                 formControlName="address">
                         </div>
                     </div>
+                    <div class="line">
+                        <div class="form-group">
+                            <label>Link tài liệu</label>
+                            <input type="text" style="width: 660px;" name="description" class="form-control"
+                                placeholder="..." formControlName="description">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="reset">Clear</button>
-                    <button class="btn btn-primary" type="submit">Sửa thông tin</button>
+                    <button class="btn btn-primary" type="submit" [ngClass]="{'disabled-item': role == 1}">Sửa thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoCompany" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin công ty</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addMeeting" class="formAdd" method="post" [formGroup]="infoCompany"
+                (ngSubmit)="onSubmitUpdateCompany()">
+                <div class="modal-body">
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label for="exampleInputEmail1">Tên công ty</label>
+                            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="..."
+                                formControlName="companyName" required>
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã chứng khoán</label>
+                            <input type="text" class="form-control" placeholder="..." formControlName="stockCode"
+                                required minlength="3" maxlength="3">
+                        </div>
+                        <div class="form-group colunm">
+                            <label>Mã số thuế</label>
+                            <input type="number" class="form-control" placeholder="..." formControlName="taxCode"
+                                required minlength="10" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Địa chỉ</label>
+                            <input type="text" class="form-control" placeholder="..." formControlName="address"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Năm tổ thành lập</label>
+                            <input type="date" class="form-control" placeholder="..." formControlName="foundedYear">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [ngClass]="{'disabled-item': role == 1}">Sửa thông tin</button>
                 </div>
             </form>
         </div>
@@ -305,4 +478,4 @@
 
 <div *ngIf="isLoading" class="loading-spinner">
     <div class="loading">Loading&#8230;</div>
-  </div>
+</div>

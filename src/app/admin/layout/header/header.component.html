@@ -5,15 +5,44 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
+        <div [ngClass]="{'disabled-item': role == 1}">
+            <button type="submit" class="btn btn-primary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 0"
+                data-toggle="modal" data-target="#startModal">
+                Bắt đầu cuộc họp
+            </button>
+            <button type="submit" class="btn btn-secondary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 1"
+                disabled>
+                Cuộc họp đã kết thúc
+            </button>
+            <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 1"
+                data-toggle="modal" data-target="#startModal">
+                Bắt đầu lại cuộc họp
+            </button>
+            <button type="submit" class="btn btn-primary"
+                style="margin: 10px; background-color: rgb(232, 85, 246); border:none"
+                *ngIf="dataMeeting.items?.status == 2" data-toggle="modal" data-target="#endVotingAndElectionModal">
+                Kết thúc biểu quyết và bầu cử
+            </button>
+            <button type="submit" class="btn btn-primary"
+                style="margin: 10px; background-color: rgb(2, 140, 9); border:none"
+                *ngIf="dataMeeting.items?.status == 2" data-toggle="modal" data-target="#continueModal">
+                Mở lại bầu cử
+            </button>
+            <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 4"
+                data-toggle="modal" data-target="#startModal">
+                Mở biểu quyết và bầu cử
+            </button>
+            <button type="submit" class="btn btn-danger" style="margin: 10px;"
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4" data-toggle="modal"
+                data-target="#endModal">
+                Kết thúc cuộc họp
+            </button>
+            <button type="submit" class="btn btn-danger" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 3"
+                data-toggle="modal" data-target="#endModal">
+                Chấm dứt cuộc họp
+            </button>
+        </div>
 
-        <button type="submit" class="btn btn-primary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 0"
-            data-toggle="modal" data-target="#startModal">Bắt
-            đầu cuộc họp</button>
-        <button type="submit" class="btn btn-secondary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 1"
-            disabled>Cuộc họp đã kết thúc</button>
-        <button type="submit" class="btn btn-danger" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 2"
-            data-toggle="modal" data-target="#endModal">Kết
-            thúc cuộc họp</button>
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
@@ -24,17 +53,15 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a *ngIf="role == 1" style="display: none" class="dropdown-item" class="dropdown-item"
+                    data-toggle="modal" data-target="#presideModal">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
+                    Tạo tài khoản chủ tạo
                 </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Activity Log
+                <a *ngIf="role != 1" class="dropdown-item" class="dropdown-item" data-toggle="modal"
+                    data-target="#presideModal">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Tạo tài khoản chủ tạo
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
@@ -63,14 +90,52 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="#" (click)="Logout()">Logout</a>
+                <a class="btn btn-primary" (click)="Logout()">Logout</a>
             </div>
+        </div>
+    </div>
+</div>
+<!-- preside Modal -->
+<div class="modal fade" id="presideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới biểu quyết</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form action="addShareholder" class="formAdd" method="post" (ngSubmit)="onSubmit()" [formGroup]="dataForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Tài khoản</label>
+                        <input type="text" name="name" class="form-control" placeholder="..." formControlName="username"
+                            required>
+                        <div *ngIf="g.username.invalid && (g.username.dirty || g.username.touched)">
+                            <h6 *ngIf="g.username.errors?.['required']">Không được trống</h6>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Mật khẩu</label>
+                        <input type="password" name="password" class="form-control" placeholder="..."
+                            formControlName="password" required>
+                        <div *ngIf="g.password.invalid && (g.password.dirty || g.password.touched)">
+                            <h6 *ngIf="g.password.errors?.['required']">Không được trống</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="reset">Clear</button>
+                    <button class="btn btn-primary" type="submit" [disabled]="!dataForm.valid">Tạo tài khoản</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 
-<!-- Logout Modal-->
+<!-- Start Meeting-->
 <div class="modal fade" id="startModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -85,12 +150,31 @@
             <div class="modal-body">Bạn có chắc chắn muốn bắt đầu cuộc họp không</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="#" (click)="onStart($event)">Bắt đầu</a>
+                <a class="btn btn-primary" (click)="onStart($event)">Bắt đầu</a>
             </div>
         </div>
     </div>
 </div>
-
+<!-- Continue Meeting -->
+<div class="modal fade" id="continueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Tiếp tục cuộc
+                    họp</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn mở lại cuộc họp không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onContinue($event)">Tiếp tục</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Logout Modal-->
 <div class="modal fade" id="endModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -107,7 +191,28 @@
             <div class="modal-body">Bạn có chắc chắn muốn kết thúc cuộc họp không</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="#" (click)="onEnd()">Kết thúc</a>
+                <a class="btn btn-primary" (click)="onEnd()">Kết thúc</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="endVotingAndElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Kết thúc biểu
+                    quyết và bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn kết thúc biểu quyết và bầu cử không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onEndVotingAndElection()">Kết thúc</a>
             </div>
         </div>
     </div>

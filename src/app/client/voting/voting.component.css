@@ -89,7 +89,7 @@
       display: flex;
       align-items: center;
       flex-direction: row;
-      width: 102.5%;
+      width: 100%;
     }
     .main-feedback .title{
       font-size: 20px;

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResultElection } from '../models/result-election';
@@ -24,6 +24,9 @@ export class ResultElectionService {
     return this.http.post<ResultElection>(`${ApiUrl}/save-election`,data)
   }
   update(id:string,data:any):Observable<ResultElection>{
-    return this.http.put<ResultElection>(`${ApiUrl}/${id}`,data)
+    const httpOptions = {
+      headers: new HttpHeaders({'Content-Type': 'application/json'})
+    }
+    return this.http.put<ResultElection>(`${ApiUrl}/election/edit/${id}`,data,httpOptions)
   }
 }

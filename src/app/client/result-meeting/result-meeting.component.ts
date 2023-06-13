@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { count, forkJoin } from 'rxjs';
-import { Shareholder } from 'src/app/models/shareholder';
+import { forkJoin } from 'rxjs';
+import { CandidateService } from 'src/app/service/candidate.service';
+import { ElectionService } from 'src/app/service/election.service';
 import { MeetingService } from 'src/app/service/meeting.service';
+import { ResultElectionService } from 'src/app/service/result-election.service';
 import { ResultVotingService } from 'src/app/service/result-voting.service';
 import { ShareholderInfoService } from 'src/app/service/shareholder-info.service';
 import { VotingService } from 'src/app/service/voting.service';
 
 @Component({
-  selector: 'app-result-voting',
-  templateUrl: './result-voting.component.html',
-  styleUrls: ['./result-voting.component.css']
+  selector: 'app-result-meeting',
+  templateUrl: './result-meeting.component.html',
+  styleUrls: ['./result-meeting.component.css']
 })
-export class ResultVotingComponent implements OnInit {
+export class ResultMeetingComponent implements OnInit {
   totalShares: number = 0;
   listVotingByMeeting: any = [];
   toListVotingByMeeting: any[] = [];
-  countVoting!: number
+  countVoting: number = 0
   toListResultVoting: any[] = [];
   resultVotings: any = []
   sharesCount: number = 0;
@@ -29,27 +31,34 @@ export class ResultVotingComponent implements OnInit {
   disagreeResults: any = [];
   noOpinionResults: any = [];
   isLoading: boolean = false;
-  agree:number = 0
-  disagree:number = 0
-  noOpinion:number = 0
-  
-  constructor(private route: ActivatedRoute, private meetingService: MeetingService, private result_votingService: ResultVotingService, private shareholderService: ShareholderInfoService, private votingService: VotingService) { }
+  agree: number = 0
+  disagree: number = 0
+  noOpinion: number = 0
+  totalSharesOfShareholders!: number
+  listElectionByMeeting: any = [];
+  toListElectionByMeeting: any[] = [];
+  candidatePercentages: any[] = []
+  candidateList: any[] = [];
+  infoCandidate: any = []
+  totalSharesOfCandidate!: number;
+
+  constructor(private candidateService: CandidateService, private electionService: ElectionService,
+    private result_ElectionService: ResultElectionService, private route: ActivatedRoute, private result_votingService: ResultVotingService,
+    private shareholderService: ShareholderInfoService, private votingService: VotingService) { }
   ngOnInit(): void {
-    // this.getAllResultVoting();
-    // setTimeout(() => {
-      this.getAllResultVoting();
-    // }, 3000);
+    this.getAllResultVoting();
+    this.getElectionByIdMeeting();
+    this.getAllCandidate();
+    this.getAllResultElection();
   }
 
+
   getAllResultVoting(): void {
-    const idMeeting = this.route.snapshot.params['id'];
+    const idMeeting = this.route.snapshot.params['idMeeting'];
     this.result_votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.resultVotings = res;
-      this.toListResultVoting = Object.values(this.resultVotings.items);
-
-      const observables = this.toListResultVoting.map(item =>
-        this.shareholderService.getById(item.idShareholder)
-      );
+      this.toListResultVoting = this.resultVotings.items;
+      const observables = this.toListResultVoting.map(item => this.shareholderService.getById(item.idShareholder));
       forkJoin(observables).subscribe(responses => {
         for (let res of responses) {
           this.infoShareholder = res;
@@ -63,21 +72,17 @@ export class ResultVotingComponent implements OnInit {
     });
   }
 
- 
-
   calculateVotingResult(totalShares: number) {
     const agreeResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 1);
     const disagreeResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 0);
     const noOpinionResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 2);
-    const idMeeting = this.route.snapshot.params['id'];
+    const idMeeting = this.route.snapshot.params['idMeeting'];
     this.votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.listVotingByMeeting = res;
       this.toListVotingByMeeting = Object.values(this.listVotingByMeeting.items);
       this.countVoting = this.toListVotingByMeeting.length;
       this.realShares = totalShares / this.countVoting;
-
       const resultsArray: { agree: number; disagree: number; noOpinion: number; }[] = []; // Mảng kết quả của các cuộc biểu quyết
-
       const votingPromises = this.toListVotingByMeeting.map((voting: any) => {
         const results = {
           agree: this.agree,
@@ -100,7 +105,6 @@ export class ResultVotingComponent implements OnInit {
                 const shareholder = res;
                 const shares = shareholder.items?.numberShares + shareholder.items?.numberSharesAuth;
                 results.agree += shares;
-                console.log(shares);
               }
               this.agree = results.agree
 
@@ -182,23 +186,115 @@ export class ResultVotingComponent implements OnInit {
         });
       });
       Promise.all(votingPromises).then(() => {
-        // Hiển thị kết quả trong HTML
         this.agreeResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.agree) ? 0 : results.agree.toFixed(2),shares: this.agree
+          percentage: isNaN(results.agree) ? 0 : results.agree.toFixed(2), shares: this.agree
         }));
         this.disagreeResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.disagree) ? 0 : results.disagree.toFixed(2),shares: this.disagree
+          percentage: isNaN(results.disagree) ? 0 : results.disagree.toFixed(2), shares: this.disagree
         }));
         this.noOpinionResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.noOpinion) ? 0 : results.noOpinion.toFixed(2),shares: this.noOpinion
+          percentage: isNaN(results.noOpinion) ? 0 : results.noOpinion.toFixed(2), shares: this.noOpinion
         }));
+      });
 
+    });
+  }
+
+  resultElections: any = [];
+  toListResultElection: any[] = [];
+  // infoShareholder: any = [];
+  sharesCountElection: number = 0;
+  countCandidate: number = 0;
+  getElectionByIdMeeting() {
+    const idMeeting = this.route.snapshot.params['idMeeting'];
+    this.electionService.getByIdMeeting(idMeeting).subscribe((res) => {
+      this.listElectionByMeeting = res;
+      this.toListElectionByMeeting = Object.values(this.listElectionByMeeting.items);
+    })
+  }
+  listCandidate: any = [[]]
+  toListCandidate: any[] = []
+  getAllCandidate(): void {
+    const idMeeting = this.route.snapshot.params['idMeeting'];
+    this.candidateService.getByIdMeeting(idMeeting).subscribe((res: any) => {
+      this.listCandidate = [res];
+      this.toListCandidate = Object.values(this.listCandidate[0].items);
+    })
+  }
+  getAllResultElection(): void {
+    const idMeeting = this.route.snapshot.params['idMeeting'];
+    this.result_ElectionService.getByIdMeeting(idMeeting).subscribe((res) => {
+      this.resultElections = res;
+      this.toListResultElection = Object.values(this.resultElections.items);
+
+      const observables = this.toListResultElection.map(item =>
+        this.shareholderService.getById(item.idShareholder)
+      );
+      forkJoin(observables).subscribe(responses => {
+        for (let res of responses) {
+          this.infoShareholder = res;
+          const shares =
+            this.infoShareholder.items?.numberShares +
+            this.infoShareholder.items?.numberSharesAuth;
+          this.sharesCountElection += shares;
+        }
+        const countCandidate = this.toListCandidate.length
+        this.totalSharesOfShareholders = this.sharesCountElection / countCandidate
+        this.calculateElectionResult(this.totalSharesOfShareholders);
       });
     });
   }
 
+  calculateElectionResult(totalShares: number) {
+    this.totalSharesOfShareholders = totalShares;
+    if (isNaN(totalShares)) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000)
+      this.isLoading = true;
+    }
+    const candidatePercentages: { idElection: string; idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
+    const candidateSharesMap = new Map<number, number>();
 
+    for (const item of this.toListResultElection) {
+      const idCandidate = item.idCandidate;
+      const numberSharesForCandidate = item.numberSharesForCandidate;
+
+      if (candidateSharesMap.has(idCandidate)) {
+        const currentShares = candidateSharesMap.get(idCandidate);
+        candidateSharesMap.set(idCandidate, currentShares + numberSharesForCandidate);
+        this.totalSharesOfCandidate = currentShares + numberSharesForCandidate
+        if (isNaN(this.totalSharesOfCandidate)) {
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000)
+          this.isLoading = true;
+        }
+      } else {
+        candidateSharesMap.set(idCandidate, numberSharesForCandidate);
+      }
+    }
+
+    candidateSharesMap.forEach((shares, candidateId) => {
+      const candidatePercent = (shares / totalShares) * 100;
+      const candidate: { idCandidate: number; percentage: number; totalShares: number; fullname: string; idElection: string; } = {
+        idElection: "",
+        idCandidate: candidateId,
+        percentage: candidatePercent,
+        totalShares: shares,
+        fullname: '',
+      };
+      this.candidateService.getById(candidateId).subscribe((res) => {
+        this.infoCandidate = res;
+        candidate.fullname = this.infoCandidate.items?.fullname;
+        candidate.idElection = this.infoCandidate.items?.idElection;
+
+      });
+      candidatePercentages.push(candidate);
+    });
+    this.candidatePercentages = candidatePercentages;
+    this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
+
+  }
 
 }
-
-

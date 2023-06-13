@@ -64,7 +64,9 @@ h5 {
     font-weight: bold;
     font-size: 20px;
 }
-
+.disabled-item{
+  display: none !important;
+}
 small {
     font-style: italic;
 }

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ElectionComponent } from './election/election.component';
 import { VotingComponent } from './voting/voting.component';
+import { ResultMeetingComponent } from './result-meeting/result-meeting.component';
 
 const routes: Routes = [
     {
@@ -23,6 +24,10 @@ const routes: Routes = [
     {
       path: 'election/:idMeeting',
       component: ElectionComponent
+    },
+    {
+      path: 'result-meeting/:idMeeting',
+      component: ResultMeetingComponent
     }
   ];
 

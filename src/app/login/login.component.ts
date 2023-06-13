@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
                 this.meetingService.getById(this.dataShareholder.items?.idMeeting).subscribe((resM) => {
                   this.dataMeeting = resM;
                   if(this.dataMeeting){
-                    if (this.dataMeeting.items?.status == 2) {
+                    if (this.dataMeeting.items?.status == 2 || this.dataMeeting.items?.status == 3 || this.dataMeeting.items?.status == 4) {
                       const token = localStorage.getItem('token');
                       const roles = localStorage.getItem('roles');
                       if (token != null && roles == '0') {
@@ -115,14 +115,14 @@ export class LoginComponent implements OnInit {
                       this.toastr.error("Cuộc họp đã kết thúc");
                     }
                   }else{
-                    this.toastr.error("Thông tin tài khoản không chính xác")
+                    this.toastr.error("Thông tin tài khoản không chính xác1")
                   }
                 })
               }
             })
           }
         }else{
-          this.toastr.error("Thông tin tài khoản không chính xác")
+          this.toastr.error("Thông tin tài khoản không chính xác2")
         }
       })
     }

@@ -17,15 +17,23 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 button-add text-center">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addShareholderModal">Thêm
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addShareholderModal" [ngClass]="{'disabled-item': role == 1}">Thêm
                             mới</a>
                         <a class="dropdown-item" style="background-color: green;" href="#" data-toggle="modal"
-                            data-target="#fileShareholderModal">Thêm file Excel</a>
+                            data-target="#fileShareholderModal" [ngClass]="{'disabled-item': role == 1}">Thêm file Excel</a>
                         <div>
                             <form [formGroup]="searchForm">
                                 <input class="search" style="margin-bottom: 0px;" type="search" placeholder="Tìm kiếm"
                                     formControlName="search">
                             </form>
+                        </div>
+                        <div style="padding-left: 20px;">
+                            <div style="display: flex">
+                                <h3 style="margin: 0px;">Tổng số cổ đông đã đến: <strong>{{count | number: '1.0-0'}} / {{toList.length | number:
+                                    '1.0-0'}}</strong> |  Số cổ đông được ủy quyền: <strong>{{countAuths}}</strong></h3>
+                            </div>
+                            <h3 style="margin: 0px;">Tổng số CP của cổ đông đã đến: <strong>{{allSharesCheckin | number: '1.0-0'}} /
+                                {{allShares | number: '1.0-0'}} = {{percentShares | number: '1.0-2'}}%</strong></h3>
                         </div>
                     </div>
 
@@ -43,7 +51,7 @@
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
                                         <th scope="col">Trạng thái</th>
-                                        <th style="width: 50px;">Action</th>
+                                        <th style="width: 50px;" [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -57,15 +65,15 @@
                                         <th scope="col">Cổ phần SH</th>
                                         <th scope="col">Cổ phần UQ</th>
                                         <th scope="col">Trạng thái</th>
-                                        <th scope="col" style="width: 50px;">Action</th>
+                                        <th scope="col" style="width: 50px;" [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </tfoot>
                                 <tbody
                                     *ngFor="let item of toList | searchShareholder: searchForm.value.search ?? '' | paginate: { itemsPerPage: pageSize, currentPage: p };let i = index ">
                                     <tr class="width-td">
                                         <td>{{i + 1}}</td>
-                                        <td><a style="padding-left: 0px;" class="dropdown-item name" href="#" data-toggle="modal"
-                                                data-target="#infoShareholderModal"
+                                        <td><a style="padding-left: 0px;" class="dropdown-item name" href="#"
+                                                data-toggle="modal" data-target="#infoShareholderModal"
                                                 (click)="getShareholder(item?.id)">{{item?.fullname}}</a></td>
                                         <td>{{item?.shareHolderCode}}</td>
                                         <td>{{item?.identityCard}}</td>
@@ -73,13 +81,15 @@
                                         <td>{{item?.username}}</td>
                                         <td>{{item?.numberShares | number:'1.0-0'}}</td>
                                         <td>{{item?.numberSharesAuth | number:'1.0-0'}}</td>
-                                        <td>{{item?.status == 0 ? 'Chưa đến':'Đã đến'}}</td>
-                                        <td class="text-center" style="display: flex;">
+                                        <td *ngIf="item?.status == 0" style="color: red;">{{item?.status == 0 ? 'Chưa đến':'Đã đến'}}</td>
+                                        <td *ngIf="item?.status == 1" style="color: green;">{{item?.status == 0 ?
+                                            'Chưa đến':'Đã đến'}}</td>
+                                        <td class="text-center" style="display: flex;" [ngClass]="{'disabled-item': role == 1}">
                                             <button type="button" data-toggle="modal"
                                                 data-target="#editShareholderModal" (click)="edit(item?.id)"
-                                                class="btn btn-primary edit">Sửa</button>
+                                                class="btn btn-primary edit" [ngClass]="{'disabled-item': role == 1}">Sửa</button>
                                             <button data-toggle="modal" type="button" class="btn btn-danger"
-                                                data-target="#deletetModal" (click)="delete(item?.id)">Xoá</button>
+                                                data-target="#deletetModal" (click)="delete(item?.id)" [ngClass]="{'disabled-item': role == 1}">Xoá</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -214,11 +224,7 @@
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Cổ phần UQ</label>
                             <input type="text" name="numberSharesAuth" class="form-control" placeholder="..."
-                                formControlName="numberSharesAuth" min="0" [value]="0" required>
-                            <div
-                                *ngIf="g.numberSharesAuth.invalid && (g.numberSharesAuth.dirty || g.numberSharesAuth.touched)">
-                                <h6 *ngIf="g.numberSharesAuth.errors?.['required']">Không được trống</h6>
-                            </div>
+                                formControlName="numberSharesAuth" min="0" [value]="0">
                         </div>
                         <div class="form-group">
                             <label for="cars">Chức vụ</label>
@@ -260,11 +266,20 @@
                             <label>Tên cổ đông</label><small>(Bắt buộc)</small>
                             <input type="text" name="fullname" class="form-control" id="fullname"
                                 aria-describedby="emailHelp" placeholder="..." formControlName="fullname" required>
+                                <div *ngIf="g.fullname.invalid && (g.fullname.dirty || g.fullname.touched)">
+                                    <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
+                                    <h6 *ngIf="g.fullname.errors?.['pattern']">Không được có số</h6>
+                                </div>
                         </div>
                         <div class="form-group colunm">
-                            <label>Mã cổ đông</label>
+                            <label>Mã cổ đông</label><small>(Bắt buộc)</small>
                             <input type="text" name="shareHolderCode" class="form-control" aria-describedby="emailHelp"
                                 placeholder="..." formControlName="shareHolderCode" required maxlength="8">
+                                <div
+                                *ngIf="g.shareHolderCode.invalid && (g.shareHolderCode.dirty || g.shareHolderCode.touched)">
+                                <h6 *ngIf="g.fullname.errors?.['required']">Không được trống</h6>
+                                <h6 *ngIf="g.fullname.errors?.['minlength']">Tối thiểu 6 ký tự </h6>
+                            </div>
                         </div>
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Số CCCD</label><small>(Bắt buộc)</small>
@@ -355,14 +370,15 @@
                 </button>
             </div>
             <form action="editShareholder" class="formAdd" method="post" enctype="multipart/form-data"
-                (ngSubmit)="onSubmitFile(form)" #form="ngForm" >
+                (ngSubmit)="onSubmitFile(form)" #form="ngForm">
                 <div class="modal-body">
                     <div class="line">
                         <div class="form-group colunm">
                             <label>File Excel</label>
                             <input type="file"
                                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                name="file" class="form-control" aria-describedby="emailHelp" placeholder="..." (change)="onFileSelected($event)">
+                                name="file" class="form-control" aria-describedby="emailHelp" placeholder="..."
+                                (change)="onFileSelected($event)">
                         </div>
                     </div>
                 </div>
@@ -482,7 +498,8 @@
                         *ngIf="dataInfo.items?.numberShares == 0 && dataInfo.items?.numberSharesAuth == 0"
                         disabled>Checkin</button>
                     <button class="btn btn-primary" type="submit"
-                        *ngIf="dataInfo.items?.numberShares != 0 || dataInfo.items?.numberSharesAuth != 0" (click)="checkin(dataInfo.items?.id)">Checkin</button>
+                        *ngIf="dataInfo.items?.numberShares != 0 || dataInfo.items?.numberSharesAuth != 0"
+                        (click)="checkin(dataInfo.items?.id)">Checkin</button>
                     <button class="btn btn-success" type="button" data-toggle="modal" data-target="#authorizationModal"
                         (click)="getIdShareholder(dataInfo.items?.id)">Nhận CP uỷ quyền</button>
                 </div>
@@ -614,3 +631,17 @@
     <div class="loading">Loading&#8230;</div>
 </div>
 
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm mới cổ đông</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>

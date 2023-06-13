@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { FeedbackService } from 'src/app/service/feedback.service';
 import { MeetingService } from 'src/app/service/meeting.service';
 import { ShareholderInfoService } from 'src/app/service/shareholder-info.service';
 import { VotingService } from 'src/app/service/voting.service';
@@ -11,7 +14,7 @@ import { InfoShareholderComponent } from '../info-shareholder/info-shareholder.c
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit{
-  constructor(private meetingService:MeetingService, private shareholderService:ShareholderInfoService,private route: ActivatedRoute,private votingService:VotingService){}
+  constructor(private toastr:ToastrService,private feedbackService:FeedbackService,private fb:FormBuilder,private meetingService:MeetingService, private shareholderService:ShareholderInfoService,private route: ActivatedRoute,private votingService:VotingService){}
   ngOnInit(): void {
     this.getInfoShareholder();
 
@@ -23,8 +26,6 @@ export class MenuComponent implements OnInit{
   list:any[] = [];
   toList:any[] = [];
 
-
-
   idMeeting :any
 
   getAllByMeeting(idMeeting:number) {
@@ -34,8 +35,6 @@ export class MenuComponent implements OnInit{
     })
   }
   
-  
-
   getInfoShareholder() {
     const id = localStorage.getItem('id');
     let idMeetingTemp: any; // Biến tạm để lưu giá trị idMeeting
@@ -54,10 +53,14 @@ export class MenuComponent implements OnInit{
       }, 1000);
     }
   }
+  toDataMeeting:any = []
   getMeetingById(idMeeting:any) {
     if (idMeeting != null) {
       this.meetingService.getById(idMeeting).subscribe((res: any) => {
         this.dataMeeting = res;
+        this.toDataMeeting = this.dataMeeting.items
+        console.log(this.toDataMeeting);
+        
       });
     } else {
       setTimeout(() => {
@@ -66,4 +69,32 @@ export class MenuComponent implements OnInit{
     }
   }
 
+  dataFeedback = this.fb.group({
+    idShareholder: [localStorage.getItem('id')],
+    content: [""],
+  })
+
+  onSubmit(){
+    const idShareholder = localStorage.getItem('id');
+    this.dataFeedback.value.idShareholder = idShareholder
+    this.feedbackService.create(this.dataFeedback.value).subscribe((res) => {
+      if (res) {
+        this.toastr.success("Đặt câu hỏi thành công", "Thành công")
+        console.log(this.dataFeedback.value)
+        // this.getAllByMeeting();
+        this.dataFeedback = this.fb.group({
+          idShareholder: [idShareholder],
+          content: [""],
+        })
+      } else {
+        console.log("Insert False")
+        this.toastr.error("Không thành công", "Thất bại")
+        // this.getAllByMeeting()
+      }
+    });
+  }
+
+  get g() {
+    return this.dataFeedback.controls
+  } 
 }

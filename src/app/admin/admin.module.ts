@@ -19,6 +19,7 @@ import { CheckinComponent } from './checkin/checkin.component';
 import { ResultVotingComponent } from './result-voting/result-voting.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ResultElectionComponent } from './result-election/result-election.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ResultElectionComponent } from './result-election/result-election.compo
     CheckinComponent,
     ResultVotingComponent,
     ResultElectionComponent,
+    FeedbackComponent,
   ],
   imports: [
     AdminRoutingModule,

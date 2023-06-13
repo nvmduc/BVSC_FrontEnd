@@ -17,7 +17,7 @@
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 button-add text-center" >
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addElectionModal">Thêm mới</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addElectionModal" [ngClass]="{'disabled-item': role == 1}">Thêm mới</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -27,10 +27,10 @@
                                         <th style="width: 20px;">STT</th>
                                         <th style="width: 150px;">Tiêu đề</th>
                                         <th>Mô tả</th>
+                                        <th>Số lượng được bầu</th>
                                         <th>Ứng cử viên</th>
-                                        <th style="width: 70px;">Created Time</th>
-                                        <!-- <th style="width: 70px;">Modified Time</th> -->
-                                        <!-- <th style="width: 50px;">Action</th> -->
+                                        <th>Trạng thái</th>
+                                        <th style="width: 70px;" [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
@@ -38,24 +38,25 @@
                                         <th>STT</th>
                                         <th>Tiêu đề</th>
                                         <th>Mô tả</th>
+                                        <th>Số lượng được bầu</th>
                                         <th>Ứng cử viên</th>
-                                        <!-- <th>Created Time</th> -->
-                                        <!-- <th>Modified Time</th> -->
-                                        <th>Action</th>
+                                        <th>Trạng thái</th>
+                                        <th [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </tfoot>
-                                <tbody *ngFor="let item of toList;let i = index">
+                                <tbody *ngFor="let item of toList;let i = index" class="text-center">
                                     <tr (click)="selectIdElection(item?.id)">
                                         <td>{{i + 1}}</td>
                                         <td>{{item?.title}}</td>
                                         <td>{{item?.description}}</td>
+                                        <td>{{item?.numberOfElected}}</td>
                                         <td class="text-center">
                                             <thead>
                                                 <tr class="text-center">
                                                     <th style="width: 150px;">Họ và tên</th>
                                                     <th>Năm sinh</th>
                                                     <th style="width: 100px;">Địa chỉ</th>
-                                                    <th style="width: 50px;">Action</th>
+                                                    <th style="width: 50px;" [ngClass]="{'disabled-item': role == 1}">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody *ngFor="let item1 of toListCandidate">
@@ -63,17 +64,17 @@
                                                     <td>{{item1?.fullname}}</td>
                                                     <td>{{item1?.birthday | date:'dd/MM/yyyy'}}</td>
                                                     <td>{{item1?.address}}</td>
-                                                    <td class="action">
+                                                    <td class="action" [ngClass]="{'disabled-item': role == 1}">
                                                         <button type="button" data-toggle="modal" (click)="editCandidate(item1?.id)" data-target="#editCandidateModal" class="btn btn-primary edit">Sửa</button>
                                                         <button type="button" class="btn btn-danger" (click)="deleteCandidate(item1?.id)">Xoá</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
-                                            <a class="dropdown-item" style="color: blue; margin-top: 5px;" href="#" data-toggle="modal" data-target="#addCandidateModal">+ Thêm ứng cử viên</a>
+                                            <a class="dropdown-item" style="color: blue; margin-top: 5px;" href="#" data-toggle="modal" data-target="#addCandidateModal" [ngClass]="{'disabled-item': role == 1}">+ Thêm ứng cử viên</a>
                                         </td>
-                                        <!-- <td>{{item.createdTime | date: 'dd/MM/yyyy'}}</td> -->
-                                        <!-- <td>{{item.modifiedTime | date: 'dd/MM/yyyy'}}</td> -->
-                                        <td class="action" style="width:auto">
+                                        <td *ngIf="item?.status == 0" style="color: green;">{{item?.status == 0? 'Đang mở':'Đã đóng'}}</td>
+                                        <td *ngIf="item?.status == 1" style="color: red;">{{item?.status == 0? 'Đang mở':'Đã đóng'}}</td>
+                                        <td class="action" style="width:auto" [ngClass]="{'disabled-item': role == 1}">
                                             <button type="button" data-toggle="modal" (click)="edit(item.id)" data-target="#editElectionModal" class="btn btn-primary edit">Sửa</button>
                                             <button type="button" class="btn btn-danger" (click)="delete(item.id)">Xoá</button>
                                         </td>
@@ -114,12 +115,29 @@
                         <div class="form-group colunm">
                             <label >Tiêu đề</label>
                             <input  type="text" name="name" class="form-control"
-                            aria-describedby="emailHelp" placeholder="..." formControlName="title">
+                            aria-describedby="emailHelp" placeholder="..." formControlName="title" required>
+                            <div *ngIf="g.title.invalid && (g.title.dirty || g.title.touched)">
+                                <h6 *ngIf="g.title.errors?.['required']">Không được để trống</h6>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Mô tả</label>
                             <input type="text" name="identity_card" class="form-control"
-                            placeholder="..." formControlName="description">
+                            placeholder="..." formControlName="description" required>
+                            <div *ngIf="g.description.invalid && (g.description.dirty || g.description.touched)">
+                                <h6 *ngIf="g.description.errors?.['required']">Không được để trống</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group">
+                            <label>Số lượng được bầu</label>
+                            <input type="number" name="numberOfElected" class="form-control"
+                            placeholder="..." formControlName="numberOfElected" required min="1">
+                            <div *ngIf="g.numberOfElected.invalid && (g.numberOfElected.dirty || g.numberOfElected.touched)">
+                                <h6 *ngIf="g.numberOfElected.errors?.['required']">Không đúng định dạng</h6>
+                                <h6 *ngIf="g.numberOfElected.errors?.['min']">Tối thiểu là 1</h6>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +156,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Thêm mới bầu cử</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa bầu cử</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -150,11 +168,35 @@
                             <label >Tiêu đề</label>
                             <input  type="text" name="name" class="form-control"
                             aria-describedby="emailHelp" placeholder="..." formControlName="title" required>
+                            <div *ngIf="g.title.invalid && (g.title.dirty || g.title.touched)">
+                                <h6 *ngIf="g.title.errors?.['required']">Không được để trống</h6>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Mô tả</label>
-                            <input type="text" name="identity_card" class="form-control"
+                            <input type="text" name="description" class="form-control"
                             placeholder="..." formControlName="description" required>
+                            <div *ngIf="g.description.invalid && (g.description.dirty || g.description.touched)">
+                                <h6 *ngIf="g.description.errors?.['required']">Không được để trống</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
+                            <label>Số lượng được bầu</label>
+                            <input type="number" name="numberOfElected" class="form-control"
+                            placeholder="..." formControlName="numberOfElected" required min="1">
+                            <div *ngIf="g.numberOfElected.invalid && (g.numberOfElected.dirty || g.numberOfElected.touched)">
+                                <h6 *ngIf="g.numberOfElected.errors?.['required']">Không đúng định dạng</h6>
+                                <h6 *ngIf="g.numberOfElected.errors?.['min']">Tối thiểu là 1</h6>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Trạng thái</label>
+                            <select class="form-control" style="width: 193px" name="status" formControlName="status">
+                                <option [value]="0">Hoạt động</option>
+                                <option [value]="1">Đóng hoạt động</option>
+                            </select>
                         </div>
                     </div>
                 </div>

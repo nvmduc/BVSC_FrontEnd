@@ -1,12 +1,12 @@
-
-  .main-area {
+.main-area {
     display: flex;
-  }
-  .main-area .info{
-    width: 30%;
-  }
+}
 
-  .container-home100 {
+.main-area .info {
+    width: 30%;
+}
+
+.container-home100 {
     width: 100%;
     min-height: 100vh;
     display: -webkit-box;
@@ -21,96 +21,115 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover
-  }
-  
-  .box{
-    /* width: 1000px; */
-    background-color:white; 
-    border-radius:5px;
-    margin-right:10px;
-  }
+}
 
-  .box{
+.box {
+    /* width: 1000px; */
+    background-color: white;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.box {
     width: 80%;
-  }
-  .box .title{
+}
+
+.box .title {
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
     padding: 25px;
     font-size: 30px;
-  }
-  .body{
+}
+
+.body {
     padding-left: 30px;
-  }
-  h5{
+}
+
+h5 {
     font-size: 20px;
     padding: 5px;
-  }
-  .item input{
+}
+
+.item input {
     padding: 5px;
     border-radius: 5px;
     background-color: white;
-  }
-  .box input{
-    border: 1px solid grey; 
-    width: 155px; 
+}
+
+.box input {
+    border: 1px solid grey;
+    width: 155px;
     margin-top: 65%;
     margin-bottom: 0px;
     background-color: rgb(220, 220, 220);
-  }
-  form .item {
+}
+
+form .item {
     margin: 10px;
-    width: 95%;
-  }
-  .item{
+    width: 98%;
+}
+
+.item {
     width: 80%;
-  }
+}
 
-  .item img{
+.item img {
     width: 100px;
-  }
+}
 
-.btn-sub button{
-  padding: 10px;
-  margin: 10px;
+.btn-sub button {
+    padding: 10px;
+    margin: 10px;
 }
 
 /* You can add global styles to this file, and also import other style files */
-*{
-  padding: 0px;
-  margin: 0px;
+* {
+    padding: 0px;
+    margin: 0px;
 }
+
 .info {
-  width: 30%;
+    width: 30%;
 }
+
 a.disabled {
 
-  margin-right: 10px;
-  pointer-events: none;
-  cursor: default;
+    margin-right: 10px;
+    pointer-events: none;
+    cursor: default;
 }
 
 
-.error-message{
-  color: red;
+.error-message {
+    color: red;
 }
 
-@media only screen and (max-width: 768px) {
-  .main-area{
-    display: block;
-  }
-  .main-area .info{
-    width: 100%;
-    padding-top: 10px;
-  }
-  .menu{
-    width: 100%;
-    display: flex;
-  }
-  .box{
-    width: 100%;
-  }
-  .item{
-    padding: 5px;
-  }
+thead tr td,
+tbody tr td {
+    padding: 10px;
+}
+
+
+@media only screen and (max-width: 390px) {
+    .main-area {
+        display: block;
+    }
+
+    .main-area .info {
+        width: 100%;
+        padding-top: 10px;
+    }
+
+    .menu {
+        width: 100%;
+        display: flex;
+    }
+
+    .box {
+        width: 100%;
+    }
+
+    .item {
+        padding: 5px;
+    }
 }

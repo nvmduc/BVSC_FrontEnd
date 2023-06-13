@@ -7,6 +7,7 @@ import * as CryptoJS from 'crypto-js';
 import { TransactionHistoryService } from 'src/app/service/transaction-history.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as XLSX from 'xlsx';
+import { List } from 'lodash';
 
 @Component({
   selector: 'app-shareholder',
@@ -36,6 +37,7 @@ export class ShareholderComponent implements OnInit {
   idShareholder!: string;
   randomNumber!: number;
   dataInfo: any = [];
+  role!:number;
   constructor(private http: HttpClient, private transaction_historyService: TransactionHistoryService,
     private shareholderService: ShareholderInfoService, private toastr: ToastrService, private router: Router,
     private fb: FormBuilder, private route: ActivatedRoute) {
@@ -43,7 +45,7 @@ export class ShareholderComponent implements OnInit {
       search: '',
     });
     this.getShareholderByMeeting();
-
+    this.role = Number(localStorage.getItem('role'))
   }
   get h() {
     return this.searchForm.controls
@@ -69,18 +71,32 @@ export class ShareholderComponent implements OnInit {
       role: [''],
     })
   };
-
-
+  count:number = 0;
+  countAuths:number = 0;
+  allSharesCheckin:number = 0
+  allShares:number = 0
+  percentShares!:number
   getShareholderByMeeting() {
     this.idMeeting = this.route.snapshot.params['id'];
     this.shareholderService.getByIdMeeting(this.idMeeting).subscribe((res) => {
       if (res != null) {
         this.list = [res];
         this.toList = Object.values(this.list[0].items);
+        for (let item of this.toList) {
+          this.allShares += (item.numberShares + item.numberSharesAuth)
+          if (item.status == 1) {
+            this.allSharesCheckin += (item.numberShares + item.numberSharesAuth)
+            this.allSharesCheckin
+            this.count++
+          }
+          if(item.numberSharesAuth > 0 && item.status == 1){
+            this.countAuths++
+          }
+        }
+        this.percentShares = (this.allSharesCheckin/this.allShares)*100
       }
     })
     this.isLoading = false;
-
   }
   dataFormHistory = this.fb.group({
     idShareholder: [""],
@@ -266,9 +282,9 @@ export class ShareholderComponent implements OnInit {
         numberSharesAuth: this.dataInfo.items?.numberSharesAuth,
         role: this.dataInfo.items?.role,
       })
-      
+
       console.log(this.fbCheckin.value);
-            
+
     })
   }
   statusCheckin: number = 1

@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CandidateComponent } from './candidate/candidate.component';
 import { VotingComponent } from './voting/voting.component';
 import { ElectionComponent } from './election/election.component';
+import { ResultMeetingComponent } from './result-meeting/result-meeting.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ElectionComponent } from './election/election.component';
     VotingComponent,
     ElectionComponent,
     MenuComponent,
-    CandidateComponent
+    CandidateComponent,
+    ResultMeetingComponent
   ],
   imports: [
     ClientRoutingModule,

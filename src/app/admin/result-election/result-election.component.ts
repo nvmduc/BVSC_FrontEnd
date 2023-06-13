@@ -14,11 +14,11 @@ import { ShareholderInfoService } from 'src/app/service/shareholder-info.service
 export class ResultElectionComponent implements OnInit {
   constructor(private candidateService: CandidateService, private electionService: ElectionService, private shareholderService: ShareholderInfoService, private result_ElectionService: ResultElectionService, private route: ActivatedRoute) { }
   ngOnInit(): void {
-    setTimeout(() => {
+    // setTimeout(() => {
       this.getElectionByIdMeeting();
       this.getAllCandidate();
       this.getAllResultElection();
-    }, 2000);
+    // }, 2000);
   }
   resultElections: any = [];
   toListResultElection: any[] = [];
@@ -64,6 +64,7 @@ export class ResultElectionComponent implements OnInit {
       });
     });
   }
+  
   totalSharesOfShareholders!: number
   listElectionByMeeting: any = [];
   toListElectionByMeeting: any[] = [];
@@ -81,11 +82,12 @@ export class ResultElectionComponent implements OnInit {
       }, 1000)
       this.isLoading = true;
     }
-    const candidatePercentages: { idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
+    const candidatePercentages: {idElection:string; idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
     const candidateSharesMap = new Map<number, number>();
 
     for (const item of this.toListResultElection) {
       const idCandidate = item.idCandidate;
+      const idElection = item.idElection;
       const numberSharesForCandidate = item.numberSharesForCandidate;
 
       if (candidateSharesMap.has(idCandidate)) {
@@ -105,7 +107,8 @@ export class ResultElectionComponent implements OnInit {
 
     candidateSharesMap.forEach((shares, candidateId) => {
       const candidatePercent = (shares / totalShares) * 100;
-      const candidate: { idCandidate: number; percentage: number; totalShares: number; fullname: string } = {
+      const candidate: {idCandidate: number; percentage: number; totalShares: number; fullname: string; idElection:string; } = {
+        idElection: "",
         idCandidate: candidateId,
         percentage: candidatePercent,
         totalShares: shares,
@@ -114,17 +117,14 @@ export class ResultElectionComponent implements OnInit {
       this.candidateService.getById(candidateId).subscribe((res) => {
         this.infoCandidate = res;
         candidate.fullname = this.infoCandidate.items?.fullname;
+        candidate.idElection = this.infoCandidate.items?.idElection;
+
       });
       candidatePercentages.push(candidate);
     });
-
     this.candidatePercentages = candidatePercentages;
-    // if (isNaN(this.candidatePercentages)) {
-    //   setTimeout(() => {
-    //     window.location.reload();
-    //   }, 1000)
-    //   this.isLoading = true;
-    // }
+    this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
+    
   }
-
+  
 }

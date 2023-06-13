@@ -10,7 +10,7 @@ export class AdminGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      var check1 = localStorage.getItem('idCompany') == null;
+      var check1 = localStorage.getItem('token') == null;
       if(check1){
         this.router.navigate(['admin/login']);
       return false;
