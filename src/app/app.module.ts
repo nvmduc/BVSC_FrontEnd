@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginAdminComponent } from './login-admin/login-admin.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   declarations: [
@@ -26,9 +27,10 @@ import { LoginAdminComponent } from './login-admin/login-admin.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    ToastrModule.forRoot(),
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    SweetAlert2Module.forRoot()
+
   ],
   providers: [ClientModule,AdminModule],
   bootstrap: [AppComponent]

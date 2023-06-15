@@ -24,9 +24,9 @@ export class ResultElectionService {
     return this.http.post<ResultElection>(`${ApiUrl}/save-election`,data)
   }
   update(id:string,data:any):Observable<ResultElection>{
-    const httpOptions = {
-      headers: new HttpHeaders({'Content-Type': 'application/json'})
-    }
-    return this.http.put<ResultElection>(`${ApiUrl}/election/edit/${id}`,data,httpOptions)
+    // const httpOptions = {
+    //   headers: new HttpHeaders({'Content-Type': 'application/json'})
+    // }
+    return this.http.put<ResultElection>(`${ApiUrl}/election/edit/${id}`,data)
   }
 }

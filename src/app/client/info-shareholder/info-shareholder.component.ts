@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SessionService } from 'src/app/service/session.service';
 import { ShareholderInfoService } from 'src/app/service/shareholder-info.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-info-shareholder',
@@ -33,7 +34,10 @@ export class InfoShareholderComponent implements OnInit {
 
   Logout() {
       localStorage.clear();
+      Swal.fire(
+        'Đăng xuất thành công!',
+        'success'
+      )
       this.router.navigate(['login'])
-      this.toastr.success("Đăng xuất thành công","Đăng xuất")
   }
 }

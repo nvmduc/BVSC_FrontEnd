@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ResultVoting } from 'src/app/models/result-voting';
 import { ResultVotingService } from 'src/app/service/result-voting.service';
 import { VotingService } from 'src/app/service/voting.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-voting',
@@ -45,7 +46,6 @@ export class VotingComponent implements OnInit {
           this.dataList = [res];
           this.toDataList = Object.values(this.dataList[0].items);
         } else {
-
           window.location.reload();
         }
       })
@@ -81,6 +81,8 @@ export class VotingComponent implements OnInit {
     this.result_VotingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.dataResultVoting = res;
       this.getRV = this.dataResultVoting.items;
+      
+      
       const isExisting = this.getRV.some(item => item.idShareholder === localStorage.getItem('id'));      
       if (!isExisting) {
         const formValues = [];
@@ -94,9 +96,17 @@ export class VotingComponent implements OnInit {
         }
         this.result_VotingService.create(formValues).subscribe((res) => {
           if (res) {
-            this.toastr.success("Biểu quyết thành công", "Thành công")
+            Swal.fire(
+              'Biểu quyết thành công!',
+              'You clicked the button!',
+              'success'
+            )
           } else {
-            this.toastr.error("Biểu quyết không thành công", "Thất bại")
+            Swal.fire(
+              'Biểu quyết thất bại!',
+              'You clicked the button!',
+              'success'
+            )
           }
         })
       } else {
@@ -116,9 +126,17 @@ export class VotingComponent implements OnInit {
         for(let item of formValues){
           this.result_VotingService.update(item.id,formValues).subscribe((res) => {
             if (res) {
-              this.toastr.success("Cập nhật kết quả thành công", "Thành công")
+              Swal.fire(
+                'Cập nhật biểu quyết thành công thành công!',
+                'You clicked the button!',
+                'success'
+              )
             } else {
-              this.toastr.error("Cập nhật không thành công", "Thất bại")
+              Swal.fire(
+                'Cập nhật biểu quyết thất bại',
+                'You clicked the button!',
+                'error'
+              )
             }
           })
         } 

@@ -113,4 +113,11 @@ a.disabled {
   .item{
     padding: 5px;
   }
+  .box input{
+    border: 1px solid grey; 
+    width: 155px; 
+    margin-top: 65%;
+    margin-bottom: 0px;
+    background-color: rgb(220, 220, 220);
+  }
 }

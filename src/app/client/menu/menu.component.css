@@ -51,10 +51,11 @@ h5 {
   padding: 10px;
 }
 
-@media only screen and (max-width: 390px) {
+@media only screen and (max-width: 768px) {
   .item-menu {
     display: flex;
     flex-direction: row;
+    
   }
 
   .item-menu .nav-item {
@@ -73,14 +74,17 @@ h5 {
   .menu {
     display: flex;
     justify-content: flex-start;
+    
   }
 
   .item-menu {
     display: flex;
-    flex-wrap: nowrap;
+    /* flex-wrap: nowrap; */
     list-style-type: none;
     margin: 0;
     padding: 0;
+    flex-wrap: wrap;
+    justify-content: space-around;
   }
 
   .item-menu .nav-item {

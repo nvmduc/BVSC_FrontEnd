@@ -9,6 +9,7 @@ import * as CryptoJS from 'crypto-js';
 import { SessionService } from '../service/session.service';
 import { ShareholderInfoService } from '../service/shareholder-info.service';
 import { MeetingService } from '../service/meeting.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -88,7 +89,11 @@ export class LoginComponent implements OnInit {
             this.shareholderService.getById(idShareholder).subscribe((resS) => {
               this.dataShareholder = resS;
               if(!this.dataShareholder.items?.idMeeting){
-                this.toastr.error("Thông tin tài khoản không chính xác")
+                Swal.fire(
+                  'Thông tin tài khoản không chính xác!',
+                  'You clicked the button!',
+                  'error'
+                )
               }else{
                 this.meetingService.getById(this.dataShareholder.items?.idMeeting).subscribe((resM) => {
                   this.dataMeeting = resM;
@@ -98,7 +103,11 @@ export class LoginComponent implements OnInit {
                       const roles = localStorage.getItem('roles');
                       if (token != null && roles == '0') {
                         this.submitSession();
-                        this.toastr.success("Đăng nhập thành công cổ đông")
+                        Swal.fire(
+                          'Đăng nhập thành công!',
+                          'You clicked the button!',
+                          'success'
+                        )
                         this.router.navigate(['home'])
                       } else if (token != null && roles == '1') {
                         this.submitSession();
@@ -106,23 +115,43 @@ export class LoginComponent implements OnInit {
                         this.router.navigate(['home'])
                       } else {
                         (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
-                        this.toastr.error("Đăng nhập không thành công")
+                        Swal.fire(
+                          'Đăng nhập không thành công!',
+                          'You clicked the button!',
+                          'error'
+                        )
                         this.router.navigate([''])
                       }
                     } else if (this.dataMeeting.items?.status == 0) {
-                      this.toastr.warning("Cuộc họp chưa bắt đầu");
+                      Swal.fire(
+                        'Cuộc họp chưa bắt đầu!',
+                        'You clicked the button!',
+                        'warning'
+                      )
                     } else {
-                      this.toastr.error("Cuộc họp đã kết thúc");
+                      Swal.fire(
+                        'Cuộc họp đã kết thúc!',
+                        'You clicked the button!',
+                        'error'
+                      )
                     }
                   }else{
-                    this.toastr.error("Thông tin tài khoản không chính xác1")
+                    Swal.fire(
+                      'Thông tin tài khoản không chính xác!',
+                      'You clicked the button!',
+                      'error'
+                    )
                   }
                 })
               }
             })
           }
         }else{
-          this.toastr.error("Thông tin tài khoản không chính xác2")
+          Swal.fire(
+            'Thông tin tài khoản không chính xác!',
+            'You clicked the button!',
+            'error'
+          )
         }
       })
     }
@@ -131,4 +160,5 @@ export class LoginComponent implements OnInit {
   get f() {
     return this.UserInfo.controls;
   }
+
 }

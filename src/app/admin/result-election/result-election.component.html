@@ -29,17 +29,18 @@
                       <td>Họ và tên</td>
                       <td>Tổng số phiếu được bầu</td>
                       <td>Tỉ lệ</td>
+                      <!-- <td>Trạng thái</td> -->
                     </tr>
                   </thead>
                   <tbody *ngFor="let candidate of candidatePercentages">
                     <tr *ngIf="candidate.idElection === item.id">
                       <td>{{candidate.fullname}}</td>
-                      <td>{{candidate.totalShares}}/{{totalSharesOfShareholders}} phiếu</td>
+                      <td>{{candidate.totalShares | number: '1.0-2'}}/{{totalSharesOfShareholders | number: '1.0-2'}}
+                        phiếu</td>
                       <td>{{candidate.percentage | number: '1.0-2'}}%</td>
                     </tr>
                   </tbody>
                 </table>
-
               </div>
             </div>
           </div>

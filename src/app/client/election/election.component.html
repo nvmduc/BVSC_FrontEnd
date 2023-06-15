@@ -4,7 +4,6 @@
       <app-menu></app-menu>
     </div>
     <div class="main-area">
-      <!-- <div class="election"> -->
       <div class="box">
         <form action="" method="post" (ngSubmit)="onSubmit()" #myForm="ngForm">
           <div class="title text-center">BỎ PHIẾU BẦU CỬ</div>
@@ -29,7 +28,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div>
                     <input placeholder="Nhập số phiếu" type="number" [name]="'shares'+itemC.id"
                       [(ngModel)]="inputValues[itemC.id]" (ngModelChange)="subtract(item?.id)"
                       (change)="getResultElection()" required #sharesInput="ngModel" min="0">
@@ -39,12 +38,12 @@
                 </div>
               </div>
               <div class="text-center">
-                <p>Tổng số cổ phần: <span style="font-weight: bold; ">{{totalShares[item?.id]}}</span></p>
+                <p>Tổng số cổ phần: <span style="font-weight: bold; ">{{totalShares[item?.id] | number: '1.0-2'}}</span></p>
                 <div *ngIf="resultShares[item.id]<0">
-                  <p>Còn lại có thể bầu:<span style="color: red;"> {{resultShares[item.id]}}</span></p>
+                  <p>Còn lại có thể bầu:<span style="color: red;"> {{resultShares[item.id] | number: '1.0-2'}}</span></p>
                 </div>
                 <div *ngIf="resultShares[item.id]>=0">
-                  <p>Còn lại có thể bầu:<span> {{resultShares[item.id]}}</span></p>
+                  <p>Còn lại có thể bầu:<span> {{resultShares[item.id] | number: '1.0-2'}}</span></p>
                 </div>
                 <div class="btn-sub">
                   <button type="button" class="btn btn-primary" (click)="divide(item.id)">Chia đều</button>
@@ -54,12 +53,10 @@
           </div>
           <div class="btn-sub">
             <button type="submit" class="btn btn-success"
-              [disabled]="!inputValues || myForm.invalid">Gửi</button>
-            <!-- <button type="submit" class="btn btn-success">Gửi</button> -->
+              [disabled]="!inputValues || myForm.invalid" >Gửi</button>
           </div>
         </form>
       </div>
-      <!-- </div> -->
       <div class="info">
         <app-info-shareholder></app-info-shareholder>
       </div>

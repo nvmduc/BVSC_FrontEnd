@@ -15,9 +15,9 @@ export class ResultElectionComponent implements OnInit {
   constructor(private candidateService: CandidateService, private electionService: ElectionService, private shareholderService: ShareholderInfoService, private result_ElectionService: ResultElectionService, private route: ActivatedRoute) { }
   ngOnInit(): void {
     // setTimeout(() => {
-      this.getElectionByIdMeeting();
-      this.getAllCandidate();
-      this.getAllResultElection();
+    this.getElectionByIdMeeting();
+    this.getAllCandidate();
+    this.getAllResultElection();
     // }, 2000);
   }
   resultElections: any = [];
@@ -58,13 +58,18 @@ export class ResultElectionComponent implements OnInit {
             this.infoShareholder.items?.numberSharesAuth;
           this.sharesCount += shares;
         }
-        const countCandidate = this.toListCandidate.length
+        const getCounts = []
+        for (let item of this.toListResultElection) {
+          const countCandidate = item.idCandidate
+          getCounts.push(countCandidate)
+        }
+        const countCandidate = getCounts.length
         this.totalSharesOfShareholders = this.sharesCount / countCandidate
         this.calculateElectionResult(this.totalSharesOfShareholders);
       });
     });
   }
-  
+
   totalSharesOfShareholders!: number
   listElectionByMeeting: any = [];
   toListElectionByMeeting: any[] = [];
@@ -82,7 +87,7 @@ export class ResultElectionComponent implements OnInit {
       }, 1000)
       this.isLoading = true;
     }
-    const candidatePercentages: {idElection:string; idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
+    const candidatePercentages: { idElection: string; idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
     const candidateSharesMap = new Map<number, number>();
 
     for (const item of this.toListResultElection) {
@@ -104,10 +109,9 @@ export class ResultElectionComponent implements OnInit {
         candidateSharesMap.set(idCandidate, numberSharesForCandidate);
       }
     }
-
     candidateSharesMap.forEach((shares, candidateId) => {
       const candidatePercent = (shares / totalShares) * 100;
-      const candidate: {idCandidate: number; percentage: number; totalShares: number; fullname: string; idElection:string; } = {
+      const candidate: { idCandidate: number; percentage: number; totalShares: number; fullname: string; idElection: string; } = {
         idElection: "",
         idCandidate: candidateId,
         percentage: candidatePercent,
@@ -118,13 +122,27 @@ export class ResultElectionComponent implements OnInit {
         this.infoCandidate = res;
         candidate.fullname = this.infoCandidate.items?.fullname;
         candidate.idElection = this.infoCandidate.items?.idElection;
-
       });
       candidatePercentages.push(candidate);
     });
     this.candidatePercentages = candidatePercentages;
+    console.log(this.candidatePercentages);
+    
     this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
+    this.countCandidate = this.candidatePercentages.length
+    const listItem = []
+    for(let item1 of this.toListElectionByMeeting){
+      this.candidateService.getByIdElection(item1.id).subscribe((res)=>{
+        this.listCandidateByE = res;
+        this.toListCandidateByE = this.listCandidateByE.item
+        console.log(this.toListCandidateByE);
+        
+      })
+      
+    }
+    
     
   }
-  
+  listCandidateByE:any = [];
+  toListCandidateByE:any = []
 }

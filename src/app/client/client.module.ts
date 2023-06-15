@@ -13,6 +13,9 @@ import { CandidateComponent } from './candidate/candidate.component';
 import { VotingComponent } from './voting/voting.component';
 import { ElectionComponent } from './election/election.component';
 import { ResultMeetingComponent } from './result-meeting/result-meeting.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 
 @NgModule({
   declarations: [
@@ -30,7 +33,9 @@ import { ResultMeetingComponent } from './result-meeting/result-meeting.componen
     RouterModule,
     CommonModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatSlideToggleModule,
+    SweetAlert2Module.forRoot()
   ],
   providers: [],
   bootstrap: []
