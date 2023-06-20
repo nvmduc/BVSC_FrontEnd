@@ -56,6 +56,8 @@ export class FeedbackComponent implements OnInit{
           const feedbackWithName = {
             idShareholder: idShareholder,
             name: this.data.items?.fullname,
+            shareHolderCode: this.data.items?.shareHolderCode,
+            totalShares: this.data.items?.numberShares + this.data.items?.numberSharesAuth,
             content: feedback.content,
             timeFeedback: feedback.timeFeedback
           };

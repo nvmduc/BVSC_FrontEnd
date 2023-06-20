@@ -54,18 +54,28 @@ export class ResultMeetingComponent implements OnInit {
 
 
   getAllResultVoting(): void {
-    const idMeeting = this.route.snapshot.params['idMeeting'];
+    const idMeeting = this.route.snapshot.params['id'];
     this.result_votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.resultVotings = res;
-      this.toListResultVoting = this.resultVotings.items;
-      const observables = this.toListResultVoting.map(item => this.shareholderService.getById(item.idShareholder));
+      this.toListResultVoting = Object.values(this.resultVotings.items);
+
+      const observables = this.toListResultVoting.map(item =>
+        this.shareholderService.getById(item.idShareholder)
+      );
       forkJoin(observables).subscribe(responses => {
+        const uniqueRecords: { [key: string]: any } = {}; // Đối tượng để theo dõi các bản ghi duy nhất
+        this.sharesCount = 0;
+
         for (let res of responses) {
           this.infoShareholder = res;
           const shares =
             this.infoShareholder.items?.numberShares +
             this.infoShareholder.items?.numberSharesAuth;
-          this.sharesCount += shares;
+
+          if (!uniqueRecords[this.infoShareholder.items?.id]) {
+            uniqueRecords[this.infoShareholder.items?.id] = res;
+            this.sharesCount += shares;
+          }
         }
         this.calculateVotingResult(this.sharesCount);
       });
@@ -73,18 +83,35 @@ export class ResultMeetingComponent implements OnInit {
   }
 
   calculateVotingResult(totalShares: number) {
+    const agreeResults: any = {};
+    const disagreeResults: any = {};
+    const noOpinionResults: any = {};
     const agreeResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 1);
     const disagreeResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 0);
     const noOpinionResultVoting = this.toListResultVoting.filter((resultVoting: any) => resultVoting.status === 2);
-    const idMeeting = this.route.snapshot.params['idMeeting'];
+
+    console.log(agreeResultVoting);
+    console.log(disagreeResultVoting);
+    console.log(noOpinionResultVoting);
+
+    const idMeeting = this.route.snapshot.params['id'];
     this.votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.listVotingByMeeting = res;
       this.toListVotingByMeeting = Object.values(this.listVotingByMeeting.items);
-      this.countVoting = this.toListVotingByMeeting.length;
-      this.realShares = totalShares / this.countVoting;
+      const getCounts = []
+      for (let item of this.toListResultVoting) {
+        const countVoting = item.idVoting
+        getCounts.push(countVoting)
+      }
+      // const countCandidate = getCounts.length
+      this.countVoting = getCounts.length;
       const resultsArray: { agree: number; disagree: number; noOpinion: number; }[] = []; // Mảng kết quả của các cuộc biểu quyết
+
       const votingPromises = this.toListVotingByMeeting.map((voting: any) => {
         const results = {
+          sharesAgree: 0,
+          sharesDisagree: 0,
+          sharesNoOpinion: 0,
           agree: this.agree,
           disagree: this.disagree,
           noOpinion: this.noOpinion,
@@ -97,18 +124,18 @@ export class ResultMeetingComponent implements OnInit {
 
           if (this.observablesAgree.length === 0) {
             results.agree = 0;
+            this.agree = 0;
+
             resolve();
           } else {
             Promise.all(this.observablesAgree.map(observable => observable.toPromise())).then((responses: any[]) => {
               for (let res of responses) {
-                this.infoShareholder = res;
                 const shareholder = res;
                 const shares = shareholder.items?.numberShares + shareholder.items?.numberSharesAuth;
-                results.agree += shares;
+                results.sharesAgree += shares;
               }
-              this.agree = results.agree
-
-              results.agree = (results.agree / this.realShares) * 100;
+              // this.agree = results.agree
+              results.agree = (results.sharesAgree / totalShares) * 100;
               if (isNaN(results.agree)) {
                 setTimeout(() => {
                   window.location.reload();
@@ -128,17 +155,18 @@ export class ResultMeetingComponent implements OnInit {
 
           if (this.observablesDisagree.length === 0) {
             results.disagree = 0;
+            this.disagree = 0;
+
             resolve();
           } else {
             Promise.all(this.observablesDisagree.map(observable => observable.toPromise())).then((responses: any[]) => {
               for (let res of responses) {
-                this.infoShareholder = res;
                 const shareholder = res;
                 const shares = shareholder.items?.numberShares + shareholder.items?.numberSharesAuth;
-                results.disagree += shares;
+                results.sharesDisagree += shares;
               }
-              this.disagree = results.disagree
-              results.disagree = (results.disagree / this.realShares) * 100;
+              // this.disagree = results.disagree
+              results.disagree = (results.sharesDisagree / totalShares) * 100;
               if (isNaN(results.disagree)) {
                 setTimeout(() => {
                   window.location.reload();
@@ -158,17 +186,18 @@ export class ResultMeetingComponent implements OnInit {
 
           if (this.observablesNoOpinion.length === 0) {
             results.noOpinion = 0;
+            this.noOpinion = 0;
             resolve();
           } else {
             Promise.all(this.observablesNoOpinion.map(observable => observable.toPromise())).then((responses: any[]) => {
               for (let res of responses) {
-                this.infoShareholder = res;
                 const shareholder = res;
                 const shares = shareholder.items?.numberShares + shareholder.items?.numberSharesAuth;
-                results.noOpinion += shares;
+                results.sharesNoOpinion += shares;
               }
-              this.noOpinion = results.noOpinion
-              results.noOpinion = (results.noOpinion / this.realShares) * 100;
+              // this.noOpinion = results.noOpinion
+              results.noOpinion = (results.sharesNoOpinion / totalShares) * 100;
+
               if (isNaN(results.noOpinion)) {
                 setTimeout(() => {
                   window.location.reload();
@@ -183,20 +212,28 @@ export class ResultMeetingComponent implements OnInit {
 
         return Promise.all([agreePromise, disagreePromise, noOpinionPromise]).then(() => {
           resultsArray.push(results);
+
+          agreeResults[voting.id] = {
+            percentage: isNaN(results.agree) ? 0 : results.agree.toFixed(5),
+            shares: results.sharesAgree
+          };
+          disagreeResults[voting.id] = {
+            percentage: isNaN(results.disagree) ? 0 : results.disagree.toFixed(5),
+            shares: results.sharesDisagree
+          };
+          noOpinionResults[voting.id] = {
+            percentage: isNaN(results.noOpinion) ? 0 : results.noOpinion.toFixed(5),
+            shares: results.sharesNoOpinion
+          };
         });
+
       });
       Promise.all(votingPromises).then(() => {
-        this.agreeResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.agree) ? 0 : results.agree.toFixed(2), shares: this.agree
-        }));
-        this.disagreeResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.disagree) ? 0 : results.disagree.toFixed(2), shares: this.disagree
-        }));
-        this.noOpinionResults = resultsArray.map((results: any) => ({
-          percentage: isNaN(results.noOpinion) ? 0 : results.noOpinion.toFixed(2), shares: this.noOpinion
-        }));
+        // Hiển thị kết quả trong HTML
+        this.agreeResults = agreeResults;
+        this.disagreeResults = disagreeResults;
+        this.noOpinionResults = noOpinionResults;
       });
-
     });
   }
 
@@ -221,80 +258,145 @@ export class ResultMeetingComponent implements OnInit {
       this.toListCandidate = Object.values(this.listCandidate[0].items);
     })
   }
+  listRE:any = [];
+  electionTotals:any =[];
   getAllResultElection(): void {
-    const idMeeting = this.route.snapshot.params['idMeeting'];
-    this.result_ElectionService.getByIdMeeting(idMeeting).subscribe((res) => {
-      this.resultElections = res;
-      this.toListResultElection = Object.values(this.resultElections.items);
+    const idMeeting = this.route.snapshot.params['id'];
+    this.electionService.getByIdMeeting(idMeeting).subscribe((elections: any) => {
+      this.toListElectionByMeeting = elections.items;
 
-      const observables = this.toListResultElection.map(item =>
-        this.shareholderService.getById(item.idShareholder)
-      );
-      forkJoin(observables).subscribe(responses => {
-        for (let res of responses) {
-          this.infoShareholder = res;
-          const shares =
-            this.infoShareholder.items?.numberShares +
-            this.infoShareholder.items?.numberSharesAuth;
-          this.sharesCountElection += shares;
-        }
-        const countCandidate = this.toListCandidate.length
-        this.totalSharesOfShareholders = this.sharesCountElection / countCandidate
-        this.calculateElectionResult(this.totalSharesOfShareholders);
+      const shareholderSharesMap = new Map<number, number>();
+      const idEMap = new Map<string, number>();
+      const idCandidateMap = new Map<number, number>();
+      const resultObservables = this.toListElectionByMeeting.map(itemE => {
+        return this.result_ElectionService.getByIdElection(itemE.id);
       });
-    });
-  }
+      forkJoin(resultObservables).subscribe((resultElectionsArray: any[]) => {
+        for (let index = 0; index < resultElectionsArray.length; index++) {
+          const resultElections = resultElectionsArray[index];
+          const itemE = this.toListElectionByMeeting[index];
+          this.resultElections = resultElections;
+          this.toListResultElection = Object.values(this.resultElections.items).map((item: any) => {
+            return { ...item, idE: itemE.id };
+          });
+          this.listRE.push(...this.toListResultElection);
 
-  calculateElectionResult(totalShares: number) {
-    this.totalSharesOfShareholders = totalShares;
-    if (isNaN(totalShares)) {
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
-      this.isLoading = true;
-    }
-    const candidatePercentages: { idElection: string; idCandidate: number; percentage: number; totalShares: number; fullname: string }[] = [];
-    const candidateSharesMap = new Map<number, number>();
+          const electionId = itemE.id;
+          const electionTotal = this.toListResultElection.reduce((total: number, item: any) => {
+            return total + item.numberSharesForCandidate;
+          }, 0);
+          this.electionTotals[electionId] = electionTotal;
 
-    for (const item of this.toListResultElection) {
-      const idCandidate = item.idCandidate;
-      const numberSharesForCandidate = item.numberSharesForCandidate;
 
-      if (candidateSharesMap.has(idCandidate)) {
-        const currentShares = candidateSharesMap.get(idCandidate);
-        candidateSharesMap.set(idCandidate, currentShares + numberSharesForCandidate);
-        this.totalSharesOfCandidate = currentShares + numberSharesForCandidate
-        if (isNaN(this.totalSharesOfCandidate)) {
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
-          this.isLoading = true;
+
+          for (const item of this.toListResultElection) {
+            const idE = item.idE;
+            const numberSharesForCandidate = item.numberSharesForCandidate;
+
+            if (idEMap.has(idE)) {
+              const currentShares = idEMap.get(idE);
+              idEMap.set(idE, currentShares + numberSharesForCandidate);
+            } else {
+              idEMap.set(idE, numberSharesForCandidate);
+            }
+
+            const idCandidate = item.idCandidate;
+
+            if (idCandidateMap.has(idCandidate)) {
+              const currentShares = idCandidateMap.get(idCandidate);
+              idCandidateMap.set(idCandidate, currentShares + numberSharesForCandidate);
+            } else {
+              idCandidateMap.set(idCandidate, numberSharesForCandidate);
+            }
+          }
+          console.log(idEMap);
+          console.log(idCandidateMap);
         }
-      } else {
-        candidateSharesMap.set(idCandidate, numberSharesForCandidate);
-      }
-    }
+        const candidatePercentages: {
+          idElection: string;
+          idCandidate: number;
+          percentage: number;
+          totalShares: number;
+          shares: number;
+          fullname: string;
+        }[] = [];
 
-    candidateSharesMap.forEach((shares, candidateId) => {
-      const candidatePercent = (shares / totalShares) * 100;
-      const candidate: { idCandidate: number; percentage: number; totalShares: number; fullname: string; idElection: string; } = {
-        idElection: "",
-        idCandidate: candidateId,
-        percentage: candidatePercent,
-        totalShares: shares,
-        fullname: '',
-      };
-      this.candidateService.getById(candidateId).subscribe((res) => {
-        this.infoCandidate = res;
-        candidate.fullname = this.infoCandidate.items?.fullname;
-        candidate.idElection = this.infoCandidate.items?.idElection;
+        const sharesCount: { [idE: string]: number } = {};
 
+        idEMap.forEach((totalShares, idE) => {
+          this.result_ElectionService.getByIdElection(String(idE)).subscribe((res: any) => {
+            const shareholderIds = res.items.map((item: any) => item.idShareholder);
+            const observables = shareholderIds.map((shareholderId: string) =>
+              this.shareholderService.getById(shareholderId)
+            );
+            forkJoin(observables).subscribe((responses: any) => {
+              const uniqueResponses = responses.filter((response: any, index: number) => {
+                const currentIndex = responses.findIndex((res: any) => {
+                  return (
+                    res.items?.idShareholder === response.items?.idShareholder &&
+                    res.items?.numberShares === response.items?.numberShares &&
+                    res.items?.numberSharesAuth === response.items?.numberSharesAuth
+                  );
+                });
+                return currentIndex === index;
+              });
+              const sharesCountForIdE = uniqueResponses.reduce((totalShares: number, response: any) => {
+                const shareholderShares =
+                  response.items?.numberShares + response.items?.numberSharesAuth;
+                return totalShares + shareholderShares;
+              }, 0);
+              sharesCount[idE] = sharesCountForIdE;
+              calculateCandidatePercentages(String(idE));
+            });
+          });
+
+        });
+
+        const calculateCandidatePercentages = (idE: string): void => {
+          const candidatePercentages: any[] = [];
+
+          idCandidateMap.forEach((totalSharesOfCandidate, idC) => {
+
+            const candidate: {
+              idCandidate: number;
+              percentage: number;
+              totalShares: number;
+              shares: number;
+              fullname: string;
+              idElection: string;
+            } = {
+              idElection: '',
+              idCandidate: idC,
+              percentage: 0,
+              totalShares: 0,
+              shares: totalSharesOfCandidate,
+              fullname: '',
+            };
+            this.candidateService.getById(idC).subscribe((res) => {
+              this.infoCandidate = res;
+              const fullname = this.infoCandidate.items?.fullname;
+              const idElection = this.infoCandidate.items?.idElection;
+
+              if (idElection === this.infoCandidate.items?.idElection) {
+                const totalShares = sharesCount[idElection];
+                const candidatePercent = (totalSharesOfCandidate / totalShares) * 100;
+
+                const updatedCandidate = {
+                  ...candidate,
+                  fullname: fullname,
+                  idElection: idElection,
+                  totalShares: totalShares,
+                  percentage: candidatePercent
+                };
+                candidatePercentages.push(updatedCandidate);
+              }
+            });
+            this.candidatePercentages = candidatePercentages;
+          });
+        };
       });
-      candidatePercentages.push(candidate);
+      this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
     });
-    this.candidatePercentages = candidatePercentages;
-    this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
-
   }
 
 }

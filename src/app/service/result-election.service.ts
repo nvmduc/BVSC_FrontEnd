@@ -17,6 +17,11 @@ export class ResultElectionService {
   getByIdShareholer(idShareholder:string):Observable<ResultElection>{
     return this.http.get<ResultElection>(`${ApiUrl}/get-result-election-by-shareholder/${idShareholder}`)
   }
+
+  getByIdElection(idElection:string):Observable<ResultElection>{
+    return this.http.get<ResultElection>(`${ApiUrl}/get-result-election-by-election/${idElection}`)
+  }
+  
   getByIdMeeting(idMeeting:number):Observable<ResultElection>{
     return this.http.get<ResultElection>(`${ApiUrl}/get-result-election-by-meeting/${idMeeting}`)
   }

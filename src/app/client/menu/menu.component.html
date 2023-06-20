@@ -5,10 +5,10 @@
         <li class="nav-item active">
           <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home">Trang chủ</a>
         </li>
-        <li class="nav-item active" *ngIf="toDataMeeting.status != 3 && toDataMeeting.status != 4">
+        <li class="nav-item active" [ngClass]="{'disabled-item': toDataMeeting.status == 3 ||toDataMeeting.status == 4 ||toDataMeeting.status == 6}">
           <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/voting/{{data?.items?.idMeeting}}">Biểu quyết</a>
         </li>
-        <li class="nav-item active" *ngIf="toDataMeeting.status != 4">
+        <li class="nav-item active" [ngClass]="{'disabled-item': toDataMeeting.status == 3 ||toDataMeeting.status == 5 ||toDataMeeting.status == 7}">
           <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/election/{{data?.items?.idMeeting}}">Bầu cử</a>
         </li>
         <li class="nav-item active">
@@ -17,7 +17,7 @@
         <li class="nav-item active">
           <a class="nav-link" href="#" data-toggle="modal" data-target="#addFeedbackModal">Đặt câu hỏi</a>
         </li>
-        <li class="nav-item active" *ngIf="toDataMeeting.status == 4">
+        <li class="nav-item active" *ngIf="toDataMeeting.status == 3">
           <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" routerLink="/home/result-meeting/{{data?.items?.idMeeting}}">Kết quả</a>
         </li>
       </ul>

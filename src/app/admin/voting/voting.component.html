@@ -28,6 +28,7 @@
                                         <th>Nội dung</th>
                                         <th style="width: 150px;">Created time</th>
                                         <th style="width: 150px;">Modified time</th>
+                                        <th style="width: 150px;">Status</th>
                                         <th style="width: 50px;" [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </thead>
@@ -37,6 +38,7 @@
                                         <th>Nội dung</th>
                                         <th>Created time</th>
                                         <th>Modified time</th>
+                                        <th style="width: 150px;">Status</th>
                                         <th [ngClass]="{'disabled-item': role == 1}">Action</th>
                                     </tr>
                                 </tfoot>
@@ -46,7 +48,8 @@
                                         <td>{{item.content}}</td>
                                         <td>{{item.createdTime | date: 'dd/MM/yyyy'}}</td>
                                         <td>{{item.modifiedTime | date: 'yyyy/MM/dd'}}</td>
-                                        <td class="action" [ngClass]="{'disabled-item': role == 1}">
+                                        <td *ngIf="item?.status == 0" style="color: green;">{{item?.status == 0? 'Đang mở':'Đã đóng'}}</td>
+                                        <td *ngIf="item?.status == 1" style="color: red;">{{item?.status == 0? 'Đang mở':'Đã đóng'}}</td>                                        <td class="action" [ngClass]="{'disabled-item': role == 1}">
                                             <button type="button" data-toggle="modal" (click)="edit(item.id)"
                                                 data-target="#editVotingModal" class="btn btn-primary edit">Sửa</button>
                                             <button type="button" class="btn btn-danger"
@@ -86,9 +89,9 @@
             <form action="addShareholder" class="formAdd" method="post" [formGroup]="dataForm" (ngSubmit)="onSubmit()">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Nội dung bầu cử</label>
-                        <input type="text" name="name" class="form-control" aria-describedby="emailHelp"
-                            placeholder="..." formControlName="content" required="">
+                        <label for="exampleInputEmail1">Nội dung biểu quyết</label>
+                        <input type="text" name="name" class="form-control" 
+                            placeholder="..." formControlName="content" required>
                         <div *ngIf="g.content.invalid && (g.content.dirty || g.content.touched)">
                             <h6 *ngIf="g.content.errors?.['required']">Không được trống</h6>
                         </div>
@@ -118,9 +121,16 @@
                 (ngSubmit)="onSubmitUpdate()">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Nội dung bầu cử</label>
-                        <input type="text" name="name" class="form-control" aria-describedby="emailHelp"
-                            placeholder="..." formControlName="content" required="">
+                        <label for="exampleInputEmail1">Nội dung biểu quyết</label>
+                        <input type="text" name="name" class="form-control"
+                            placeholder="..." formControlName="content" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng thái</label>
+                        <select class="form-control" style="width: 193px" name="status" formControlName="status">
+                            <option [value]="0">Hoạt động</option>
+                            <option [value]="1">Đóng hoạt động</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

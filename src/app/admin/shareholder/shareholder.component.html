@@ -27,18 +27,45 @@
                                     formControlName="search">
                             </form>
                         </div>
-                        <div style="padding-left: 20px;">
-                            <div style="display: flex">
-                                <h3 style="margin: 0px;">Tổng số cổ đông đã đến: <strong>{{count | number: '1.0-0'}} / {{toList.length | number:
-                                    '1.0-0'}}</strong> |  Số cổ đông được ủy quyền: <strong>{{countAuths}}</strong></h3>
-                            </div>
-                            <h3 style="margin: 0px;">Tổng số CP của cổ đông đã đến: <strong>{{allSharesCheckin | number: '1.0-0'}} /
-                                {{allShares | number: '1.0-0'}} = {{percentShares | number: '1.0-2'}}%</strong></h3>
-                        </div>
                     </div>
-
                     <div class="card-body">
                         <div class="table-responsive table-wrapper">
+                            <h1>Thống kê</h1>
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Số cổ đông</th>
+                                        <th>Số cổ phần</th>
+                                        <th>Tỉ lệ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Tất cả</th>
+                                        <td>{{toList.length | number: '1.0-0'}} cổ đông</td>
+                                        <td>{{allShares | number: '1.0-0'}} cổ phần</td>
+                                        <td>100%</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Đã đến</th>
+                                        <td>{{count | number: '1.0-0'}} cổ đông</td>
+                                        <td>{{allSharesCheckin | number: '1.0-0'}} cổ phần</td>
+                                        <td>{{percentShares | number: '1.0-2'}}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Được ủy quyền</th>
+                                        <td>{{countAuths | number: '1.0-0'}} cổ đông</td>
+                                        <td>{{allSharesAuthCheckin | number: '1.0-0'}} cổ phần</td>
+                                        <td>{{percentSharesAuth | number: '1.0-2'}}%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table-wrapper">
+                            <h1>Danh sách cổ đông</h1>
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr class="text-center width-td">
@@ -281,44 +308,40 @@
                                 <h6 *ngIf="g.fullname.errors?.['minlength']">Tối thiểu 6 ký tự </h6>
                             </div>
                         </div>
-                        <div class="form-group colunm">
+                        <div class="form-group">
                             <label for="exampleInputPassword1">Số CCCD</label><small>(Bắt buộc)</small>
                             <input type="text" name="identityCard" class="form-control" id="identityCard"
                                 placeholder="..." formControlName="identityCard" maxlength="12" minlength="9" required>
                         </div>
-                        <div class="form-group">
+                        
+                    </div>
+                    <div class="line">
+                        <div class="form-group colunm">
                             <label for="exampleInputPassword1">Email</label>
                             <input type="text" name="email" class="form-control" id="email" placeholder="..."
                                 formControlName="email" email>
                         </div>
-                    </div>
-                    <div class="line">
                         <div class="form-group colunm">
                             <label for="exampleInputPassword1">Địa chỉ</label>
                             <input type="text" name="address" class="form-control" id="address" placeholder="..."
                                 formControlName="address">
                         </div>
-                        <div class="form-group colunm">
+                        <div class="form-group">
                             <label for="exampleInputPassword1">Số điện thoại</label>
                             <input type="text" name="phoneNumber" class="form-control" id="phoneNumber"
-                                placeholder="..." formControlName="phoneNumber" maxlength="10" minlength="10">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Quốc tịch</label>
-                            <input type="text" name="nationality" class="form-control" id="nationality"
-                                placeholder="..." formControlName="nationality">
+                                placeholder="..." formControlName="phoneNumber">
                         </div>
                     </div>
                     <div class="line">
                         <div class="form-group colunm">
+                            <label for="exampleInputPassword1">Quốc tịch</label>
+                            <input type="text" name="nationality" class="form-control" id="nationality"
+                                placeholder="..." formControlName="nationality">
+                        </div>
+                        <div class="form-group colunm">
                             <label for="exampleInputPassword1">Tài khoản</label><small>(Bắt buộc)</small>
                             <input type="text" name="username" class="form-control" id="username" placeholder="..."
                                 formControlName="username">
-                        </div>
-                        <div class="form-group colunm">
-                            <label for="exampleInputPassword1">Cuộc họp</label>
-                            <input type="text" name="idMeeting" class="form-control" id="idMeeting" placeholder="..."
-                                formControlName="idMeeting">
                         </div>
                         <div class="form-group">
                             <label for="carsStatus">Trạng thái</label>

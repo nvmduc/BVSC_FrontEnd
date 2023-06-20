@@ -23,6 +23,8 @@
                                     <tr class="text-center">
                                         <th style="width: 20px;">STT</th>
                                         <th>Tên cổ đông</th>
+                                        <th>Mã cổ đông</th>
+                                        <th>Tổng số CP</th>
                                         <th>Nội dung câu hỏi</th>
                                         <th>Thời gian bầu cử</th>
                                     </tr>
@@ -31,6 +33,8 @@
                                     <tr class="text-center">
                                         <th style="width: 20px;">STT</th>
                                         <th>Tên cổ đông</th>
+                                        <th>Mã cổ đông</th>
+                                        <th>Tổng số CP</th>
                                         <th>Nội dung câu hỏi</th>
                                         <th>Thời gian bầu cử</th>
                                     </tr>
@@ -39,6 +43,8 @@
                                     <tr>
                                       <td>{{i+1}}</td>
                                       <td>{{item.name}}</td>
+                                      <td>{{item.shareHolderCode}}</td>
+                                      <td>{{item.totalShares | number: '1.0-0'}}</td>
                                       <td>{{item.content}}</td>
                                       <td>{{item.timeFeedback | date:'dd-MM-yyyy hh:mm:ss':'+14'}}</td>
                                     </tr>

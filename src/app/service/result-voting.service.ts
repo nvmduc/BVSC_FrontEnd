@@ -22,7 +22,7 @@ export class ResultVotingService {
   create(data:any):Observable<ResultVoting>{
     return this.http.post<ResultVoting>(`${ApiUrl}/save-voting`,data)
   }
-  update(id:string,data:any):Observable<ResultVoting>{
+  update(id:number,data:any):Observable<ResultVoting>{
     return this.http.put<ResultVoting>(`${ApiUrl}/voting/edit/${id}`,data)
   }
 }

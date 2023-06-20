@@ -23,25 +23,26 @@
                 </tr>
               </thead>
               <tbody *ngFor="let item of toList; let i = index">
-                <tr>
+                <tr *ngIf="item.status == 0">
                   <td>{{i}}. {{item.content}}</td>
                   <td class="text-center">
-                    <input style="width: 20px; height: 2em;" type="radio" id="contactChoice{{i}}"
-                      name="status{{i}}" (click)="getIdVoting(item?.id,1)">
+                    <input style="width: 20px; height: 2em;" type="radio" id="contactChoice{{i}}" name="status{{i}}"
+                      (click)="getIdVoting(item?.id,1)">
                   </td>
                   <td class="text-center">
-                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}"
-                      name="status{{i}}" (click)="getIdVoting(item?.id,0)">
+                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}" name="status{{i}}"
+                      (click)="getIdVoting(item?.id,0)">
                   </td>
                   <td class="text-center">
-                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}"
-                      name="status{{i}}" (click)="getIdVoting(item?.id,2)">
+                    <input style="width: 20px; height: 5em;" type="radio" id="contactChoice{{i}}" name="status{{i}}"
+                      (click)="getIdVoting(item?.id,2)">
                   </td>
                 </tr>
               </tbody>
             </table>
             <div class="right">
-              <button type="submit" class="btn btn-success text-center" [disabled]="!hasSelectedOption()" *ngIf="getRole === 1 ? '':'disabled'">Gửi</button>
+              <button type="submit" class="btn btn-success text-center" [disabled]="!hasSelectedOption()"
+                *ngIf="getRole === 1 ? '':'disabled'">Gửi</button>
             </div>
           </div>
         </form>

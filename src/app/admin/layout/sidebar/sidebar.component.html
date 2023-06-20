@@ -46,7 +46,7 @@
             </div>
             <li class="nav-item" *ngFor="let item of toList;let i = index">
                 <div *ngIf="company.id === item.idCompany">
-                    <div *ngIf="item?.status == 0 || item?.status == 2 || item?.status == 3 || item?.status == 4">
+                    <div *ngIf="item?.status == 0 || item?.status == 2 || item?.status == 3 || item?.status == 4 ||  item?.status == 5 ||  item?.status == 6">
                         <a class="nav-link collapsed" href="javascript:void(0)" data-toggle="collapse"
                             [attr.data-target]="'#collapse'+i" [attr.aria-expanded]="true"
                             [attr.aria-controls]="'collapse' + i">

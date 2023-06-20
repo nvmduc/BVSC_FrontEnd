@@ -21,7 +21,8 @@ export class VotingComponent implements OnInit {
       idMeeting: [''],
       content: [''],
       createdTime: [''],
-      modifiedTime: ['']
+      modifiedTime: [''],
+      status: ['']
     })
   }
   list: any[] = [];
@@ -39,7 +40,8 @@ export class VotingComponent implements OnInit {
   dataForm = this.fb.group({
     idMeeting: [this.idMeeting],
     content: [""],
-    createdTime: [Date.now()]
+    createdTime: [Date.now()],
+    status: [1],
   })
   get g() {
     return this.dataForm.controls
@@ -56,7 +58,8 @@ export class VotingComponent implements OnInit {
         this.dataForm = this.fb.group({
           idMeeting: [this.idMeeting],
           content: [""],
-          createdTime: [Date.now()]
+          createdTime: [Date.now()],
+          status:[1]
         })
       } else {
         console.log("Insert False")
@@ -93,6 +96,7 @@ export class VotingComponent implements OnInit {
         content: this.data.items.content,
         createdTime: this.data.items.createdTime,
         modifiedTime: this.data.items.modifiedTime,
+        status: this.data.items.status,
       });
     });
   }

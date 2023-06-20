@@ -74,8 +74,10 @@ export class ShareholderComponent implements OnInit {
   count:number = 0;
   countAuths:number = 0;
   allSharesCheckin:number = 0
+  allSharesAuthCheckin:number = 0
   allShares:number = 0
   percentShares!:number
+  percentSharesAuth!:number
   getShareholderByMeeting() {
     this.idMeeting = this.route.snapshot.params['id'];
     this.shareholderService.getByIdMeeting(this.idMeeting).subscribe((res) => {
@@ -86,7 +88,7 @@ export class ShareholderComponent implements OnInit {
           this.allShares += (item.numberShares + item.numberSharesAuth)
           if (item.status == 1) {
             this.allSharesCheckin += (item.numberShares + item.numberSharesAuth)
-            this.allSharesCheckin
+            this.allSharesAuthCheckin += item.numberSharesAuth
             this.count++
           }
           if(item.numberSharesAuth > 0 && item.status == 1){
@@ -94,6 +96,7 @@ export class ShareholderComponent implements OnInit {
           }
         }
         this.percentShares = (this.allSharesCheckin/this.allShares)*100
+        this.percentSharesAuth = (this.allSharesAuthCheckin/this.allShares)*100
       }
     })
     this.isLoading = false;

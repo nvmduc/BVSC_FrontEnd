@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
   }
 
   sessionId: any
-  dataSession:any = []
+  dataSession: any = []
   submitSession() {
     this.formSession.value.idShareholder = localStorage.getItem("id");
     this.formSession.value.ipAddress = this.ipAddress;
@@ -88,24 +88,24 @@ export class LoginComponent implements OnInit {
           if (idShareholder) {
             this.shareholderService.getById(idShareholder).subscribe((resS) => {
               this.dataShareholder = resS;
-              if(!this.dataShareholder.items?.idMeeting){
+              if (!this.dataShareholder.items?.idMeeting) {
                 Swal.fire(
                   'Thông tin tài khoản không chính xác!',
-                  'You clicked the button!',
+                  'Xin cảm ơn!',
                   'error'
                 )
-              }else{
+              } else {
                 this.meetingService.getById(this.dataShareholder.items?.idMeeting).subscribe((resM) => {
                   this.dataMeeting = resM;
-                  if(this.dataMeeting){
-                    if (this.dataMeeting.items?.status == 2 || this.dataMeeting.items?.status == 3 || this.dataMeeting.items?.status == 4) {
+                  if (this.dataMeeting) {
+                    if (this.dataMeeting.items?.status == 2 || this.dataMeeting.items?.status == 3 || this.dataMeeting.items?.status == 4|| this.dataMeeting.items?.status == 5|| this.dataMeeting.items?.status == 6|| this.dataMeeting.items?.status == 7) {
                       const token = localStorage.getItem('token');
                       const roles = localStorage.getItem('roles');
                       if (token != null && roles == '0') {
                         this.submitSession();
                         Swal.fire(
                           'Đăng nhập thành công!',
-                          'You clicked the button!',
+                          'Xin cảm ơn!',
                           'success'
                         )
                         this.router.navigate(['home'])
@@ -117,7 +117,7 @@ export class LoginComponent implements OnInit {
                         (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
                         Swal.fire(
                           'Đăng nhập không thành công!',
-                          'You clicked the button!',
+                          'Xin cảm ơn!',
                           'error'
                         )
                         this.router.navigate([''])
@@ -125,20 +125,20 @@ export class LoginComponent implements OnInit {
                     } else if (this.dataMeeting.items?.status == 0) {
                       Swal.fire(
                         'Cuộc họp chưa bắt đầu!',
-                        'You clicked the button!',
+                        'Xin cảm ơn!',
                         'warning'
                       )
                     } else {
                       Swal.fire(
                         'Cuộc họp đã kết thúc!',
-                        'You clicked the button!',
+                        'Xin cảm ơn!',
                         'error'
                       )
                     }
-                  }else{
+                  } else {
                     Swal.fire(
                       'Thông tin tài khoản không chính xác!',
-                      'You clicked the button!',
+                      'Xin cảm ơn!',
                       'error'
                     )
                   }
@@ -146,10 +146,10 @@ export class LoginComponent implements OnInit {
               }
             })
           }
-        }else{
+        } else {
           Swal.fire(
             'Thông tin tài khoản không chính xác!',
-            'You clicked the button!',
+            'Xin cảm ơn!',
             'error'
           )
         }

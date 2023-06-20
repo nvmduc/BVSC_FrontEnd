@@ -47,11 +47,11 @@ export class ElectionComponent implements OnInit {
   getRE: any[] = [];
 
   getResultElection() {
-    let inputIndex = 0;
     for (let itemElection of this.toListElection) {
       for (let itemC of this.toListCandidate) {
         if (itemElection.id == itemC.idElection && itemElection.status == 0) {
           const existingIndex = this.arr.findIndex(item => item.idCandidate === itemC.id);
+          let inputIndex = 0;
           if (existingIndex !== -1) {
             this.arr[existingIndex].numberSharesForCandidate = this.inputValues[itemC.id];
             inputIndex++;
@@ -109,13 +109,13 @@ export class ElectionComponent implements OnInit {
           if (res) {
             Swal.fire(
               'Bầu cử thành công!',
-              'You clicked the button!',
+              'Xin cảm ơn!',
               'success'
             )
           } else {
             Swal.fire(
               'Bầu cử không thành công!',
-              'You clicked the button!',
+              'Xin cảm ơn!',
               'error'
             )
           }
@@ -145,13 +145,13 @@ export class ElectionComponent implements OnInit {
         if (isSuccess) {
           Swal.fire(
             'Cập nhật bầu cử thành công!',
-            'You clicked the button!',
+            'Xin cảm ơn!',
             'success'
           )
         } else {
           Swal.fire(
             'Cập nhật bầu cử thất bại!',
-            'You clicked the button!',
+            'Xin cảm ơn!',
             'error'
           )
         }
@@ -197,11 +197,12 @@ export class ElectionComponent implements OnInit {
         this.list = [res];
         this.toListElection = Object.values(this.list[0].items);
         for (let item of this.toListElection) {
-          this.getAllByElection(item.id);
-          this.totalShares[item.id] = (this.numberShares + this.numberSharesAuth) * item.numberOfElected;
-          this.subtract(item.id)
+          if(item.status == 0){
+            this.getAllByElection(item.id);
+            this.totalShares[item.id] = (this.numberShares + this.numberSharesAuth) * item.numberOfElected;
+            this.subtract(item.id)
+          }
         }
-
       });
     } else {
       setTimeout(() => {
@@ -213,20 +214,12 @@ export class ElectionComponent implements OnInit {
   getAllByElection(id: string) {
     this.candidateService.getByIdElection(id).subscribe((res) => {
       this.list = [res];
-
-      if (this.list[0].items.length == 0) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else {
-        const candidates = Object.values(this.list[0].items);
-        for (let candidate of candidates) {
-          (candidate as any).idElection = id;
-          // this.inputNames.push(`shares${this.inputNames.length}`);
-        }
-        this.toListCandidateByE.push(...candidates);
+      const candidates = Object.values(this.list[0].items);
+      for (let candidate of candidates) {
+        (candidate as any).idElection = id;
       }
-
+      this.toListCandidateByE.push(...candidates);
+      
     });
   }
   getCandidatesByElection(id: string) {

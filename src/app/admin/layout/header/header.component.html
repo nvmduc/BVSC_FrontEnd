@@ -20,26 +20,36 @@
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(232, 85, 246); border:none"
-                *ngIf="dataMeeting.items?.status == 2" data-toggle="modal" data-target="#endVotingAndElectionModal">
-                Kết thúc biểu quyết và bầu cử
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 5|| dataMeeting.items?.status == 6" data-toggle="modal" data-target="#endVotingModal">
+                Kết thúc biểu quyết
+            </button>
+            <button type="submit" class="btn btn-primary"
+                style="margin: 10px; background-color: rgb(232, 85, 246); border:none"
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4|| dataMeeting.items?.status == 7" data-toggle="modal" data-target="#endElectionModal">
+                Kết thúc bầu cử
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(2, 140, 9); border:none"
-                *ngIf="dataMeeting.items?.status == 2" data-toggle="modal" data-target="#continueModal">
+                *ngIf="dataMeeting.items?.status == 7 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueVotingModal">
+                Mở lại biểu quyết
+            </button>
+            <button type="submit" class="btn btn-primary"
+                style="margin: 10px; background-color: rgb(2, 140, 9); border:none"
+                *ngIf="dataMeeting.items?.status == 6 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueElectionModal">
                 Mở lại bầu cử
             </button>
-            <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 4"
-                data-toggle="modal" data-target="#startModal">
-                Mở biểu quyết và bầu cử
+            <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 5 || dataMeeting.items?.status == 6 || dataMeeting.items?.status == 3"
+                data-toggle="modal" data-target="#continueAllModal">
+                Mở BQ và BC
+            </button>
+            <button type="submit" class="btn btn-danger" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 2 ||dataMeeting.items?.status == 7 || dataMeeting.items?.status == 4"
+                data-toggle="modal" data-target="#endAllModal">
+                Kết thúc BQ và BC
             </button>
             <button type="submit" class="btn btn-danger" style="margin: 10px;"
-                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4" data-toggle="modal"
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4 || dataMeeting.items?.status == 5 || dataMeeting.items?.status == 6 || dataMeeting.items?.status == 7|| dataMeeting.items?.status == 3" data-toggle="modal"
                 data-target="#endModal">
                 Kết thúc cuộc họp
-            </button>
-            <button type="submit" class="btn btn-danger" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 3"
-                data-toggle="modal" data-target="#endModal">
-                Chấm dứt cuộc họp
             </button>
         </div>
 
@@ -155,27 +165,63 @@
         </div>
     </div>
 </div>
-<!-- Continue Meeting -->
-<div class="modal fade" id="continueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+
+<div class="modal fade" id="continueVotingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Tiếp tục cuộc
-                    họp</h5>
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Mở lại biểu quyết</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">Bạn có chắc chắn muốn mở lại cuộc họp không</div>
+            <div class="modal-body">Bạn có chắc chắn muốn tiếp tục biểu quyết không</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" (click)="onContinue($event)">Tiếp tục</a>
+                <a class="btn btn-primary" (click)="onContinueVoting()">Tiếp tục</a>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="continueAllModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Mở lại biểu quyết và bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn tiếp tục biểu quyết và bầu cử không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onContinueAll()">Tiếp tục</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="continueElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Mở lại bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn tiếp tục bầu cử không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onContinueElection()">Tiếp tục</a>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Logout Modal-->
 <div class="modal fade" id="endModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -198,13 +244,51 @@
 </div>
 
 <!-- Logout Modal-->
-<div class="modal fade" id="endVotingAndElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="endVotingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Kết thúc biểu
-                    quyết và bầu cử</h5>
+                    quyết</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn kết thúc biểu quyết không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onEndVoting()">Kết thúc</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="endElectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Kết thúc bầu cử</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc chắn muốn kết thúc bầu cử không</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" (click)="onEndElection()">Kết thúc</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="endAllModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="font-size: 15px; font-weight: bold;" id="exampleModalLabel">Kết thúc biểu quyết và bầu cử</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -212,7 +296,7 @@
             <div class="modal-body">Bạn có chắc chắn muốn kết thúc biểu quyết và bầu cử không</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" (click)="onEndVotingAndElection()">Kết thúc</a>
+                <a class="btn btn-primary" (click)="onEndAll()">Kết thúc</a>
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MeetingService } from 'src/app/service/meeting.service';
 import { ShareholderInfoService } from 'src/app/service/shareholder-info.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     setInterval(() => {
       this.getInfoShareholder();
-    },30000)
+    }, 30000)
     setInterval(() => {
       if (this.tokenExpired()) {
         localStorage.clear()
@@ -63,36 +64,84 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+
   getInfoMeeting(idMeeting: number) {
     if (idMeeting) {
       this.meetingService.getById(idMeeting).subscribe((res: any) => {
         this.data = res;
-        setInterval(() => {
-          if (this.data.items?.status == 1) {
-            localStorage.clear()
-            this.toastr.error("Cuộc họp đã kết thúc")
-            setTimeout(() => {
-              window.location.reload()
-            }, 1500);
-          } else if (this.data.items?.status == 4) {
-            this.toastr.error("Đã kết thúc biểu quyết và bầu cử")
-            setTimeout(() => {
-              window.location.reload()
-            }, 1500);
-          }else if(this.data.items?.status == 3){
-            this.toastr.error("Bầu cử lại")
-            setTimeout(() => {
-              window.location.reload()
-            }, 1500);
-          }else{
-            console.log("ok");
-            
+        let hasNotified = false; // Variable to track if the notification has been shown
+        const checkStatusAndNotify = () => {
+          const status = this.data.items?.status;
+
+          if (!hasNotified) {
+            switch (status) {
+              case 1:
+                localStorage.clear();
+                Swal.fire('Cuộc họp đã kết thúc!', 'Xin cảm ơn!', 'warning')
+                  .then(() => {
+                    window.location.reload();
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              case 4:
+                Swal.fire('Đã kết thúc biểu quyết!', 'Xin cảm ơn!', 'warning')
+                  .then(() => {
+                    this.router.navigate(['/home']);
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              case 5:
+                Swal.fire('Đã kết thúc bầu cử!', 'Xin cảm ơn!', 'warning')
+                  .then(() => {
+                    this.router.navigate(['/home']);
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              case 6:
+                Swal.fire('Đã mở lại biểu quyết!', 'Xin cảm ơn!', 'success')
+                  .then(() => {
+                    this.router.navigate(['/home/voting/' + idMeeting]);
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              case 7:
+                Swal.fire('Đã mở lại bầu cử!', 'Xin cảm ơn!', 'success')
+                  .then(() => {
+                    this.router.navigate(['/home/election/' + idMeeting]);
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              case 3:
+                Swal.fire('Đã kết thúc biểu quyết và bầu cử!', 'Xin cảm ơn!', 'success')
+                  .then(() => {
+                    this.router.navigate(['/home/result-voting/' + idMeeting]);
+                  });
+                hasNotified = true;
+                clearInterval(intervalId); // Stop the interval once the notification is shown
+                break;
+              default:
+                console.log("ok");
+                break;
+            }
           }
-        }, 30000);
+        };
+
+        // Call checkStatusAndNotify once immediately
+        checkStatusAndNotify();
+
+        // Check the status every 30 seconds
+        const intervalId = setInterval(checkStatusAndNotify, 30000);
       });
+
     } else {
       window.location.reload();
     }
   }
+
 
 }

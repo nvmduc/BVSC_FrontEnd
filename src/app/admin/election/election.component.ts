@@ -42,7 +42,7 @@ export class ElectionComponent implements OnInit {
     description: [""],
     numberOfElected: [""],
     createdTime: [Date.now()],
-    status: [0],
+    status: [1],
   })
   role!:number
   constructor(private fb: FormBuilder, private datePipe: DatePipe, private electionService: ElectionService, private candidateService: CandidateService, private toastr: ToastrService, private route: ActivatedRoute) {
@@ -208,7 +208,7 @@ export class ElectionComponent implements OnInit {
           description: [""],
           numberOfElected: [""],
           createdTime: [Date.now()],
-          status: [0]
+          status: [1]
         })
       } else {
         this.toastr.error("Không thành công", "Thất bại")

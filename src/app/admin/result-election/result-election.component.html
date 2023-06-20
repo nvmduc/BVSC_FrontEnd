@@ -1,43 +1,38 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
-
   <app-sidebar></app-sidebar>
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
-
     <!-- Main Content -->
     <div id="content">
-
       <app-header></app-header>
       <div class="container-fluid">
-
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Kết quả bầu cử</h1>
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
-
           <div class="card-body">
             <div class="table-responsive">
               <div *ngFor="let item of toListElectionByMeeting; let i = index">
-                <h2>{{i+1}}. {{item.title}}</h2>
-                <p>Số ứng cử viên được bầu: {{item.numberOfElected}}</p>
+                <h2>{{ i + 1 }}. {{ item.title }}</h2>
+                <p>Số ứng cử viên được bầu: {{ item.numberOfElected }}</p>
                 <p>Các ứng cử viên:</p>
                 <table border="1">
                   <thead>
                     <tr>
                       <td>Họ và tên</td>
-                      <td>Tổng số phiếu được bầu</td>
+                      <td>Tổng số phiếu</td>
+                      <td>Số phiếu được bầu</td>
                       <td>Tỉ lệ</td>
-                      <!-- <td>Trạng thái</td> -->
                     </tr>
                   </thead>
                   <tbody *ngFor="let candidate of candidatePercentages">
                     <tr *ngIf="candidate.idElection === item.id">
-                      <td>{{candidate.fullname}}</td>
-                      <td>{{candidate.totalShares | number: '1.0-2'}}/{{totalSharesOfShareholders | number: '1.0-2'}}
-                        phiếu</td>
-                      <td>{{candidate.percentage | number: '1.0-2'}}%</td>
+                      <td>{{ candidate.fullname }}</td>
+                      <td>{{ candidate.totalShares | number : "1.0-0" }}</td>
+                      <td>{{ candidate.shares | number : "1.0-0" }}</td>
+                      <td>{{ candidate.percentage | number : "1.0-5" }}%</td>
                     </tr>
                   </tbody>
                 </table>
@@ -45,17 +40,12 @@
             </div>
           </div>
         </div>
-
       </div>
       <!-- /.container-fluid -->
     </div>
     <!-- /.container-fluid -->
-
   </div>
   <!-- End of Main Content -->
-
-
-
 </div>
 <!-- End of Content Wrapper -->
 <div *ngIf="isLoading" class="loading-spinner">

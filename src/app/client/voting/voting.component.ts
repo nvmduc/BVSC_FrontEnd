@@ -58,8 +58,8 @@ export class VotingComponent implements OnInit {
   arr: any[] = [];
 
   getIdVoting(idVoting: string, status: number) {
-    const existingIndex = this.arr.findIndex(item => item.idVoting === idVoting);
-    if (existingIndex !== -1) {
+    const existingIndex = this.arr.findIndex(item => item.idVoting === idVoting && item.status == 0);    
+    if (existingIndex != -1) {
       this.arr[existingIndex].status = status;
     } else {
       const formValue = {
@@ -68,9 +68,7 @@ export class VotingComponent implements OnInit {
         status: status,
       };
       this.arr.push(formValue);
-    }
-
-
+    }    
     this.valueIdVoting = idVoting;
     this.valueStatus = status;
   }
@@ -78,13 +76,24 @@ export class VotingComponent implements OnInit {
   getRV: any[] = [];
   onSubmit() {
     const idMeeting = this.route.snapshot.params['idMeeting'];
-    this.result_VotingService.getByIdMeeting(idMeeting).subscribe((res) => {
+    this.result_VotingService.getByIdMeeting(idMeeting).subscribe(async (res) => {
       this.dataResultVoting = res;
       this.getRV = this.dataResultVoting.items;
+      const isExistingArr = this.arr.map(item => item.idVoting);
+      console.log(isExistingArr);
+      console.log(this.arr);
       
-      
-      const isExisting = this.getRV.some(item => item.idShareholder === localStorage.getItem('id'));      
-      if (!isExisting) {
+      let isNew = true;
+      for (let itemC of isExistingArr) {
+        const isExisting = this.getRV.filter(item => item.idShareholder === localStorage.getItem('id') && item.idVoting == itemC);
+
+        if (isExisting.length != 0) {
+          isNew = false;
+          break;
+        }
+      }
+      // const isExisting = this.getRV.some(item => item.idShareholder === localStorage.getItem('id'));      
+      if (isNew) {
         const formValues = [];
         for (let i = 0; i < this.arr.length; i++) {
           const formValue = {
@@ -93,58 +102,75 @@ export class VotingComponent implements OnInit {
             status: this.arr[i].status
           };
           formValues.push(formValue);
-        }
+        }        
         this.result_VotingService.create(formValues).subscribe((res) => {
           if (res) {
             Swal.fire(
               'Biểu quyết thành công!',
-              'You clicked the button!',
+              'Xin cảm ơn!',
               'success'
             )
           } else {
             Swal.fire(
               'Biểu quyết thất bại!',
-              'You clicked the button!',
+              'Xin cảm ơn!',
               'success'
             )
           }
         })
       } else {
-        const isExisting = this.getRV.filter(item => item.idShareholder === localStorage.getItem('id'));
-        const idArray = isExisting.map(item => item.id);
-
+        const ids = [];
+        for (let itemC of isExistingArr) {
+          const isExisting = this.getRV.filter(item => item.idShareholder === localStorage.getItem('id') && item.idVoting == itemC);
+          const isExistingIds = isExisting.map(item => item.id);
+          ids.push(isExistingIds[0]);
+        }
         const formValues = [];
         for (let i = 0; i < this.arr.length; i++) {
-          console.log(this.arr.length);
-            const formValue = {
-              id: idArray[i],
-              status: this.arr[i].status
-            };
-            formValues.push(formValue);
-          }
+          const formValue = {
+            id: ids[i],
+            status: this.arr[i].status
+          };
+          formValues.push(formValue);
+        }
+        console.log(ids);
+        console.log(formValues);
         
-        for(let item of formValues){
-          this.result_VotingService.update(item.id,formValues).subscribe((res) => {
-            if (res) {
-              Swal.fire(
-                'Cập nhật biểu quyết thành công thành công!',
-                'You clicked the button!',
-                'success'
-              )
-            } else {
-              Swal.fire(
-                'Cập nhật biểu quyết thất bại',
-                'You clicked the button!',
-                'error'
-              )
-            }
-          })
-        } 
+        for (let id of ids) {
+          this.result_VotingService.update(id, formValues).subscribe();
+        }
+        const results = await Promise.all(formValues);
+        const isSuccess = results.every((res) => res);
+
+        if (isSuccess) {
+          Swal.fire(
+            'Cập nhật biểu quyết thành công!',
+            'Xin cảm ơn!',
+            'success'
+          )
+        } else {
+          Swal.fire(
+            'Cập nhật biểu quyết thất bại!',
+            'Xin cảm ơn!',
+            'error'
+          )
+        }
       }
+      
     })
 
   }
+
   hasSelectedOption(): boolean {
-    return this.arr.length >= this.toList.length;
+    for (let item of this.toList) {
+      if (this.arr.length < item.status.length) {
+        return false;
+      }
+    }
+    return true;
   }
+  
+  // hasSelectedOption(): boolean {
+  //   return this.arr.length >= this.toList.length;
+  // }
 }

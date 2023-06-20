@@ -25,6 +25,7 @@ export class HeaderComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getInfoMeetingById();
+
   }
   dataMeeting: any = []
   getInfoMeetingById() {
@@ -59,19 +60,19 @@ export class HeaderComponent implements OnInit {
   get g() {
     return this.dataForm.controls
   }
-  list:any = []
-  toList:any = []
+  list: any = []
+  toList: any = []
   onSubmit() {
     const password = this.dataForm.value.password;
     if (password) {
       const valueMd5 = CryptoJS.MD5(password).toString();
       this.dataForm.value.password = valueMd5;
       this.dataForm.value.role = 1;
-      this.accountPreside.getAll().subscribe((res)=>{
+      this.accountPreside.getAll().subscribe((res) => {
         this.list = res;
         this.toList = this.list.items
-        const usernameExists = this.toList.some((item: { username: string}) => item.username === this.dataForm.value.username);
-        if(!usernameExists){
+        const usernameExists = this.toList.some((item: { username: string }) => item.username === this.dataForm.value.username);
+        if (!usernameExists) {
           this.accountPreside.CreatePreside(this.dataForm.value).subscribe((res) => {
             if (res) {
               this.toastr.success("Đăng ký thành công tài khoản chủ tọa", "Thành công");
@@ -79,17 +80,42 @@ export class HeaderComponent implements OnInit {
               this.toastr.error("Đăng ký không thành công tài khoản chủ tọa", "Thất bại");
             }
           })
-        }else{
+        } else {
           this.toastr.warning("Tài khoản đã tồn tại", "Cảnh báo");
         }
       })
-      
+
     }
   }
 
   dataShareholder: any = [];
-  onContinue(event: Event) {
-    event.preventDefault();
+  onContinueAll() {
+    const idMeeting = this.route.snapshot.params['id'];
+    this.shareholderService.getByIdMeeting(idMeeting).pipe(
+      mergeMap((resS) => {
+        this.dataShareholder = resS;
+        this.infoMeeting.value.status = 2;
+        return from(this.meetingService.update(idMeeting, this.infoMeeting.value));
+      })
+    ).subscribe(
+      (resM) => {
+        if (resM) {
+          if (this.infoMeeting.value.status == 2) {
+            this.toastr.success("Mở lại biểu quyết và bầu cử thành công", "Thành công");
+            window.location.reload();
+            this.router.navigate(['/admin/shareholder/' + idMeeting])
+          }
+          else {
+            this.toastr.error("Không thể mở lại cuộc họp", "Thất bại");
+          }
+        } else {
+          this.toastr.error("Không thể mở lại cuộc họp", "Thất bại");
+        }
+      }
+    );
+  }
+
+  onEndAll() {
     const idMeeting = this.route.snapshot.params['id'];
     this.shareholderService.getByIdMeeting(idMeeting).pipe(
       mergeMap((resS) => {
@@ -101,15 +127,15 @@ export class HeaderComponent implements OnInit {
       (resM) => {
         if (resM) {
           if (this.infoMeeting.value.status === 3) {
-            this.toastr.success("Mở lại cuộc họp thành công", "Thành công");
+            this.toastr.success("Đã kết thúc biểu quyết và bầu cử", "Thành công");
             window.location.reload();
             this.router.navigate(['/admin/shareholder/' + idMeeting])
           }
           else {
-            this.toastr.error("Không thể mở lại cuộc họp", "Thất bại");
+            this.toastr.error("Không thể kết thúc biểu quyết và bầu cử", "Thất bại");
           }
         } else {
-          this.toastr.error("Không thể mở lại cuộc họp", "Thất bại");
+          this.toastr.error("Không thể kết thúc biểu quyết và bầu cử", "Thất bại");
         }
       }
     );
@@ -154,6 +180,7 @@ export class HeaderComponent implements OnInit {
 
 
   onEnd() {
+
     const idMeeting = this.route.snapshot.params['id'];
     this.infoMeeting.value.status = 1;
     this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
@@ -167,15 +194,98 @@ export class HeaderComponent implements OnInit {
       }
     })
   }
-  onEndVotingAndElection() {
-    const idMeeting = this.route.snapshot.params['id'];
-    this.infoMeeting.value.status = 4;
-    this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
-      if (res) {
-        this.toastr.success("Đã kết thúc biểu quyết và bầu cử", "Thành công")
-        window.location.reload();
-        this.router.navigate(['/admin/shareholder/' + idMeeting])
-      }
-    })
+  onEndVoting() {
+    if (this.infoMeeting.value.status == 5) {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 3;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Kết thúc biểu quyết và bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    } else {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 4;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Kết thúc biểu quyết", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    }
+  }
+  onEndElection() {
+    if (this.infoMeeting.value.status == 4) {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 3;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Kết thúc biểu quyết và bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    } else {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 5;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Kết thúc bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    }
+  }
+  onContinueVoting() {
+    if (this.infoMeeting.value.status == 7) {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 2;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Đã mở lại biểu quyết và bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    } else {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 6;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Đã mở lại biểu quyết", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    }
+  }
+  onContinueElection() {
+    if (this.infoMeeting.value.status == 6) {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 2;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Đã mở lại biểu quyết và bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    }
+    else {
+      const idMeeting = this.route.snapshot.params['id'];
+      this.infoMeeting.value.status = 7;
+      this.meetingService.update(idMeeting, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Đã mở lại bầu cử", "Thành công")
+          window.location.reload();
+          this.router.navigate(['/admin/shareholder/' + idMeeting])
+        }
+      })
+    }
+
   }
 }

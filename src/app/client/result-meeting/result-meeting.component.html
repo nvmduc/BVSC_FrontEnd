@@ -14,41 +14,51 @@
                             <div class="table-responsive">
                                 <table border=1px>
                                     <thead class="text-center">
-                                        <tr class="th">
-                                            <td rowspan="2" style="width: 60%; padding: 10px; border: none"
-                                                class="text-center">NỘI DUNG CẦN
-                                                BIỂU
-                                                QUYẾT</td>
-                                            <td colspan="3"
-                                                style="width: 350px; padding: 10px; border: 1px solid black;"
-                                                class="text-center">
-                                                Biểu
-                                                quyết</td>
-                                        </tr>
-                                        <tr class="answer">
-                                            <td>Tán thành</td>
-                                            <td>Không tán thành</td>
-                                            <td>Không có ý kiến</td>
-                                        </tr>
+                                      <tr class="th">
+                                        <td rowspan="2" style="width: 40%; padding: 10px; border: none" class="text-center">NỘI DUNG CẦN
+                                          BIỂU
+                                          QUYẾT</td>
+                                        <td rowspan="2" style="padding: 10px;">Tổng số phiếu</td>
+                                        <td colspan="6" style="width: 350px; padding: 10px; border: 1px solid black;" class="text-center">
+                                          Biểu
+                                          quyết</td>
+                                      </tr>
+                                      <tr class="answer">
+                                        <td style="padding: 5px;">Tán thành</td>
+                                        <td>Tỉ lệ</td>
+                                        <td style="padding: 5px;">Không tán thành</td>
+                                        <td>Tỉ lệ</td>
+                                        <td style="padding: 5px;">Không có ý kiến</td>
+                                        <td>Tỉ lệ</td>
+                                      </tr>
                                     </thead>
                                     <tbody *ngFor="let item of toListVotingByMeeting; let i = index">
-                                        <tr>
-                                            <td style="padding: 5px;">{{i+1}}. {{item.content}}</td>
-                                            <td class="text-center">
-                                                <p>{{agreeResults[i]?.percentage}}%</p>
-                                                <p>Tỉ lệ: {{agreeResults[i]?.shares | number:'1.0-0'}} / {{realShares | number:'1.0-0'}} phiếu</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <p>{{disagreeResults[i]?.percentage}}%</p>
-                                                <p>Tỉ lệ: {{disagreeResults[i]?.shares | number:'1.0-0'}} / {{realShares | number:'1.0-0'}} phiếu</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <p>{{noOpinionResults[i]?.percentage}}%</p>
-                                                <p>Tỉ lệ: {{noOpinionResults[i]?.shares | number:'1.0-0'}} / {{realShares | number:'1.0-0'}} phiếu</p>
-                                            </td>
-                                        </tr>
+                                      <tr>
+                                        <td style="padding: 5px;">{{i+1}}. {{item.content}}</td>
+                                        <td>
+                                          <p>{{(agreeResults[item.id]?.shares+disagreeResults[item.id]?.shares+noOpinionResults[item.id]?.shares) | number:'1.0-0'}}</p>
+                                        </td>
+                                        <td class="text-center">
+                                          <p>{{agreeResults[item.id]?.shares | number:'1.0-0'}}</p>
+                                        </td>
+                                        <td>
+                                          <p>{{agreeResults[item.id]?.percentage}}%</p>
+                                        </td>
+                                        <td class="text-center">
+                                          <p>{{disagreeResults[item.id]?.shares | number:'1.0-0'}}</p>
+                                        </td>
+                                        <td>
+                                          <p>{{disagreeResults[item.id]?.percentage}}%</p>
+                                        </td>
+                                        <td class="text-center">
+                                          <p>{{noOpinionResults[item.id]?.shares | number:'1.0-0'}}</p>
+                                        </td>
+                                        <td>
+                                          <p>{{noOpinionResults[item.id]?.percentage}}%</p>
+                                        </td>
+                                      </tr>
                                     </tbody>
-                                </table>
+                                  </table>
                             </div>
                         </div>
                     </div>
@@ -66,16 +76,18 @@
                                         <thead>
                                             <tr>
                                                 <td>Họ và tên</td>
-                                                <td>Tổng số phiếu được bầu</td>
+                                                <td>Tổng số phiếu</td>
+                                                <td>Số phiếu được bầu</td>
                                                 <td>Tỉ lệ</td>
                                             </tr>
                                         </thead>
                                         <tbody *ngFor="let candidate of candidatePercentages">
-                                            <tr *ngIf="candidate.idElection === item.id">
-                                                <td>{{candidate.fullname}}</td>
-                                                <td>{{candidate.totalShares | number:'1.0-0'}} / {{totalSharesOfShareholders | number:'1.0-0'}} phiếu</td>
-                                                <td>{{candidate.percentage | number: '1.0-2'}}%</td>
-                                            </tr>
+                                          <tr *ngIf="candidate.idElection === item.id">
+                                            <td>{{ candidate.fullname }}</td>
+                                            <td>{{ candidate.totalShares | number : "1.0-0" }}</td>
+                                            <td>{{ candidate.shares | number : "1.0-0" }}</td>
+                                            <td>{{ candidate.percentage | number : "1.0-5" }}%</td>
+                                          </tr>
                                         </tbody>
                                     </table>
 
