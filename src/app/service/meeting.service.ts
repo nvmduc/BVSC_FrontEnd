@@ -24,7 +24,7 @@ export class MeetingService {
     return this.http.get<Meeting>(`${ApiUrl}/${id}`)
   }
 
-  delete(id: any): Observable<Meeting> {
+  delete(id: number): Observable<Meeting> {
     return this.http.delete<Meeting>(`${ApiUrl}/${id}`)
   }
 
@@ -35,7 +35,7 @@ export class MeetingService {
     return this.http.post<Meeting>(`${ApiUrl}`, data,httpOptions)
   }
 
-  update(id: string, data: any): Observable<Meeting> {
+  update(id: number, data: any): Observable<Meeting> {
     const httpOptions = {
       headers: new HttpHeaders({'Content-Type': 'application/json'})
     }

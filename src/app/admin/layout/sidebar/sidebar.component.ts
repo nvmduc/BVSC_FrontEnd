@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { CompanyService } from 'src/app/service/company.service';
 import * as moment from 'moment-timezone';
 import { ActivatedRoute, Router } from '@angular/router';
+import { timestamp } from 'rxjs';
 
 
 @Component({
@@ -17,8 +18,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  role!:number;
-  constructor(private meetingService: MeetingService, private fb: FormBuilder, private router:Router,
+  role!: number;
+  constructor(private meetingService: MeetingService, private fb: FormBuilder, private router: Router,
     private toastr: ToastrService, private imageCompess: NgxImageCompressService,
     private http: HttpClient, private datePipe: DatePipe, private companyService: CompanyService, private route: ActivatedRoute) {
     this.idMeeting = this.route.snapshot.params['id'];
@@ -72,7 +73,7 @@ export class SidebarComponent implements OnInit {
     description: [""],
   });
 
-  dataFormCompany= this.fb.group({
+  dataFormCompany = this.fb.group({
     companyName: [""],
     stockCode: [""],
     taxCode: [""],
@@ -124,12 +125,12 @@ export class SidebarComponent implements OnInit {
   }
 
   onSubmitCompany(): void {
-    this.companyService.create(this.dataFormCompany.value).subscribe((res)=>{
-      if(res){
+    this.companyService.create(this.dataFormCompany.value).subscribe((res) => {
+      if (res) {
         this.getAllCompany();
         this.toastr.success("Thêm công ty thành công", "Thành công");
       }
-      else{
+      else {
         this.toastr.error("Không thành công", "Thất bại");
       }
     })
@@ -137,19 +138,18 @@ export class SidebarComponent implements OnInit {
 
   onSubmitUpdateCompany(): void {
     const id = this.infoCompany.value.id
-    this.companyService.update(id,this.infoCompany.value).subscribe((res)=>{
-      if(res){
+    this.companyService.update(id, this.infoCompany.value).subscribe((res) => {
+      if (res) {
         this.getAllCompany();
         this.toastr.success("Sửa thông tin công ty thành công", "Thành công");
       }
-      else{
+      else {
         this.toastr.error("Không thành công", "Thất bại");
       }
     })
   }
 
   uploadBase64ToServer(base64String: string): void {
-    const idCompany = this.dataFormMeeting.value.idCompany;
     this.dataFormMeeting.value.imageBanner = base64String;
     // Đặt múi giờ thành UTC+7
     moment.tz.setDefault('Asia/Bangkok');
@@ -166,21 +166,19 @@ export class SidebarComponent implements OnInit {
   }
 
   onSubmitUpdate() {
-    const id = this.infoMeeting.value.id
+    const id: number = this.infoMeeting.value.id
 
-    this.infoMeeting.value.startTime = moment(this.infoMeeting.value.startTime).format('YYYY-MM-DD HH:mm:ss.SSS');
-    this.infoMeeting.value.endTime = moment(this.infoMeeting.value.endTime).format('YYYY-MM-DD HH:mm:ss.SSS');
     if (this.selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        moment.tz.setDefault('Asia/Bangkok');
         const base64String = reader.result as string;
         this.infoMeeting.value.imageBanner = base64String;
-
         this.meetingService.update(id, this.infoMeeting.value).subscribe((res) => {
           if (res) {
             this.toastr.success("Sửa thành công", "Thành công")
             this.getAllMeetingByCompany()
-            this.router.navigate(['/admin'])
+            this.router.navigate(['/admin/shareholder/'+id])
           } else {
             this.toastr.error("Không thành công", "Thất bại")
             this.getAllMeetingByCompany()
@@ -188,16 +186,31 @@ export class SidebarComponent implements OnInit {
         })
       }
       reader.readAsDataURL(this.selectedFile);
+    } else {
+      const timestampStart = +new Date(this.infoMeeting.value.startTime);
+      const timestampEnd = +new Date(this.infoMeeting.value.endTime);
+      this.infoMeeting.value.startTime = timestampStart
+      this.infoMeeting.value.endTime = timestampEnd
+      this.meetingService.update(id, this.infoMeeting.value).subscribe((res) => {
+        if (res) {
+          this.toastr.success("Sửa thành công", "Thành công")
+          this.getAllMeetingByCompany()
+          this.router.navigate(['/admin/shareholder/'+id])
+        } else {
+          this.toastr.error("Không thành công", "Thất bại")
+          this.getAllMeetingByCompany()
+        }
+      })
     }
   }
 
   list: any[] = []
   toList: any[] = []
   id!: number;
-  listCompany:any = [];
-  toListCompany:any = [];
-  getAllCompany(){
-    this.companyService.getAll().subscribe((companys)=>{
+  listCompany: any = [];
+  toListCompany: any = [];
+  getAllCompany() {
+    this.companyService.getAll().subscribe((companys) => {
       this.listCompany = companys;
       this.toListCompany = Object.values(this.listCompany.items);
     })
@@ -315,7 +328,7 @@ export class SidebarComponent implements OnInit {
     });
 
   }
-  dataCompany:any = []
+  dataCompany: any = []
   editCompany(id: number) {
     this.companyService.getById(id).subscribe((res: any) => {
       this.dataCompany = res;

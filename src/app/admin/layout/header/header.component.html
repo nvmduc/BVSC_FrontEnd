@@ -5,54 +5,51 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
-        <div [ngClass]="{'disabled-item': role == 1}">
             <button type="submit" class="btn btn-primary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 0"
-                data-toggle="modal" data-target="#startModal">
+                data-toggle="modal" data-target="#startModal" [ngClass]="{'disabled-item': role == 1}">
                 Bắt đầu cuộc họp
             </button>
             <button type="submit" class="btn btn-secondary" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 1"
-                disabled>
+                disabled [ngClass]="{'disabled-item': role == 1}">
                 Cuộc họp đã kết thúc
             </button>
             <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 1"
-                data-toggle="modal" data-target="#startModal">
+                data-toggle="modal" data-target="#startModal" [ngClass]="{'disabled-item': role == 1}">
                 Bắt đầu lại cuộc họp
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(232, 85, 246); border:none"
-                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 5|| dataMeeting.items?.status == 6" data-toggle="modal" data-target="#endVotingModal">
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 5|| dataMeeting.items?.status == 6" data-toggle="modal" data-target="#endVotingModal" [ngClass]="{'disabled-item': role == 1}">
                 Kết thúc biểu quyết
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(232, 85, 246); border:none"
-                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4|| dataMeeting.items?.status == 7" data-toggle="modal" data-target="#endElectionModal">
+                *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4|| dataMeeting.items?.status == 7" data-toggle="modal" data-target="#endElectionModal" [ngClass]="{'disabled-item': role == 1}">
                 Kết thúc bầu cử
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(2, 140, 9); border:none"
-                *ngIf="dataMeeting.items?.status == 7 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueVotingModal">
+                *ngIf="dataMeeting.items?.status == 7 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueVotingModal" [ngClass]="{'disabled-item': role == 1}">
                 Mở lại biểu quyết
             </button>
             <button type="submit" class="btn btn-primary"
                 style="margin: 10px; background-color: rgb(2, 140, 9); border:none"
-                *ngIf="dataMeeting.items?.status == 6 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueElectionModal">
+                *ngIf="dataMeeting.items?.status == 6 || dataMeeting.items?.status == 3" data-toggle="modal" data-target="#continueElectionModal" [ngClass]="{'disabled-item': role == 1}">
                 Mở lại bầu cử
             </button>
             <button type="submit" class="btn btn-success" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 5 || dataMeeting.items?.status == 6 || dataMeeting.items?.status == 3"
-                data-toggle="modal" data-target="#continueAllModal">
+                data-toggle="modal" data-target="#continueAllModal" [ngClass]="{'disabled-item': role == 1}">
                 Mở BQ và BC
             </button>
             <button type="submit" class="btn btn-danger" style="margin: 10px;" *ngIf="dataMeeting.items?.status == 2 ||dataMeeting.items?.status == 7 || dataMeeting.items?.status == 4"
-                data-toggle="modal" data-target="#endAllModal">
+                data-toggle="modal" data-target="#endAllModal" [ngClass]="{'disabled-item': role == 1}">
                 Kết thúc BQ và BC
             </button>
             <button type="submit" class="btn btn-danger" style="margin: 10px;"
                 *ngIf="dataMeeting.items?.status == 2 || dataMeeting.items?.status == 4 || dataMeeting.items?.status == 5 || dataMeeting.items?.status == 6 || dataMeeting.items?.status == 7|| dataMeeting.items?.status == 3" data-toggle="modal"
-                data-target="#endModal">
+                data-target="#endModal" [ngClass]="{'disabled-item': role == 1}">
                 Kết thúc cuộc họp
             </button>
-        </div>
-
         <div class="topbar-divider d-none d-sm-block"></div>
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
