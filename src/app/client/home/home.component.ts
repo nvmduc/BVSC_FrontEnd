@@ -70,41 +70,49 @@ export class HomeComponent implements OnInit {
       this.meetingService.getById(idMeeting).subscribe((res: any) => {
         this.data = res;
         const status = this.data.items?.status;
-        switch (status) {
-          case 1:
-            localStorage.clear();
-            Swal.fire('Cuộc họp đã kết thúc!', 'Xin cảm ơn!', 'warning')
-            window.location.reload();
-            break;
-          case 4:
-            Swal.fire('Đã kết thúc biểu quyết!', 'Xin cảm ơn!', 'warning')
-            this.router.navigate(['/home']);
-            break;
-          case 5:
-            Swal.fire('Đã kết thúc bầu cử!', 'Xin cảm ơn!', 'warning')
-            this.router.navigate(['/home']);
-            break;
-          case 6:
-            Swal.fire('Đã mở lại biểu quyết!', 'Xin cảm ơn!', 'success')
-            this.router.navigate(['/home/voting/' + idMeeting]);
-            break;
-          case 7:
-            Swal.fire('Đã mở lại bầu cử!', 'Xin cảm ơn!', 'success')
-            this.router.navigate(['/home/election/' + idMeeting]);
-            break;
-          case 3:
-            Swal.fire('Đã kết thúc biểu quyết và bầu cử!', 'Xin cảm ơn!', 'success')
-            this.router.navigate(['/home/result-voting/' + idMeeting]);
-            break;
-          default:
-            console.log("ok");
-            break;
+  
+        // Kiểm tra xem đã hiển thị thông báo cho trạng thái hiện tại hay chưa
+        if (!localStorage.getItem(`status_${status}`)) {
+          switch (status) {
+            case 1:
+              localStorage.clear();
+              Swal.fire('Cuộc họp đã kết thúc!', 'Xin cảm ơn!', 'warning');
+              window.location.reload();
+              break;
+            case 4:
+              Swal.fire('Đã kết thúc biểu quyết!', 'Xin cảm ơn!', 'warning');
+              this.router.navigate(['/home']);
+              break;
+            case 5:
+              Swal.fire('Đã kết thúc bầu cử!', 'Xin cảm ơn!', 'warning');
+              this.router.navigate(['/home']);
+              break;
+            case 6:
+              Swal.fire('Đã mở lại biểu quyết!', 'Xin cảm ơn!', 'success');
+              this.router.navigate(['/home/voting/' + idMeeting]);
+              break;
+            case 7:
+              Swal.fire('Đã mở lại bầu cử!', 'Xin cảm ơn!', 'success');
+              this.router.navigate(['/home/election/' + idMeeting]);
+              break;
+            case 3:
+              Swal.fire('Đã kết thúc biểu quyết và bầu cử!', 'Xin cảm ơn!', 'success');
+              this.router.navigate(['/home/result-voting/' + idMeeting]);
+              break;
+            default:
+              console.log("ok");
+              break;
+          }
+  
+          // Đánh dấu đã hiển thị thông báo cho trạng thái hiện tại
+          localStorage.setItem(`status_${status}`, 'true');
         }
-      })
+      });
     } else {
       window.location.reload();
     }
   }
+  
 
 
 }
