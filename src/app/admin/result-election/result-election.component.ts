@@ -112,8 +112,6 @@ export class ResultElectionComponent implements OnInit {
               idCandidateMap.set(idCandidate, numberSharesForCandidate);
             }
           }
-          console.log(idEMap);
-          console.log(idCandidateMap);
         }
         const candidatePercentages: {
           idElection: string;
@@ -157,6 +155,7 @@ export class ResultElectionComponent implements OnInit {
 
         const calculateCandidatePercentages = (idE: string): void => {
           const candidatePercentages: any[] = [];
+          const updatedCandidates: any[] = [];
 
           idCandidateMap.forEach((totalSharesOfCandidate, idC) => {
 
@@ -191,15 +190,16 @@ export class ResultElectionComponent implements OnInit {
                   totalShares: totalShares,
                   percentage: candidatePercent
                 };
-                candidatePercentages.push(updatedCandidate);
+                updatedCandidates.push(updatedCandidate);
+                this.candidatePercentages = updatedCandidates.sort((a, b) => b.percentage - a.percentage);
               }
             });
-            this.candidatePercentages = candidatePercentages;
           });
         };
       });
     });
-    this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
+    this.candidatePercentages.sort((a, b) => a.percentage - b.percentage);
+    
   }
 
 }

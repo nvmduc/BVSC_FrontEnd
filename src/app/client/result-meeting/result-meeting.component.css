@@ -110,11 +110,18 @@ tbody tr td {
 }
 
 
-@media only screen and (max-width: 390px) {
+@media only screen and (max-width: 798px) {
     .main-area {
         display: block;
-    }
+        width: 100%;
 
+    }
+    .box{
+        width: 100%;
+    }
+    .main-result{
+        width: 100%;
+    }
     .main-area .info {
         width: 100%;
         padding-top: 10px;
@@ -125,9 +132,6 @@ tbody tr td {
         display: flex;
     }
 
-    .box {
-        width: 100%;
-    }
 
     .item {
         padding: 5px;

@@ -168,17 +168,17 @@
                             <label >Tiêu đề</label>
                             <input  type="text" name="name" class="form-control"
                             aria-describedby="emailHelp" placeholder="..." formControlName="title" required>
-                            <div *ngIf="g.title.invalid && (g.title.dirty || g.title.touched)">
+                            <!-- <div *ngIf="g.title.invalid && (g.title.dirty || g.title.touched)">
                                 <h6 *ngIf="g.title.errors?.['required']">Không được để trống</h6>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="form-group">
                             <label>Mô tả</label>
                             <input type="text" name="description" class="form-control"
                             placeholder="..." formControlName="description" required>
-                            <div *ngIf="g.description.invalid && (g.description.dirty || g.description.touched)">
+                            <!-- <div *ngIf="g.description.invalid && (g.description.dirty || g.description.touched)">
                                 <h6 *ngIf="g.description.errors?.['required']">Không được để trống</h6>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="line">
@@ -186,10 +186,10 @@
                             <label>Số lượng được bầu</label>
                             <input type="number" name="numberOfElected" class="form-control"
                             placeholder="..." formControlName="numberOfElected" required min="1">
-                            <div *ngIf="g.numberOfElected.invalid && (g.numberOfElected.dirty || g.numberOfElected.touched)">
+                            <!-- <div *ngIf="g.numberOfElected.invalid && (g.numberOfElected.dirty || g.numberOfElected.touched)">
                                 <h6 *ngIf="g.numberOfElected.errors?.['required']">Không đúng định dạng</h6>
                                 <h6 *ngIf="g.numberOfElected.errors?.['min']">Tối thiểu là 1</h6>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="form-group">
                             <label>Trạng thái</label>

@@ -54,7 +54,7 @@ export class ResultMeetingComponent implements OnInit {
 
 
   getAllResultVoting(): void {
-    const idMeeting = this.route.snapshot.params['id'];
+    const idMeeting = this.route.snapshot.params['idMeeting'];
     this.result_votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.resultVotings = res;
       this.toListResultVoting = Object.values(this.resultVotings.items);
@@ -94,7 +94,7 @@ export class ResultMeetingComponent implements OnInit {
     console.log(disagreeResultVoting);
     console.log(noOpinionResultVoting);
 
-    const idMeeting = this.route.snapshot.params['id'];
+    const idMeeting = this.route.snapshot.params['idMeeting'];
     this.votingService.getByIdMeeting(idMeeting).subscribe((res) => {
       this.listVotingByMeeting = res;
       this.toListVotingByMeeting = Object.values(this.listVotingByMeeting.items);
@@ -261,7 +261,7 @@ export class ResultMeetingComponent implements OnInit {
   listRE:any = [];
   electionTotals:any =[];
   getAllResultElection(): void {
-    const idMeeting = this.route.snapshot.params['id'];
+    const idMeeting = this.route.snapshot.params['idMeeting'];
     this.electionService.getByIdMeeting(idMeeting).subscribe((elections: any) => {
       this.toListElectionByMeeting = elections.items;
 
@@ -354,6 +354,7 @@ export class ResultMeetingComponent implements OnInit {
 
         const calculateCandidatePercentages = (idE: string): void => {
           const candidatePercentages: any[] = [];
+          const updatedCandidates: any[] = [];
 
           idCandidateMap.forEach((totalSharesOfCandidate, idC) => {
 
@@ -388,15 +389,16 @@ export class ResultMeetingComponent implements OnInit {
                   totalShares: totalShares,
                   percentage: candidatePercent
                 };
-                candidatePercentages.push(updatedCandidate);
+                updatedCandidates.push(updatedCandidate);
+                this.candidatePercentages = updatedCandidates.sort((a, b) => b.percentage - a.percentage);
               }
             });
-            this.candidatePercentages = candidatePercentages;
           });
         };
       });
-      this.candidatePercentages.sort((a, b) => b.percentage - a.percentage);
     });
+    this.candidatePercentages.sort((a, b) => a.percentage - b.percentage);
+    
   }
 
 }
