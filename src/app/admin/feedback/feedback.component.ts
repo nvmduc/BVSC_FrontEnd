@@ -62,6 +62,7 @@ export class FeedbackComponent implements OnInit{
             timeFeedback: feedback.timeFeedback
           };
           this.feedbackListWithName.push(feedbackWithName);
+          this.feedbackListWithName.sort((a,b)=>b.totalShares - a.totalShares);
         });
       });
     });
