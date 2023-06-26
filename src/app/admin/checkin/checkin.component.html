@@ -5,8 +5,8 @@
         <h1>PHIẾU THÔNG TIN CỔ ĐÔNG/ĐẠI DIỆN CỔ ĐÔNG</h1>
         <p style="padding-bottom: 20px;">MÃ CỔ ĐÔNG/ĐẠI DIỆN CỔ ĐÔNG</p>
         <span
-            style="padding: 20px; border: 1px solid black; font-size: 30px; font-weight: bold;">{{dataShareholder.items?.shareHolderCode}}</span>
-        <p style="padding-top: 30px; font-size: 25px;">Tên cổ đông: <span style="font-weight: bold;">{{dataShareholder.items?.fullname}}</span></p>
+            style="padding: 20px; border: 1px solid black; font-size: 30px; font-weight: bold;">{{dataShareholder.items?.shareHolderCode | uppercase}}</span>
+        <p style="padding-top: 30px; font-size: 25px;">Tên cổ đông: <span style="font-weight: bold;">{{dataShareholder.items?.fullname | uppercase}}</span></p>
         <h3 style="font-size: 20px;">Tài khoản: <span style="font-weight: bold;">{{dataShareholder.items?.username}}</span></h3>
         <h3 style="font-size: 20px;">Mật khẩu: <span style="font-weight: bold;">{{password}}</span></h3>
     </div>
