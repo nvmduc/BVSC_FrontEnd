@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { ClientModule } from './client/client.module';
 import { AdminModule } from './admin/admin.module';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
@@ -29,8 +29,8 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     HttpClientModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    SweetAlert2Module.forRoot()
-
+    SweetAlert2Module.forRoot(),
+    DecimalPipe
   ],
   providers: [ClientModule,AdminModule],
   bootstrap: [AppComponent]

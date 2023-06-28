@@ -78,6 +78,7 @@ export class ShareholderComponent implements OnInit {
   allShares:number = 0
   percentShares!:number
   percentSharesAuth!:number
+  value = 0;
   getShareholderByMeeting() {
     this.idMeeting = this.route.snapshot.params['id'];
     this.shareholderService.getByIdMeeting(this.idMeeting).subscribe((res) => {
@@ -461,20 +462,20 @@ export class ShareholderComponent implements OnInit {
     };
     fileReader.readAsArrayBuffer(file);
   }
-  isLoading: boolean = true;
+  isLoading: boolean = false;
 
   onSubmitFile(form: NgForm) {
-    // this.isLoading = true;
+    this.isLoading = true;
     if (form.valid) {
       if (this.selectedFile) {
         const file: File = this.selectedFile;
         const data: any = this.route.snapshot.params['id'];
-
+        
         const formData: FormData = new FormData();
         formData.append('file', file);
         formData.append('idMeeting', data);
         const headers = new HttpHeaders();
-
+        
         headers.append('Content-Type', 'multipart/form-data');
         this.http.post('http://localhost:8080/bvsc-mapp/api/v1/upload-excel', formData, { headers }).subscribe(
           (response) => {
@@ -490,9 +491,8 @@ export class ShareholderComponent implements OnInit {
           }
         );
       }
-
     }
-    this.isLoading = false;
+    // this.isLoading = false;
   }
 
 }

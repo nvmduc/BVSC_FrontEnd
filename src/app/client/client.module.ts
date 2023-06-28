@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -35,8 +35,9 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
     FormsModule,
     MatSlideToggleModule,
     SweetAlert2Module.forRoot(),
+    DecimalPipe
   ],
-  providers: [],
+  providers: [DecimalPipe],
   bootstrap: []
 })
 export class ClientModule { }
