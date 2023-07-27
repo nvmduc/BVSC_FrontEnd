@@ -13,12 +13,14 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LoginAdminComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     AppRoutingModule,

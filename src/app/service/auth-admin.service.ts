@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { UserAdmin } from '../models/admin-auth';
 
-const apiUrl = 'http://localhost:8080/bvsc-mapp/api/v1/auth';
+const apiUrl = 'http://10.179.17.67:8080/bvsc-mapp/api/v1/auth';
 
 @Injectable({
   providedIn: 'root'

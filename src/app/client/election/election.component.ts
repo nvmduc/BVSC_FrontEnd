@@ -15,11 +15,15 @@ import Swal from 'sweetalert2';
 })
 export class ElectionComponent implements OnInit {
   sumShares!: number;
+  inputValuesEmptyArray: boolean[] = [];
+  inputValuesEmpty: boolean = false;
+  quantityInput!: boolean[][];
 
   ngOnInit(): void {
     this.getAllCandidate();
     this.getInfoShareholder();
-    this.inputValues = new Array(this.toListCandidateByE.length);
+
+    this.inputValues = new Array(this.toListCandidateByE.length)
   }
   // result: number = this.sumShares;
   constructor(private result_ElectionService: ResultElectionService, private shareholderService: ShareholderInfoService, private candidateService: CandidateService, private electionService: ElectionService, private toastr: ToastrService, private route: ActivatedRoute, private fb: FormBuilder) {
@@ -33,6 +37,8 @@ export class ElectionComponent implements OnInit {
     const candidates = this.getCandidatesByElection(id);
     const totalCandidates = candidates.length;
     const equalShares = Math.floor(this.totalShares[id] / totalCandidates);
+
+    this.inputValuesEmptyArray[id] = !this.inputValues[id];
 
     candidates.forEach((itemC: any) => {
       this.inputValues[itemC.id] = equalShares;
@@ -67,6 +73,7 @@ export class ElectionComponent implements OnInit {
         }
       }
     }
+    
   }
 
   subtract(idE: any) {
@@ -78,6 +85,7 @@ export class ElectionComponent implements OnInit {
       return accumulator;
     }, 0);
     this.resultShares[idE] = this.totalShares[idE] - sumInputValues;
+
   }
 
   onSubmit() {
@@ -197,7 +205,7 @@ export class ElectionComponent implements OnInit {
         this.list = [res];
         this.toListElection = Object.values(this.list[0].items);
         for (let item of this.toListElection) {
-          if(item.status == 0){
+          if (item.status == 0) {
             this.getAllByElection(item.id);
             this.totalShares[item.id] = (this.numberShares + this.numberSharesAuth) * item.numberOfElected;
             this.subtract(item.id)
@@ -219,10 +227,12 @@ export class ElectionComponent implements OnInit {
         (candidate as any).idElection = id;
       }
       this.toListCandidateByE.push(...candidates);
-      
+
     });
   }
-  getCandidatesByElection(id: string) {
+
+  getCandidatesByElection(id: any) {
+    this.inputValuesEmpty = Object.values(this.inputValues).some((value) => value !== null && value !== undefined);
     return this.toListCandidateByE.filter((candidate: { idElection: string }) => (candidate as any).idElection === id);
   }
 

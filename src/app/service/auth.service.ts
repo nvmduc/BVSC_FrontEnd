@@ -4,7 +4,7 @@ import { Observable, tap } from 'rxjs';
 import { User } from '../models/auth';
 import * as MobileDetect from 'mobile-detect';
 
-const apiUrl = 'http://localhost:8080/bvsc-mapp/api/v1/auth/login';
+const apiUrl = 'http://10.179.17.67:8080/bvsc-mapp/api/v1/auth/login';
 
 @Injectable({
   providedIn: 'root'

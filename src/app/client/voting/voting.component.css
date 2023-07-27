@@ -48,6 +48,7 @@
   }
   .main-feedback{
     width: 73%;
+    margin-right: 10px;
   }
   .main-feedback table{
     background-color: white;

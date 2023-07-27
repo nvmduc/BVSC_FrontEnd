@@ -477,7 +477,7 @@ export class ShareholderComponent implements OnInit {
         const headers = new HttpHeaders();
         
         headers.append('Content-Type', 'multipart/form-data');
-        this.http.post('http://localhost:8080/bvsc-mapp/api/v1/upload-excel', formData, { headers }).subscribe(
+        this.http.post('http://10.179.17.67:8080/bvsc-mapp/api/v1/upload-excel', formData, { headers }).subscribe(
           (response) => {
             console.log('Tải lên thành công', response);
             this.toastr.success("Upload file thành công", "Thành công")

@@ -5,6 +5,7 @@ import { AuthGuard } from './auth.guard';
 // import { CusGuard } from './cus.guard';
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { LoginComponent } from './login/login.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
  {
@@ -17,11 +18,12 @@ const routes: Routes = [
   },
   {path: '',component:LoginComponent},
   {path: 'login',component:LoginComponent},
-  {path: 'admin/login',component:LoginAdminComponent}
+  {path: 'admin/login',component:LoginAdminComponent},
+  {path: '**',component:PageNotFoundComponent}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

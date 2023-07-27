@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Election } from '../models/election';
 
-const ApiUrl = "http://localhost:8080/bvsc-mapp/api/v1/election";
+const ApiUrl = "http://10.179.17.67:8080/bvsc-mapp/api/v1/election";
 
 @Injectable({
   providedIn: 'root'

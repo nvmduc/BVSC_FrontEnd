@@ -187,8 +187,8 @@ export class SidebarComponent implements OnInit {
       }
       reader.readAsDataURL(this.selectedFile);
     } else {
-      const timestampStart = +new Date(this.infoMeeting.value.startTime);
-      const timestampEnd = +new Date(this.infoMeeting.value.endTime);
+      const timestampStart = new Date(this.infoMeeting.value.startTime);
+      const timestampEnd = new Date(this.infoMeeting.value.endTime);
       this.infoMeeting.value.startTime = timestampStart
       this.infoMeeting.value.endTime = timestampEnd
       this.meetingService.update(id, this.infoMeeting.value).subscribe((res) => {

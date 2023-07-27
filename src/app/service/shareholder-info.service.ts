@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Shareholder } from '../models/shareholder';
 
-const ApiUrl = "http://localhost:8080/bvsc-mapp/api/v1/shareholder";
+const ApiUrl = "http://10.179.17.67:8080/bvsc-mapp/api/v1/shareholder";
 
-const ApiUrlFile = "http://localhost:8080/bvsc-mapp/api/v1/upload-excel";
+const ApiUrlFile = "http://10.179.17.67:8080/bvsc-mapp/api/v1/upload-excel";
 
 
 @Injectable({

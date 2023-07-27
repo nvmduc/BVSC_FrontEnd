@@ -4,7 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Meeting } from '../models/meeting';
 import { HttpHeaders } from '@angular/common/http';
 
-const ApiUrl = "http://localhost:8080/bvsc-mapp/api/v1/meeting";
+const ApiUrl = "http://10.179.17.67:8080/bvsc-mapp/api/v1/meeting";
 
 @Injectable({
   providedIn: 'root'
