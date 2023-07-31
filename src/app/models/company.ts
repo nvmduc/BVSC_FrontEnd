@@ -4,8 +4,8 @@ export class Company{
     stockCode!:string;
     taxCode!:number;
     address!:string
-    foundedYear!:any
-    constructor(id:number,companyName:string, stockCode:string,taxCode:number,address:string,foundedYear:any){
+    foundedYear!:Date
+    constructor(id:number,companyName:string, stockCode:string,taxCode:number,address:string,foundedYear:Date){
         this.id = id,
         this.companyName = companyName,
         this.stockCode = stockCode,

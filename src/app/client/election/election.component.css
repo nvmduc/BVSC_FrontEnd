@@ -62,8 +62,8 @@
     background-color: rgb(220, 220, 220);
   }
   form .item {
-    margin: 10px;
-    width: 95%;
+    /* margin: 10px; */
+    width: 100%;
   }
   .item{
     width: 80%;

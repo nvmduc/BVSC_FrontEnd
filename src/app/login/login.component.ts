@@ -101,17 +101,13 @@ export class LoginComponent implements OnInit {
                     if (this.dataMeeting.items?.status == 2 || this.dataMeeting.items?.status == 3 || this.dataMeeting.items?.status == 4|| this.dataMeeting.items?.status == 5|| this.dataMeeting.items?.status == 6|| this.dataMeeting.items?.status == 7) {
                       const token = localStorage.getItem('token');
                       const roles = localStorage.getItem('roles');
-                      if (token != null && roles == '0') {
+                      if (token != null && roles == '0' || roles == '2' || roles == '3'|| roles == '1') {
                         this.submitSession();
                         Swal.fire(
                           'Đăng nhập thành công!',
                           'Xin cảm ơn!',
                           'success'
                         )
-                        this.router.navigate(['home'])
-                      } else if (token != null && roles == '1') {
-                        this.submitSession();
-                        this.toastr.success("Đăng nhập thành công đoàn chủ tịch")
                         this.router.navigate(['home'])
                       } else {
                         (<HTMLInputElement>document.getElementById('loginFaild')).removeAttribute('class');
